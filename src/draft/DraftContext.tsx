@@ -1,18 +1,24 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { createRealtimeClient, RealtimeChannel, RealtimeClient } from './realtime';
-import type { DraftState, LocalUser, WireMessage, DraftStatus, Drafter } from './types';
-import type { Role } from '../App';
+import type {
+  DraftState,
+  LocalUser,
+  WireMessage,
+  DraftStatus,
+  Drafter,
+  CelebrityValidationResult
+} from './types';
 
 interface DraftContextValue {
   user: LocalUser | null;
   status: DraftStatus;
   state: DraftState | null;
   channel: RealtimeChannel | null;
-  isLeader: boolean;
+  isAdmin: boolean;
   isConnected: boolean;
   error: string | null;
-  initDraftAsLeader(config: { totalRounds: number; celebrityList: string[] }): void;
-  sendPick(celebrityName: string): void;
+  initDraft(config: { totalRounds: number; celebrityList: string[] }): void;
+  sendPick(drafterId: string, celebrityName: string): void;
   resetDraft(): void;
   undoLastPick(): void;
 }
@@ -42,78 +48,80 @@ const defaultCelebrities: string[] = [
   'Dua Lipa'
 ];
 
-const PRECONFIGURED_DRAFTERS: Omit<Drafter, 'isLeader'>[] = [
+const PRECONFIGURED_DRAFTERS: Array<Pick<Drafter, 'id' | 'name' | 'order'>> = [
   {
     id: 'drafter-josh',
     name: 'Josh',
-    order: 1,
-    points: 250,
-    bags: 3,
-    rings: 0,
-    trophies: 1
+    order: 1
   },
   {
     id: 'drafter-jim',
     name: 'Jim',
-    order: 2,
-    points: 206,
-    bags: 5,
-    rings: 2,
-    trophies: 0
+    order: 2
   },
   {
     id: 'drafter-kyle',
     name: 'Kyle',
-    order: 3,
-    points: 128,
-    bags: 4,
-    rings: 0,
-    trophies: 0
+    order: 3
   },
   {
     id: 'drafter-pj',
     name: 'Pj',
-    order: 4,
-    points: 67,
-    bags: 2,
-    rings: 1,
-    trophies: 0
+    order: 4
   },
   {
     id: 'drafter-zaccheo',
     name: 'Zaccheo',
-    order: 5,
-    points: 18,
-    bags: 1,
-    rings: 0,
-    trophies: 0
+    order: 5
   },
   {
     id: 'drafter-cory',
     name: 'Cory',
-    order: 6,
-    points: 11,
-    bags: 1,
-    rings: 1,
-    trophies: 0
+    order: 6
   },
   {
     id: 'drafter-pat',
     name: 'Pat',
-    order: 7,
-    points: 0,
-    bags: 0,
-    rings: 0,
-    trophies: 0
+    order: 7
   }
 ];
 
-const createInitialState = (leader: LocalUser, totalRounds: number, celebrityList: string[]): DraftState => {
+const VALIDATION_FUNCTION_PATH = '/.netlify/functions/validate-celebrity';
+
+const fetchCelebrityValidation = async (
+  celebrityName: string
+): Promise<CelebrityValidationResult | null> => {
+  try {
+    const response = await fetch(VALIDATION_FUNCTION_PATH, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name: celebrityName })
+    });
+
+    if (!response.ok) {
+      console.error('Celebrity validation request failed', response.status, await response.text());
+      return null;
+    }
+
+    const data = (await response.json()) as { success?: boolean; result?: CelebrityValidationResult };
+    if (!data.success || !data.result) {
+      return null;
+    }
+
+    return data.result;
+  } catch (err) {
+    console.error('Error calling validation function', err);
+    return null;
+  }
+};
+
+const createInitialState = (totalRounds: number, celebrityList: string[]): DraftState => {
   const now = new Date().toISOString();
 
   const drafters: Drafter[] = PRECONFIGURED_DRAFTERS.map((d) => ({
-    ...d,
-    isLeader: d.name.toLowerCase() === leader.name.toLowerCase()
+    ...d
   }));
 
   return {
@@ -135,16 +143,23 @@ const createInitialState = (leader: LocalUser, totalRounds: number, celebrityLis
 const getCurrentDrafter = (state: DraftState): Drafter | null => {
   if (!state.drafters.length) return null;
   const perRound = state.drafters.length;
-  const indexInRound = state.currentPickIndex % perRound;
-  const drafter = state.drafters[indexInRound];
+  const totalSlots = state.config.totalRounds * perRound;
+  if (state.currentPickIndex >= totalSlots) return null;
+
+  const index = state.currentPickIndex;
+  const roundIndex = Math.floor(index / perRound);
+  const indexInRound = index % perRound;
+  const isReverse = roundIndex % 2 === 1;
+  const seatIndex = isReverse ? perRound - 1 - indexInRound : indexInRound;
+  const drafter = state.drafters[seatIndex];
   return drafter ?? null;
 };
 
 export const DraftProvider: React.FC<{
   name: string;
-  role: Role | null;
+  isAdmin: boolean;
   children: React.ReactNode;
-}> = ({ name, role, children }) => {
+}> = ({ name, isAdmin: isAdminFromQuery, children }) => {
   const [user, setUser] = useState<LocalUser | null>(null);
   const [client, setClient] = useState<RealtimeClient | null>(null);
   const [channel, setChannel] = useState<RealtimeChannel | null>(null);
@@ -153,15 +168,15 @@ export const DraftProvider: React.FC<{
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const isLeader = !!user && user.role === 'leader';
+  const isAdmin = !!user && user.isAdmin;
 
   useEffect(() => {
-    if (!name || !role || user) return;
+    if (user) return;
 
     const newUser: LocalUser = {
       id: `u-${Math.random().toString(36).slice(2, 10)}`,
-      name,
-      role
+      name: name || 'Guest',
+      isAdmin: isAdminFromQuery
     };
     setUser(newUser);
 
@@ -172,7 +187,19 @@ export const DraftProvider: React.FC<{
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to connect to realtime service.');
     }
-  }, [name, role, user]);
+  }, [name, isAdminFromQuery, user]);
+
+  useEffect(() => {
+    setUser((prev) =>
+      prev
+        ? {
+            ...prev,
+            name: name || prev.name,
+            isAdmin: isAdminFromQuery
+          }
+        : prev
+    );
+  }, [name, isAdminFromQuery]);
 
   useEffect(() => {
     if (!client) return;
@@ -200,14 +227,14 @@ export const DraftProvider: React.FC<{
         setState(msg.payload);
         setStatus(msg.payload.status);
       } else if (msg.type === 'state:request') {
-        if (!isLeader || !state) return;
+        if (!isAdmin || !state) return;
         const outgoing: WireMessage = {
           type: 'state:replace',
           payload: state
         };
         channel.publish('state', outgoing);
       } else if (msg.type === 'action:pick') {
-        if (!isLeader || !state) return;
+        if (!isAdmin || !state) return;
 
         const { drafterId, drafterName, celebrityName } = msg.payload;
 
@@ -248,14 +275,14 @@ export const DraftProvider: React.FC<{
               id: `p-${state.picks.length + 1}`,
               overallNumber: state.picks.length + 1,
               round: state.currentRound,
-                drafterId: drafterSeat.id,
-                drafterName: drafterSeat.name,
+              drafterId: drafterSeat.id,
+              drafterName: drafterSeat.name,
               celebrityName,
               createdAt: now
             }
           ],
           celebrities: state.celebrities.map((c) =>
-              c.id === celeb.id ? { ...c, draftedById: drafterSeat.id } : c
+            c.id === celeb.id ? { ...c, draftedById: drafterSeat.id } : c
           ),
           currentPickIndex: nextIndex,
           currentRound: complete ? state.currentRound : nextRound,
@@ -271,8 +298,58 @@ export const DraftProvider: React.FC<{
           payload: newState
         };
         channel.publish('state', outgoing);
+
+        // Fire-and-forget validation of the drafted celebrity.
+        void (async () => {
+          const validation = await fetchCelebrityValidation(celebrityName);
+          if (!validation) return;
+
+          setState((prev) => {
+            if (!prev) return prev;
+
+            const target = prev.celebrities.find(
+              (c) => c.name.toLowerCase() === celebrityName.toLowerCase()
+            );
+            if (!target) return prev;
+
+            const updatedCelebrities = prev.celebrities.map((c) =>
+              c.id === target.id
+                ? {
+                    ...c,
+                    fullName: validation.fullName || c.fullName || c.name,
+                    dateOfBirth: validation.dateOfBirth || c.dateOfBirth,
+                    wikipediaUrl:
+                      validation.wikipediaUrl !== undefined
+                        ? validation.wikipediaUrl
+                        : c.wikipediaUrl ?? null,
+                    hasWikipediaPage:
+                      validation.hasWikipediaPage !== undefined
+                        ? validation.hasWikipediaPage
+                        : c.hasWikipediaPage,
+                    isValidated: validation.isValid || c.isValidated,
+                    validationNotes: validation.notes ?? c.validationNotes ?? null
+                  }
+                : c
+            );
+
+            const updatedAt = new Date().toISOString();
+            const updatedState: DraftState = {
+              ...prev,
+              celebrities: updatedCelebrities,
+              updatedAt
+            };
+
+            const validationBroadcast: WireMessage = {
+              type: 'state:replace',
+              payload: updatedState
+            };
+            channel.publish('state', validationBroadcast);
+
+            return updatedState;
+          });
+        })();
       } else if (msg.type === 'action:reset') {
-        if (!isLeader || !state || !user) return;
+        if (!isAdmin || !state || !user) return;
         const now = new Date().toISOString();
         const newState: DraftState = {
           ...state,
@@ -288,7 +365,7 @@ export const DraftProvider: React.FC<{
         const outgoing: WireMessage = { type: 'state:replace', payload: newState };
         channel.publish('state', outgoing);
       } else if (msg.type === 'action:undo') {
-        if (!isLeader || !state) return;
+        if (!isAdmin || !state) return;
         if (!state.picks.length) return;
 
         const last = state.picks[state.picks.length - 1];
@@ -317,7 +394,7 @@ export const DraftProvider: React.FC<{
       }
     };
 
-    const messageListener = (msg: Ably.Types.Message) => {
+    const messageListener = (msg: { data: unknown }) => {
       try {
         const data = msg.data as WireMessage;
         onMessage(data);
@@ -339,13 +416,13 @@ export const DraftProvider: React.FC<{
       channel.unsubscribe('state', messageListener);
       channel.unsubscribe('action', messageListener);
     };
-  }, [channel, user, isLeader, state]);
+  }, [channel, user, isAdmin, state]);
 
-  const initDraftAsLeader = (config: { totalRounds: number; celebrityList: string[] }) => {
-    if (!user || !channel) return;
-    if (!isLeader) return;
+  const initDraft = (config: { totalRounds: number; celebrityList: string[] }) => {
+    if (!channel) return;
+    if (!isAdmin) return;
 
-    const initial = createInitialState(user, config.totalRounds, config.celebrityList);
+    const initial = createInitialState(config.totalRounds, config.celebrityList);
     setState(initial);
     setStatus(initial.status);
 
@@ -356,22 +433,18 @@ export const DraftProvider: React.FC<{
     channel.publish('state', outgoing);
   };
 
-  const sendPick = (celebrityName: string) => {
-    if (!user || !channel || !state) return;
+  const sendPick = (drafterId: string, celebrityName: string) => {
+    if (!channel || !state) return;
     if (state.status === 'complete') return;
 
-    // Try to map this user to one of the configured drafter seats by name.
-    const seat =
-      state.drafters.find((d) => d.name.toLowerCase() === user.name.toLowerCase()) ?? null;
-
-    const drafterId = seat?.id ?? user.id;
-    const drafterName = seat?.name ?? user.name;
+    const seat = state.drafters.find((d) => d.id === drafterId);
+    if (!seat) return;
 
     const msg: WireMessage = {
       type: 'action:pick',
       payload: {
-        drafterId,
-        drafterName,
+        drafterId: seat.id,
+        drafterName: seat.name,
         celebrityName
       }
     };
@@ -379,7 +452,7 @@ export const DraftProvider: React.FC<{
   };
 
   const resetDraft = () => {
-    if (!user || !channel || !isLeader) return;
+    if (!user || !channel || !isAdmin) return;
     const msg: WireMessage = {
       type: 'action:reset',
       payload: { requestedById: user.id, requestedByName: user.name }
@@ -388,7 +461,7 @@ export const DraftProvider: React.FC<{
   };
 
   const undoLastPick = () => {
-    if (!user || !channel || !isLeader) return;
+    if (!user || !channel || !isAdmin) return;
     const msg: WireMessage = {
       type: 'action:undo',
       payload: { requestedById: user.id, requestedByName: user.name }
@@ -402,15 +475,15 @@ export const DraftProvider: React.FC<{
       status,
       state,
       channel,
-      isLeader,
+      isAdmin,
       isConnected,
       error,
-      initDraftAsLeader,
+      initDraft,
       sendPick,
       resetDraft,
       undoLastPick
     }),
-    [user, status, state, channel, isLeader, isConnected, error]
+    [user, status, state, channel, isAdmin, isConnected, error]
   );
 
   return <DraftContext.Provider value={value}>{children}</DraftContext.Provider>;
@@ -427,8 +500,7 @@ export const useDraft = (): DraftContextValue => {
 export const getDefaultCelebrityList = (): string[] => defaultCelebrities.slice();
 
 export const getPreconfiguredDrafters = (): Drafter[] => PRECONFIGURED_DRAFTERS.map((d) => ({
-  ...d,
-  isLeader: false
+  ...d
 }));
 
 

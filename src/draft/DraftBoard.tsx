@@ -1,25 +1,32 @@
 import React, { useMemo, useState } from 'react';
 import { useDraft, getDefaultCelebrityList, getPreconfiguredDrafters } from './DraftContext';
-import type { DraftState } from './types';
+import type { Celebrity, DraftState } from './types';
 
-const getCurrentDrafterName = (state: DraftState | null): string | null => {
+const getCurrentDrafter = (state: DraftState | null) => {
   if (!state || !state.drafters.length) return null;
   const perRound = state.drafters.length;
-  const indexInRound = state.currentPickIndex % perRound;
-  const drafter = state.drafters[indexInRound];
-  return drafter?.name ?? null;
+  const totalSlots = state.config.totalRounds * perRound;
+  if (state.currentPickIndex >= totalSlots) return null;
+
+  const index = state.currentPickIndex;
+  const roundIndex = Math.floor(index / perRound);
+  const indexInRound = index % perRound;
+  const isReverse = roundIndex % 2 === 1;
+  const seatIndex = isReverse ? perRound - 1 - indexInRound : indexInRound;
+  return state.drafters[seatIndex] ?? null;
 };
 
 export const DraftBoard: React.FC = () => {
-  const { user, state, status, isLeader, isConnected, error, initDraftAsLeader, sendPick, resetDraft, undoLastPick } =
-    useDraft();
+  const { user, state, status, isAdmin, isConnected, error, initDraft, sendPick, resetDraft, undoLastPick } = useDraft();
 
   const [roundsInput, setRoundsInput] = useState(3);
   const [customCelebrities, setCustomCelebrities] = useState('');
   const [pendingPick, setPendingPick] = useState<string | null>(null);
   const [lastError, setLastError] = useState<string | null>(null);
+  const [activeDrafterId, setActiveDrafterId] = useState<string | null>(null);
 
-  const currentDrafterName = useMemo(() => getCurrentDrafterName(state), [state]);
+  const currentDrafter = useMemo(() => getCurrentDrafter(state), [state]);
+  const currentDrafterName = currentDrafter?.name ?? null;
 
   const availableCelebrities = useMemo(() => {
     if (!state) return getDefaultCelebrityList();
@@ -31,6 +38,15 @@ export const DraftBoard: React.FC = () => {
     return new Set(state.picks.map((p) => p.celebrityName));
   }, [state]);
 
+  const celebritiesByName = useMemo(() => {
+    const map = new Map<string, Celebrity>();
+    if (!state) return map;
+    for (const celeb of state.celebrities) {
+      map.set(celeb.name, celeb);
+    }
+    return map;
+  }, [state]);
+
   const pickCounts = useMemo(() => {
     const counts = new Map<string, number>();
     if (!state) return counts;
@@ -39,36 +55,56 @@ export const DraftBoard: React.FC = () => {
     }
     return counts;
   }, [state]);
-
-  const myTurn = useMemo(() => {
-    if (!user || !state) return false;
-    return currentDrafterName === user.name && status !== 'complete';
-  }, [currentDrafterName, status, state, user]);
+  const activeDrafter = useMemo(() => {
+    if (!state || !state.drafters.length) return null;
+    if (activeDrafterId) {
+      return state.drafters.find((d) => d.id === activeDrafterId) ?? null;
+    }
+    return currentDrafter ?? null;
+  }, [state, activeDrafterId, currentDrafter]);
 
   const handleInit = () => {
-    if (!user || !isLeader) return;
+    if (!isAdmin) return;
     const totalRounds = Math.max(1, Math.min(20, roundsInput));
     const userCelebs = customCelebrities
       .split('\n')
       .map((line) => line.trim())
       .filter(Boolean);
     const list = userCelebs.length ? userCelebs : getDefaultCelebrityList();
-    initDraftAsLeader({ totalRounds, celebrityList: list });
+    initDraft({ totalRounds, celebrityList: list });
   };
 
   const handlePick = (name: string) => {
-    if (!myTurn) {
-      setLastError('It is not your turn to pick.');
+    if (!state) return;
+    if (!currentDrafter) {
+      setLastError('The draft has not been started yet.');
       setTimeout(() => setLastError(null), 2000);
       return;
     }
+
     if (draftedNames.has(name)) {
       setLastError('That celebrity has already been drafted.');
       setTimeout(() => setLastError(null), 2000);
       return;
     }
+
+    const seat =
+      (activeDrafterId && state.drafters.find((d) => d.id === activeDrafterId)) ?? currentDrafter;
+
+    if (!seat) {
+      setLastError('No drafter selected.');
+      setTimeout(() => setLastError(null), 2000);
+      return;
+    }
+
+    if (seat.id !== currentDrafter.id) {
+      setLastError(`It is ${currentDrafter.name}'s turn right now.`);
+      setTimeout(() => setLastError(null), 2500);
+      return;
+    }
+
     setPendingPick(name);
-    sendPick(name);
+    sendPick(seat.id, name);
     setTimeout(() => setPendingPick(null), 500);
   };
 
@@ -84,7 +120,7 @@ export const DraftBoard: React.FC = () => {
                   ? `${state.config.totalRounds} rounds • ${state.drafters.length} drafter${
                       state.drafters.length === 1 ? '' : 's'
                     }`
-                  : 'Waiting for the leader to start the draft.'}
+                  : 'Waiting for someone to start the draft.'}
               </div>
             </div>
             <div className="status-row">
@@ -121,7 +157,44 @@ export const DraftBoard: React.FC = () => {
                 <div>
                   <span className="badge">{pick.drafterName}</span>
                 </div>
-                <div>{pick.celebrityName}</div>
+                <div>
+                  {(() => {
+                    const celeb = celebritiesByName.get(pick.celebrityName);
+                    const isValidated = !!celeb?.isValidated;
+                    const dob = celeb?.dateOfBirth;
+                    const hasWikipedia = !!celeb?.hasWikipediaPage;
+
+                    const titleParts: string[] = [];
+                    if (isValidated) {
+                      titleParts.push('Validated');
+                    }
+                    if (dob) {
+                      titleParts.push(`DOB: ${dob}`);
+                    }
+                    if (hasWikipedia && celeb?.wikipediaUrl) {
+                      titleParts.push('Wikipedia linked');
+                    }
+
+                    const title = titleParts.join(' • ');
+
+                    return (
+                      <>
+                        <div className="celebrity-main">
+                          <span>{pick.celebrityName}</span>
+                          {isValidated && (
+                            <span
+                              className="validation-icon"
+                              title={title || 'Validated celebrity'}
+                            >
+                              ✓
+                            </span>
+                          )}
+                        </div>
+                        {dob && <div className="celebrity-meta">{dob}</div>}
+                      </>
+                    );
+                  })()}
+                </div>
               </div>
             ))}
             {!state?.picks.length && (
@@ -145,44 +218,43 @@ export const DraftBoard: React.FC = () => {
               <div className="grid-header">
                 <div>#</div>
                 <div>Drafter</div>
-                <div>Career</div>
                 <div>Tonight</div>
+                <div />
               </div>
               {(state?.drafters ?? getPreconfiguredDrafters()).map((d) => {
                 const isMe = user && d.name.toLowerCase() === user.name.toLowerCase();
+                const isCurrent = currentDrafter && d.id === currentDrafter.id;
+                const isActive = activeDrafter && d.id === activeDrafter.id;
                 const picksForDrafter = pickCounts.get(d.id) ?? 0;
 
                 return (
                   <div
                     key={d.id}
                     className="grid-row"
+                    onClick={() => setActiveDrafterId(d.id)}
+                    style={{ cursor: 'pointer' }}
                   >
                     <div>{d.order}</div>
                     <div>
-                      <span className={`badge ${isMe ? 'me' : ''} ${d.isLeader ? 'leader' : ''}`}>
+                      <span
+                        className={`badge ${isMe ? 'me' : ''} ${isCurrent ? 'leader' : ''}`}
+                        style={
+                          isActive
+                            ? {
+                                boxShadow: '0 0 0 1px rgba(34,197,94,0.8)'
+                              }
+                            : undefined
+                        }
+                      >
                         {d.name}
                       </span>
-                    </div>
-                    <div>
-                      <span className="badge pick-count">
-                        {d.points} pts • {d.bags} bag{d.bags === 1 ? '' : 's'}
-                      </span>
-                      {d.trophies > 0 && (
-                        <span className="badge" style={{ marginLeft: 6 }}>
-                          {d.trophies} × 🏆
-                        </span>
-                      )}
-                      {d.rings > 0 && (
-                        <span className="badge" style={{ marginLeft: 6 }}>
-                          {d.rings} × 💍
-                        </span>
-                      )}
                     </div>
                     <div>
                       <span className="badge pick-count">
                         {picksForDrafter} pick{picksForDrafter === 1 ? '' : 's'}
                       </span>
                     </div>
+                    <div />
                   </div>
                 );
               })}
@@ -194,19 +266,17 @@ export const DraftBoard: React.FC = () => {
           <div className="panel-header">
             <div>
               <div className="panel-title">
-                {isLeader ? 'Leader controls' : myTurn ? 'Make your pick' : 'Available celebrities'}
+                {isAdmin ? 'Admin controls' : 'Draft controls'}
               </div>
               <div className="panel-subtitle">
-                {isLeader
-                  ? 'Configure the draft and manage the board. Everyone sees your changes instantly.'
-                  : myTurn
-                  ? 'Click a celebrity to submit your pick to the leader.'
-                  : 'You can see the board and who has been drafted so far.'}
+                {isAdmin
+                  ? 'Start/reset the draft and undo picks. Everyone can draft for any player in turn.'
+                  : 'Click a drafter in the list, then tap a celebrity when it is their turn.'}
               </div>
             </div>
           </div>
 
-          {isLeader && (
+          {isAdmin && (
             <div>
               <div className="field-row mt-8">
                 <div>
@@ -272,6 +342,10 @@ export const DraftBoard: React.FC = () => {
           )}
 
           <div className="mt-12">
+            <div className="panel-subtitle" style={{ marginBottom: 6 }}>
+              Picking for:{' '}
+              <strong>{activeDrafter?.name ?? currentDrafterName ?? '— (no drafter selected)'}</strong>
+            </div>
             <div className="panel-subtitle" style={{ marginBottom: 6 }}>
               Tap to draft (already-drafted names are dimmed)
             </div>

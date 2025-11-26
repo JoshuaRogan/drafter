@@ -374,4 +374,28 @@ button {
   border-radius: 999px;
 }
 
+.celebrity-main {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.celebrity-meta {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+.validation-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.18);
+  color: #22c55e;
+  font-size: 11px;
+  border: 1px solid rgba(34, 197, 94, 0.8);
+}
 

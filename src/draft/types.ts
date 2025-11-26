@@ -1,16 +1,9 @@
-import type { Role } from '../App';
-
 export type DraftStatus = 'not-started' | 'in-progress' | 'complete';
 
 export interface Drafter {
   id: string;
   name: string;
   order: number;
-  isLeader: boolean;
-  points: number;
-  bags: number;
-  rings: number;
-  trophies: number;
 }
 
 export interface Pick {
@@ -27,6 +20,28 @@ export interface Celebrity {
   id: string;
   name: string;
   draftedById?: string;
+  /** Canonical full name returned from validation (may match `name`). */
+  fullName?: string;
+  /** Date of birth as a human-readable or ISO string, when known. */
+  dateOfBirth?: string;
+  /** Wikipedia URL if we successfully matched a page. */
+  wikipediaUrl?: string | null;
+  /** True if a Wikipedia page was found for this celebrity. */
+  hasWikipediaPage?: boolean;
+  /** Overall validation flag (true if DOB and/or Wikipedia page were found). */
+  isValidated?: boolean;
+  /** Optional notes from the validation step (e.g., ambiguity). */
+  validationNotes?: string | null;
+}
+
+export interface CelebrityValidationResult {
+  inputName: string;
+  fullName: string;
+  dateOfBirth: string;
+  hasWikipediaPage: boolean;
+  wikipediaUrl: string | null;
+  isValid: boolean;
+  notes: string | null;
 }
 
 export interface DraftConfig {
@@ -48,7 +63,7 @@ export interface DraftState {
 export interface LocalUser {
   id: string;
   name: string;
-  role: Role;
+  isAdmin: boolean;
 }
 
 export type WireMessage =

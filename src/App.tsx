@@ -3,13 +3,18 @@ import { DraftProvider } from './draft/DraftContext';
 import { DraftBoard } from './draft/DraftBoard';
 import { UserSetup } from './draft/UserSetup';
 
-export type Role = 'leader' | 'drafter';
-
 export const App: React.FC = () => {
   const [name, setName] = useState<string>('');
-  const [role, setRole] = useState<Role | null>(null);
 
-  const isConfigured = useMemo(() => !!name && !!role, [name, role]);
+  const isConfigured = useMemo(() => !!name, [name]);
+
+  const isAdmin = useMemo(() => {
+    try {
+      return new URLSearchParams(window.location.search).get('admin') === 'true';
+    } catch {
+      return false;
+    }
+  }, []);
 
   return (
     <div className="app-shell">
@@ -21,13 +26,14 @@ export const App: React.FC = () => {
             </div>
             <div className="title">Live Draft Room</div>
             <div className="subtitle">
-              Up to 12 drafters, synced in real time. One leader controls the board; everyone sees every pick.
+              Up to 12 drafters, synced in real time. Anyone can draft for anyone; add ?admin=true to one tab for undo
+              and reset controls.
             </div>
           </div>
-          {isConfigured && role && (
+          {isConfigured && (
             <div className="text-right text-xs">
               <div>{name}</div>
-              <div style={{ color: '#9ca3af' }}>{role === 'leader' ? 'Draft Leader' : 'Drafter'}</div>
+              <div style={{ color: '#9ca3af' }}>{isAdmin ? 'Admin view' : 'Viewer'}</div>
             </div>
           )}
         </div>
@@ -36,17 +42,16 @@ export const App: React.FC = () => {
           <div className="panel">
             <div className="panel-header">
               <div>
-                <div className="panel-title">Connection & Role</div>
+                <div className="panel-title">Connection</div>
                 <div className="panel-subtitle">
-                  Join the shared room and choose whether you are the draft leader or a drafter.
+                  Set a label for yourself. If this URL has <code>?admin=true</code>, you&apos;ll see admin controls for
+                  starting, undoing, and resetting the draft.
                 </div>
               </div>
             </div>
             <UserSetup
               name={name}
-              role={role}
               onNameChange={setName}
-              onRoleChange={setRole}
             />
           </div>
 
@@ -55,15 +60,16 @@ export const App: React.FC = () => {
               <div>
                 <div className="panel-title">How this room works</div>
                 <div className="panel-subtitle">
-                  Everyone loads the same URL. The leader controls the board; all changes sync via WebSockets.
+                  Everyone loads the same URL. Any screen can draft for any player; one admin screen (with
+                  ?admin=true) gets undo/reset.
                 </div>
               </div>
             </div>
             <ul className="text-xs" style={{ color: '#9ca3af', paddingLeft: 18, margin: 0 }}>
               <li>All players open this page (Netlify-hosted) in their browser.</li>
-              <li>The draft leader sets rounds and confirms who is drafting.</li>
+              <li>One screen optionally uses <code>?admin=true</code> to get controls to start, undo, and reset.</li>
               <li>
-                Drafters click a celebrity when it is their turn. Their pick is sent to the leader, validated, and then
+                Anyone can click a celebrity for whoever is on the clock; picks go through the admin screen and are
                 broadcast out to everyone over the live channel.
               </li>
               <li>The board is the same for everyone — if one person picks, every screen updates instantly.</li>
@@ -71,7 +77,10 @@ export const App: React.FC = () => {
           </div>
         </div>
 
-        <DraftProvider name={name} role={role}>
+        <DraftProvider
+          name={name}
+          isAdmin={isAdmin}
+        >
           <DraftBoard />
         </DraftProvider>
       </div>
