@@ -168,6 +168,7 @@ export const DraftProvider: React.FC<{
   const [status, setStatus] = useState<DraftStatus>('not-started');
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasHydratedFromHistory, setHasHydratedFromHistory] = useState(false);
 
   const isAdmin = !!user && user.isAdmin;
 
@@ -219,6 +220,40 @@ export const DraftProvider: React.FC<{
       client.close();
     };
   }, [client]);
+
+  useEffect(() => {
+    if (!channel || !isConnected || hasHydratedFromHistory) return;
+
+    try {
+      channel.history({ limit: 50 }, (err, result) => {
+        if (err || !result) {
+          setHasHydratedFromHistory(true);
+          return;
+        }
+
+        const items = result.items ?? [];
+        let latestState: DraftState | null = null;
+
+        for (let i = items.length - 1; i >= 0; i -= 1) {
+          const message = items[i] as { data?: unknown };
+          const data = message.data as WireMessage | undefined;
+          if (data && data.type === 'state:replace') {
+            latestState = data.payload;
+            break;
+          }
+        }
+
+        if (latestState) {
+          setState(latestState);
+          setStatus(latestState.status);
+        }
+
+        setHasHydratedFromHistory(true);
+      });
+    } catch {
+      setHasHydratedFromHistory(true);
+    }
+  }, [channel, isConnected, hasHydratedFromHistory]);
 
   useEffect(() => {
     if (!channel || !user) return;

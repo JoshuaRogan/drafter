@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDraft, getDefaultCelebrityList, getPreconfiguredDrafters } from './DraftContext';
 import type { Celebrity, DraftState } from './types';
+import autoCelebritiesRaw from '../../celebrities.json';
 
 const getCurrentDrafter = (state: DraftState | null) => {
   if (!state || !state.drafters.length) return null;
@@ -20,6 +21,18 @@ interface SelectedPick {
   pickId: string;
   celebrity: Celebrity;
 }
+
+interface AutoCelebrity {
+  fullName: string;
+  age?: number;
+  dateOfBirth?: string;
+  wikipediaUrl?: string;
+  notes?: string;
+}
+
+const AUTO_CELEBRITY_POOL: AutoCelebrity[] = (autoCelebritiesRaw as AutoCelebrity[]).filter(
+  (c) => !!c && typeof c.fullName === 'string' && c.fullName.trim().length > 0
+);
 
 interface EditPickModalProps {
   selectedPick: SelectedPick;
@@ -84,6 +97,16 @@ const EditPickModal: React.FC<EditPickModalProps> = ({
             <span className="modal-value">{celebrity.dateOfBirth || 'Not available'}</span>
           </div>
           <div className="modal-row">
+            <span className="modal-label">Life status</span>
+            <span className="modal-value">
+              {celebrity.isDeceased === true
+                ? 'Reported deceased'
+                : celebrity.validationAttempted
+                ? 'Believed alive'
+                : 'Unknown'}
+            </span>
+          </div>
+          <div className="modal-row">
             <span className="modal-label">Wikipedia</span>
             <span className="modal-value">
               {celebrity.hasWikipediaPage && celebrity.wikipediaUrl ? (
@@ -129,6 +152,46 @@ const EditPickModal: React.FC<EditPickModalProps> = ({
   );
 };
 
+const pickAutoCelebrity = (
+  draftedNames: Set<string>
+): AutoCelebrity | null => {
+  const candidates: AutoCelebrity[] = [];
+
+  for (const celeb of AUTO_CELEBRITY_POOL) {
+    const name = celeb.fullName.trim();
+    if (!name) continue;
+    if (draftedNames.has(name)) continue;
+
+    candidates.push(celeb);
+  }
+
+  if (!candidates.length) {
+    return null;
+  }
+
+  // Bias strongly toward older celebrities while keeping some randomness.
+  // Weights are based on age^2 (older celebs are much more likely to be picked).
+  const weights: number[] = [];
+  let totalWeight = 0;
+
+  for (const celeb of candidates) {
+    const age = typeof celeb.age === 'number' && Number.isFinite(celeb.age) ? celeb.age : 40;
+    const weight = Math.max(1, age * age);
+    weights.push(weight);
+    totalWeight += weight;
+  }
+
+  let r = Math.random() * totalWeight;
+  for (let i = 0; i < candidates.length; i += 1) {
+    r -= weights[i];
+    if (r <= 0) {
+      return candidates[i];
+    }
+  }
+
+  return candidates[candidates.length - 1] ?? null;
+};
+
 export const DraftBoard: React.FC = () => {
   const {
     user,
@@ -151,6 +214,7 @@ export const DraftBoard: React.FC = () => {
   const [customCelebrityName, setCustomCelebrityName] = useState('');
   const [selectedPick, setSelectedPick] = useState<SelectedPick | null>(null);
   const [editCelebrityName, setEditCelebrityName] = useState('');
+  const [secondsRemaining, setSecondsRemaining] = useState<number>(0);
 
   const currentDrafter = useMemo(() => getCurrentDrafter(state), [state]);
   const currentDrafterName = currentDrafter?.name ?? null;
@@ -185,8 +249,60 @@ export const DraftBoard: React.FC = () => {
     return currentDrafter ?? null;
   }, [state, activeDrafterId, currentDrafter]);
 
+  const orderedDrafters = useMemo(() => {
+    if (!state) return [];
+    return [...state.drafters].sort((a, b) => a.order - b.order);
+  }, [state]);
+
+  const picksByRoundAndDrafter = useMemo(() => {
+    const map = new Map<string, string>();
+    if (!state) return map;
+    for (const pick of state.picks) {
+      const key = `${pick.round}-${pick.drafterId}`;
+      map.set(key, pick.celebrityName);
+    }
+    return map;
+  }, [state]);
+
+  useEffect(() => {
+    let intervalId: number | undefined;
+
+    if (status === 'in-progress' && currentDrafter) {
+      setSecondsRemaining(5 * 60);
+
+      intervalId = window.setInterval(() => {
+        setSecondsRemaining((prev) => (prev > 0 ? prev - 1 : 0));
+      }, 1000);
+    } else {
+      setSecondsRemaining(0);
+    }
+
+    return () => {
+      if (intervalId !== undefined) {
+        window.clearInterval(intervalId);
+      }
+    };
+  }, [status, currentDrafter?.id, state?.currentPickIndex]);
+
+  const clockDisplay = useMemo(() => {
+    const minutes = Math.floor(secondsRemaining / 60);
+    const seconds = secondsRemaining % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }, [secondsRemaining]);
+
   const handleInit = () => {
-    if (!isAdmin) return;
+    if (!isAdmin) {
+      setLastError('Only the admin can start or re-seed the draft.');
+      setTimeout(() => setLastError(null), 2500);
+      return;
+    }
+
+    if (!isConnected) {
+      setLastError('Live channel is not connected yet. Wait a few seconds, then try again.');
+      setTimeout(() => setLastError(null), 3000);
+      return;
+    }
+
     const totalRounds = Math.max(1, Math.min(20, roundsInput));
     const list = getDefaultCelebrityList();
     initDraft({ totalRounds, celebrityList: list });
@@ -236,8 +352,82 @@ export const DraftBoard: React.FC = () => {
     }
   };
 
+  const handleAutoDraft = () => {
+    if (!state) return;
+    if (!currentDrafter) {
+      setLastError('The draft has not been started yet.');
+      setTimeout(() => setLastError(null), 2000);
+      return;
+    }
+
+    const candidate = pickAutoCelebrity(draftedNames);
+    if (!candidate) {
+      setLastError('No eligible celebrities left in the auto-draft list.');
+      setTimeout(() => setLastError(null), 2500);
+      return;
+    }
+
+    const ok = handlePick(candidate.fullName.trim());
+    if (!ok) {
+      // handlePick already surfaced a user-facing error.
+      return;
+    }
+  };
+
+  const handleDownloadCsv = () => {
+    if (!state) return;
+
+    const header = ['owner', 'pick', 'round', 'dob', 'wikipedia'];
+    const rows: string[][] = [header];
+
+    for (const pick of state.picks) {
+      const celeb = celebritiesByName.get(pick.celebrityName);
+      const dob = celeb?.dateOfBirth ?? '';
+      const wikipedia = (celeb?.wikipediaUrl ?? '') || '';
+
+      rows.push([
+        pick.drafterName,
+        pick.celebrityName,
+        String(pick.round),
+        dob,
+        wikipedia
+      ]);
+    }
+
+    const csv = rows
+      .map((row) =>
+        row
+          .map((field) => {
+            const safe = (field ?? '').replace(/"/g, '""');
+            return `"${safe}"`;
+          })
+          .join(',')
+      )
+      .join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'celebrity-draft-results.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="mt-16">
+      {status === 'in-progress' && currentDrafter && (
+        <div className="onclock-banner">
+          <div className="onclock-label">On the clock</div>
+          <div className="onclock-main">
+            <span className="onclock-name">{currentDrafter.name}</span>
+            <span className="onclock-separator">•</span>
+            <span className="onclock-timer">{clockDisplay}</span>
+          </div>
+        </div>
+      )}
       <div className="layout">
         <div className="panel">
           <div className="panel-header">
@@ -372,6 +562,56 @@ export const DraftBoard: React.FC = () => {
             )}
           </div>
 
+          {state && orderedDrafters.length > 0 && (
+            <div className="mt-12">
+              <div className="panel-subtitle" style={{ marginBottom: 6 }}>
+                Picks by round
+              </div>
+              <div className="round-grid">
+                <div className="round-grid-header">
+                  <div>Round</div>
+                  {orderedDrafters.map((d) => (
+                    <div key={d.id}>{d.name}</div>
+                  ))}
+                </div>
+                {Array.from({ length: state.config.totalRounds }, (_, idx) => {
+                  const roundNumber = idx + 1;
+                  return (
+                    <div
+                      key={roundNumber}
+                      className="round-grid-row"
+                    >
+                      <div>Round {roundNumber}</div>
+                      {orderedDrafters.map((d) => {
+                        const key = `${roundNumber}-${d.id}`;
+                        const celebName = picksByRoundAndDrafter.get(key);
+                        return (
+                          <div key={d.id}>
+                            {celebName ? (
+                              <span className="round-grid-cell">{celebName}</span>
+                            ) : (
+                              <span className="round-grid-cell round-grid-cell-empty">—</span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+              </div>
+              <div style={{ marginTop: 8, textAlign: 'right' }}>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={handleDownloadCsv}
+                  disabled={!state.picks.length}
+                >
+                  Download CSV
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="mt-12">
             <div className="panel-subtitle" style={{ marginBottom: 6 }}>
               Drafters
@@ -458,7 +698,7 @@ export const DraftBoard: React.FC = () => {
                   className="btn-primary"
                   onClick={handleInit}
                 >
-                  {state ? 'Re-seed draft' : 'Start draft'}
+                  Start draft
                 </button>
                 {state && (
                   <>
@@ -506,6 +746,19 @@ export const DraftBoard: React.FC = () => {
               >
                 Draft custom
               </button>
+            </div>
+            <div className="field-row mt-8">
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={handleAutoDraft}
+                disabled={!state || !currentDrafter || status === 'complete'}
+              >
+                Auto-draft from list
+              </button>
+              <div style={{ fontSize: 12, color: '#6b7280' }}>
+                Favors older celebrities but keeps some randomness.
+              </div>
             </div>
           </div>
 
