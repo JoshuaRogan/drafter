@@ -1,18 +1,19 @@
 /* Netlify serverless function to validate a drafted celebrity.
  *
  * - Accepts POST JSON: { "name": "Celebrity name" }
- * - Calls OpenAI to normalize the name and extract date of birth.
- * - Calls Wikipedia API to confirm a page exists.
+ * - Uses OpenAI only to normalize the name, extract date of birth, guess a Wikipedia URL,
+ *   and infer whether the person is currently alive or deceased.
  * - Returns JSON with normalized info and validation flags.
  *
+ * No direct Wikipedia API lookups are used; the UI relies solely on OpenAI output.
  * Configure OPENAI_API_KEY in your Netlify environment.
  */
 
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
 /**
- * Best-effort call to OpenAI to normalize a celebrity name and get DOB.
- * Returns null on any error.
+ * Best-effort call to OpenAI to normalize a celebrity name and get DOB/Wikipedia URL / life status.
+ * Returns a small object on success, or null on any error.
  */
 async function getCelebrityFromOpenAI(name) {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -37,17 +38,21 @@ async function getCelebrityFromOpenAI(name) {
             content:
               'You are a precise data extraction assistant for a celebrity draft game. ' +
               'Given a person name, you MUST reply with a single JSON object only, no extra text. ' +
-              'If the name is clearly a public figure / celebrity, return their canonical full name and date of birth. ' +
-              'If you are not confident, leave values empty but still return valid JSON.'
+              'If the name is clearly a public figure / celebrity, return their canonical full name, date of birth, ' +
+              'and whether they are currently alive or deceased. ' +
+              'If you are not confident, leave values empty but still return valid JSON and set isDeceased to false.'
           },
           {
             role: 'user',
             content:
               `Celebrity name: "${name}".\n\n` +
               'Reply with ONLY a JSON object of the shape:\n' +
-              '{ "fullName": string, "dateOfBirth": string, "notes": string }\n' +
+              '{ "fullName": string, "dateOfBirth": string, "wikipediaUrl": string, "isDeceased": boolean, "notes": string }\n' +
               '- "dateOfBirth" should be ISO 8601 formatted (YYYY-MM-DD) if you know it confidently, ' +
               'otherwise an empty string.\n' +
+              '- "wikipediaUrl" should be the canonical English Wikipedia URL for this person if you know it, ' +
+              'otherwise an empty string.\n' +
+              '- "isDeceased" should be true ONLY if you are confident the person is no longer alive; otherwise false.\n' +
               '- "notes" can briefly explain any ambiguity.'
           }
         ]
@@ -76,63 +81,23 @@ async function getCelebrityFromOpenAI(name) {
     const fullName = typeof parsed.fullName === 'string' ? parsed.fullName.trim() : '';
     const dateOfBirth = typeof parsed.dateOfBirth === 'string' ? parsed.dateOfBirth.trim() : '';
     const notes = typeof parsed.notes === 'string' ? parsed.notes.trim() : '';
+    const wikipediaUrlFromOpenAI =
+      typeof parsed.wikipediaUrl === 'string' ? parsed.wikipediaUrl.trim() : '';
+    const isDeceased =
+      typeof parsed.isDeceased === 'boolean'
+        ? parsed.isDeceased
+        : false;
 
     return {
       fullName: fullName || '',
       dateOfBirth: dateOfBirth || '',
-      notes
+      notes,
+      wikipediaUrlFromOpenAI: wikipediaUrlFromOpenAI || '',
+      isDeceased
     };
   } catch (err) {
     console.error('Error calling OpenAI', err);
     return null;
-  }
-}
-
-/**
- * Look up a Wikipedia page for a celebrity.
- * Uses a simple search and returns the first matching page, if any.
- */
-async function lookupWikipedia(name) {
-  try {
-    const searchUrl =
-      'https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srsearch=' +
-      encodeURIComponent(name);
-
-    const res = await fetch(searchUrl);
-    if (!res.ok) {
-      console.error('Wikipedia search failed', res.status, await res.text());
-      return {
-        hasWikipediaPage: false,
-        wikipediaUrl: null,
-        wikipediaTitle: null
-      };
-    }
-
-    const data = await res.json();
-    const first = data?.query?.search?.[0];
-    if (!first) {
-      return {
-        hasWikipediaPage: false,
-        wikipediaUrl: null,
-        wikipediaTitle: null
-      };
-    }
-
-    const title = first.title;
-    const url = 'https://en.wikipedia.org/wiki/' + encodeURIComponent(title.replace(/ /g, '_'));
-
-    return {
-      hasWikipediaPage: true,
-      wikipediaUrl: url,
-      wikipediaTitle: title
-    };
-  } catch (err) {
-    console.error('Error querying Wikipedia', err);
-    return {
-      hasWikipediaPage: false,
-      wikipediaUrl: null,
-      wikipediaTitle: null
-    };
   }
 }
 
@@ -187,16 +152,30 @@ exports.handler = async function handler(event) {
     };
   }
 
-  const [openAiResult, wikiResult] = await Promise.all([
-    getCelebrityFromOpenAI(name),
-    lookupWikipedia(name)
-  ]);
+  const hasOpenAIKey = !!process.env.OPENAI_API_KEY;
+  let openAiResult = null;
+  let usedOpenAI = false;
+  let openAIError = null;
+
+  if (hasOpenAIKey) {
+    const maybeOpenAI = await getCelebrityFromOpenAI(name);
+    if (maybeOpenAI) {
+      openAiResult = maybeOpenAI;
+      usedOpenAI = true;
+    } else {
+      openAIError = 'OpenAI request failed or returned no result.';
+    }
+  } else {
+    openAIError = 'OPENAI_API_KEY not configured.';
+  }
 
   const fullName = openAiResult?.fullName || name;
   const dateOfBirth = openAiResult?.dateOfBirth || '';
+  const wikipediaUrlFromOpenAI = openAiResult?.wikipediaUrlFromOpenAI || '';
+  const isDeceased = !!openAiResult?.isDeceased;
 
-  const hasWikipediaPage = wikiResult.hasWikipediaPage;
-  const wikipediaUrl = wikiResult.wikipediaUrl;
+  const hasWikipediaPage = !!wikipediaUrlFromOpenAI;
+  const wikipediaUrl = wikipediaUrlFromOpenAI || null;
 
   const isValid = Boolean(hasWikipediaPage || dateOfBirth);
 
@@ -207,7 +186,10 @@ exports.handler = async function handler(event) {
     hasWikipediaPage,
     wikipediaUrl,
     isValid,
-    notes: openAiResult?.notes || null
+    notes: openAiResult?.notes || null,
+    isDeceased,
+    usedOpenAI,
+    openAIError
   };
 
   return {

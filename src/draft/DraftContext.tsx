@@ -19,6 +19,7 @@ interface DraftContextValue {
   error: string | null;
   initDraft(config: { totalRounds: number; celebrityList: string[] }): void;
   sendPick(drafterId: string, celebrityName: string): void;
+  editPick(pickId: string, newCelebrityName: string): void;
   resetDraft(): void;
   undoLastPick(): void;
 }
@@ -257,8 +258,19 @@ export const DraftProvider: React.FC<{
         );
         if (alreadyPicked) return;
 
-        const celeb = state.celebrities.find((c) => c.name.toLowerCase() === celebrityName.toLowerCase());
-        if (!celeb) return;
+        let celeb = state.celebrities.find(
+          (c) => c.name.toLowerCase() === celebrityName.toLowerCase()
+        );
+
+        let celebritiesWithCustom = state.celebrities;
+        if (!celeb) {
+          // Allow custom celebrities that were not part of the original pool.
+          celeb = {
+            id: `c-${state.celebrities.length}`,
+            name: celebrityName
+          };
+          celebritiesWithCustom = [...state.celebrities, celeb];
+        }
 
         const nextIndex = state.currentPickIndex + 1;
         const totalSlots = state.config.totalRounds * state.drafters.length;
@@ -281,7 +293,7 @@ export const DraftProvider: React.FC<{
               createdAt: now
             }
           ],
-          celebrities: state.celebrities.map((c) =>
+          celebrities: celebritiesWithCustom.map((c) =>
             c.id === celeb.id ? { ...c, draftedById: drafterSeat.id } : c
           ),
           currentPickIndex: nextIndex,
@@ -326,7 +338,137 @@ export const DraftProvider: React.FC<{
                       validation.hasWikipediaPage !== undefined
                         ? validation.hasWikipediaPage
                         : c.hasWikipediaPage,
-                    isValidated: validation.isValid || c.isValidated,
+                    isValidated: validation.isValid,
+                    validationAttempted: true,
+                    isDeceased:
+                      typeof validation.isDeceased === 'boolean'
+                        ? validation.isDeceased
+                        : c.isDeceased,
+                    validationNotes: validation.notes ?? c.validationNotes ?? null
+                  }
+                : c
+            );
+
+            const updatedAt = new Date().toISOString();
+            const updatedState: DraftState = {
+              ...prev,
+              celebrities: updatedCelebrities,
+              updatedAt
+            };
+
+            const validationBroadcast: WireMessage = {
+              type: 'state:replace',
+              payload: updatedState
+            };
+            channel.publish('state', validationBroadcast);
+
+            return updatedState;
+          });
+        })();
+      } else if (msg.type === 'action:edit-pick') {
+        if (!isAdmin || !state) return;
+
+        const { pickId, newCelebrityName } = msg.payload;
+        const trimmedName = newCelebrityName.trim();
+        if (!trimmedName) return;
+
+        const pickIndex = state.picks.findIndex((p) => p.id === pickId);
+        if (pickIndex === -1) return;
+
+        const existingPick = state.picks[pickIndex];
+        const oldName = existingPick.celebrityName;
+
+        if (oldName.toLowerCase() === trimmedName.toLowerCase()) {
+          return;
+        }
+
+        const duplicate = state.picks.some(
+          (p, idx) =>
+            idx !== pickIndex &&
+            p.celebrityName.toLowerCase() === trimmedName.toLowerCase()
+        );
+        if (duplicate) return;
+
+        let celeb = state.celebrities.find(
+          (c) => c.name.toLowerCase() === trimmedName.toLowerCase()
+        );
+        let celebritiesWithCustom = state.celebrities;
+        if (!celeb) {
+          celeb = {
+            id: `c-${state.celebrities.length}`,
+            name: trimmedName
+          };
+          celebritiesWithCustom = [...state.celebrities, celeb];
+        }
+
+        const updatedPicks = state.picks.map((p, idx) =>
+          idx === pickIndex ? { ...p, celebrityName: trimmedName } : p
+        );
+
+        const otherStillUseOld = updatedPicks.some(
+          (p) => p.celebrityName.toLowerCase() === oldName.toLowerCase()
+        );
+
+        const updatedCelebritiesBase = celebritiesWithCustom.map((c) => {
+          if (c.name.toLowerCase() === oldName.toLowerCase() && !otherStillUseOld) {
+            return { ...c, draftedById: undefined };
+          }
+          if (c.id === celeb.id) {
+            return { ...c, draftedById: existingPick.drafterId };
+          }
+          return c;
+        });
+
+        const now = new Date().toISOString();
+        const newState: DraftState = {
+          ...state,
+          picks: updatedPicks,
+          celebrities: updatedCelebritiesBase,
+          updatedAt: now
+        };
+
+        setState(newState);
+        setStatus(newState.status);
+
+        const outgoing: WireMessage = {
+          type: 'state:replace',
+          payload: newState
+        };
+        channel.publish('state', outgoing);
+
+        // Re-run validation for the new celebrity name.
+        void (async () => {
+          const validation = await fetchCelebrityValidation(trimmedName);
+          if (!validation) return;
+
+          setState((prev) => {
+            if (!prev) return prev;
+
+            const target = prev.celebrities.find(
+              (c) => c.name.toLowerCase() === trimmedName.toLowerCase()
+            );
+            if (!target) return prev;
+
+            const updatedCelebrities = prev.celebrities.map((c) =>
+              c.id === target.id
+                ? {
+                    ...c,
+                    fullName: validation.fullName || c.fullName || c.name,
+                    dateOfBirth: validation.dateOfBirth || c.dateOfBirth,
+                    wikipediaUrl:
+                      validation.wikipediaUrl !== undefined
+                        ? validation.wikipediaUrl
+                        : c.wikipediaUrl ?? null,
+                    hasWikipediaPage:
+                      validation.hasWikipediaPage !== undefined
+                        ? validation.hasWikipediaPage
+                        : c.hasWikipediaPage,
+                    isValidated: validation.isValid,
+                    validationAttempted: true,
+                    isDeceased:
+                      typeof validation.isDeceased === 'boolean'
+                        ? validation.isDeceased
+                        : c.isDeceased,
                     validationNotes: validation.notes ?? c.validationNotes ?? null
                   }
                 : c
@@ -451,6 +593,25 @@ export const DraftProvider: React.FC<{
     channel.publish('action', msg);
   };
 
+  const editPick = (pickId: string, newCelebrityName: string) => {
+    if (!channel || !state) return;
+    if (state.status === 'not-started') return;
+
+    const trimmedName = newCelebrityName.trim();
+    if (!trimmedName) return;
+
+    const msg: WireMessage = {
+      type: 'action:edit-pick',
+      payload: {
+        pickId,
+        newCelebrityName: trimmedName,
+        requestedById: user?.id ?? 'unknown',
+        requestedByName: user?.name ?? 'unknown'
+      }
+    };
+    channel.publish('action', msg);
+  };
+
   const resetDraft = () => {
     if (!user || !channel || !isAdmin) return;
     const msg: WireMessage = {
@@ -480,6 +641,7 @@ export const DraftProvider: React.FC<{
       error,
       initDraft,
       sendPick,
+      editPick,
       resetDraft,
       undoLastPick
     }),

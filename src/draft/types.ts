@@ -30,6 +30,10 @@ export interface Celebrity {
   hasWikipediaPage?: boolean;
   /** Overall validation flag (true if DOB and/or Wikipedia page were found). */
   isValidated?: boolean;
+  /** True once we have attempted validation (regardless of outcome). */
+  validationAttempted?: boolean;
+  /** True if OpenAI indicates this person is deceased. */
+  isDeceased?: boolean;
   /** Optional notes from the validation step (e.g., ambiguity). */
   validationNotes?: string | null;
 }
@@ -42,6 +46,12 @@ export interface CelebrityValidationResult {
   wikipediaUrl: string | null;
   isValid: boolean;
   notes: string | null;
+  /** True if we successfully used OpenAI for this lookup. */
+  usedOpenAI?: boolean;
+  /** Error description when OpenAI could not be used or failed. */
+  openAIError?: string | null;
+  /** True if OpenAI indicates this person is deceased. */
+  isDeceased?: boolean;
 }
 
 export interface DraftConfig {
@@ -78,6 +88,10 @@ export type WireMessage =
   | {
       type: 'action:pick';
       payload: { drafterId: string; drafterName: string; celebrityName: string };
+    }
+  | {
+      type: 'action:edit-pick';
+      payload: { pickId: string; newCelebrityName: string; requestedById: string; requestedByName: string };
     }
   | {
       type: 'action:reset';

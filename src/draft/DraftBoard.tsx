@@ -16,22 +16,144 @@ const getCurrentDrafter = (state: DraftState | null) => {
   return state.drafters[seatIndex] ?? null;
 };
 
+interface SelectedPick {
+  pickId: string;
+  celebrity: Celebrity;
+}
+
+interface EditPickModalProps {
+  selectedPick: SelectedPick;
+  isAdmin: boolean;
+  editCelebrityName: string;
+  setEditCelebrityName(value: string): void;
+  onSave(pickId: string, nextName: string): void;
+  onClose(): void;
+}
+
+const EditPickModal: React.FC<EditPickModalProps> = ({
+  selectedPick,
+  isAdmin,
+  editCelebrityName,
+  setEditCelebrityName,
+  onSave,
+  onClose
+}) => {
+  const { pickId, celebrity } = selectedPick;
+
+  return (
+    <div
+      className="modal-backdrop"
+      onClick={onClose}
+    >
+      <div
+        className="modal"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="modal-header">
+          <div>
+            <div className="modal-title">{celebrity.fullName || celebrity.name}</div>
+            <div className="modal-subtitle">{celebrity.name}</div>
+          </div>
+          <div>
+            <span
+              className={`status-pill ${
+                celebrity.isValidated ? 'status-pill-valid' : 'status-pill-invalid'
+              }`}
+            >
+              {celebrity.isValidated ? 'Validated' : 'No clear match'}
+            </span>
+          </div>
+        </div>
+
+        <div className="modal-body">
+          {isAdmin && (
+            <div className="modal-row">
+              <span className="modal-label">Edit drafted name</span>
+              <span className="modal-value">
+                <input
+                  type="text"
+                  className="modal-input"
+                  value={editCelebrityName}
+                  onChange={(e) => setEditCelebrityName(e.target.value)}
+                />
+              </span>
+            </div>
+          )}
+          <div className="modal-row">
+            <span className="modal-label">Date of birth</span>
+            <span className="modal-value">{celebrity.dateOfBirth || 'Not available'}</span>
+          </div>
+          <div className="modal-row">
+            <span className="modal-label">Wikipedia</span>
+            <span className="modal-value">
+              {celebrity.hasWikipediaPage && celebrity.wikipediaUrl ? (
+                <a
+                  href={celebrity.wikipediaUrl || undefined}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Open page
+                </a>
+              ) : (
+                'Not found'
+              )}
+            </span>
+          </div>
+          <div className="modal-row">
+            <span className="modal-label">Notes</span>
+            <span className="modal-value">{celebrity.validationNotes || '—'}</span>
+          </div>
+        </div>
+
+        <div className="modal-footer">
+          {isAdmin && (
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={() => onSave(pickId, editCelebrityName.trim())}
+              style={{ marginRight: 8 }}
+            >
+              Save changes
+            </button>
+          )}
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={onClose}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const DraftBoard: React.FC = () => {
-  const { user, state, status, isAdmin, isConnected, error, initDraft, sendPick, resetDraft, undoLastPick } = useDraft();
+  const {
+    user,
+    state,
+    status,
+    isAdmin,
+    isConnected,
+    error,
+    initDraft,
+    sendPick,
+    editPick,
+    resetDraft,
+    undoLastPick
+  } = useDraft();
 
   const [roundsInput, setRoundsInput] = useState(3);
-  const [customCelebrities, setCustomCelebrities] = useState('');
   const [pendingPick, setPendingPick] = useState<string | null>(null);
   const [lastError, setLastError] = useState<string | null>(null);
   const [activeDrafterId, setActiveDrafterId] = useState<string | null>(null);
+  const [customCelebrityName, setCustomCelebrityName] = useState('');
+  const [selectedPick, setSelectedPick] = useState<SelectedPick | null>(null);
+  const [editCelebrityName, setEditCelebrityName] = useState('');
 
   const currentDrafter = useMemo(() => getCurrentDrafter(state), [state]);
   const currentDrafterName = currentDrafter?.name ?? null;
-
-  const availableCelebrities = useMemo(() => {
-    if (!state) return getDefaultCelebrityList();
-    return state.celebrities.map((c) => c.name);
-  }, [state]);
 
   const draftedNames = useMemo(() => {
     if (!state) return new Set<string>();
@@ -66,26 +188,22 @@ export const DraftBoard: React.FC = () => {
   const handleInit = () => {
     if (!isAdmin) return;
     const totalRounds = Math.max(1, Math.min(20, roundsInput));
-    const userCelebs = customCelebrities
-      .split('\n')
-      .map((line) => line.trim())
-      .filter(Boolean);
-    const list = userCelebs.length ? userCelebs : getDefaultCelebrityList();
+    const list = getDefaultCelebrityList();
     initDraft({ totalRounds, celebrityList: list });
   };
 
-  const handlePick = (name: string) => {
-    if (!state) return;
+  const handlePick = (name: string): boolean => {
+    if (!state) return false;
     if (!currentDrafter) {
       setLastError('The draft has not been started yet.');
       setTimeout(() => setLastError(null), 2000);
-      return;
+      return false;
     }
 
     if (draftedNames.has(name)) {
       setLastError('That celebrity has already been drafted.');
       setTimeout(() => setLastError(null), 2000);
-      return;
+      return false;
     }
 
     const seat =
@@ -94,18 +212,28 @@ export const DraftBoard: React.FC = () => {
     if (!seat) {
       setLastError('No drafter selected.');
       setTimeout(() => setLastError(null), 2000);
-      return;
+      return false;
     }
 
     if (seat.id !== currentDrafter.id) {
       setLastError(`It is ${currentDrafter.name}'s turn right now.`);
       setTimeout(() => setLastError(null), 2500);
-      return;
+      return false;
     }
 
     setPendingPick(name);
     sendPick(seat.id, name);
     setTimeout(() => setPendingPick(null), 500);
+    return true;
+  };
+
+  const handleCustomPick = () => {
+    const name = customCelebrityName.trim();
+    if (!name) return;
+    const ok = handlePick(name);
+    if (ok) {
+      setCustomCelebrityName('');
+    }
   };
 
   return (
@@ -160,7 +288,9 @@ export const DraftBoard: React.FC = () => {
                 <div>
                   {(() => {
                     const celeb = celebritiesByName.get(pick.celebrityName);
+                    const attempted = !!celeb?.validationAttempted || !!celeb?.isValidated;
                     const isValidated = !!celeb?.isValidated;
+                    const isDeceased = !!celeb?.isDeceased;
                     const dob = celeb?.dateOfBirth;
                     const hasWikipedia = !!celeb?.hasWikipediaPage;
 
@@ -174,19 +304,51 @@ export const DraftBoard: React.FC = () => {
                     if (hasWikipedia && celeb?.wikipediaUrl) {
                       titleParts.push('Wikipedia linked');
                     }
+                    if (attempted) {
+                      titleParts.push(isDeceased ? 'Reported deceased' : 'Believed alive');
+                    }
 
                     const title = titleParts.join(' • ');
+
+                    const handleOpenDetails = () => {
+                      if (!celeb) return;
+                      setSelectedPick({ pickId: pick.id, celebrity: celeb });
+                      setEditCelebrityName(pick.celebrityName);
+                    };
 
                     return (
                       <>
                         <div className="celebrity-main">
-                          <span>{pick.celebrityName}</span>
-                          {isValidated && (
+                          <button
+                            type="button"
+                            onClick={handleOpenDetails}
+                            className="celebrity-name-button"
+                            title="Click to view validation details"
+                          >
+                            {pick.celebrityName}
+                          </button>
+                          {isDeceased && (
                             <span
-                              className="validation-icon"
-                              title={title || 'Validated celebrity'}
+                              className="deceased-indicator"
+                              title="Reported deceased"
                             >
-                              ✓
+                              ☠
+                            </span>
+                          )}
+                          {attempted && (
+                            <span
+                              className={`validation-icon ${isValidated ? 'valid' : 'invalid'}`}
+                              title={
+                                title ||
+                                (isValidated
+                                  ? 'Validated celebrity'
+                                  : 'No clear match found for this name')
+                              }
+                              role="button"
+                              tabIndex={0}
+                              onClick={handleOpenDetails}
+                            >
+                              {isValidated ? '✓' : '✕'}
                             </span>
                           )}
                         </div>
@@ -315,29 +477,6 @@ export const DraftBoard: React.FC = () => {
                   </>
                 )}
               </div>
-
-              <div className="mt-12">
-                <label>
-                  Celebrity pool (optional, one per line)
-                  <textarea
-                    placeholder={getDefaultCelebrityList().join('\n')}
-                    value={customCelebrities}
-                    onChange={(e) => setCustomCelebrities(e.target.value)}
-                    style={{
-                      marginTop: 4,
-                      width: '100%',
-                      minHeight: 120,
-                      borderRadius: 12,
-                      border: '1px solid rgba(148, 163, 184, 0.45)',
-                      background: 'rgba(15, 23, 42, 0.9)',
-                      color: '#e5e7eb',
-                      fontSize: 12,
-                      padding: 8,
-                      resize: 'vertical'
-                    }}
-                  />
-                </label>
-              </div>
             </div>
           )}
 
@@ -346,25 +485,27 @@ export const DraftBoard: React.FC = () => {
               Picking for:{' '}
               <strong>{activeDrafter?.name ?? currentDrafterName ?? '— (no drafter selected)'}</strong>
             </div>
-            <div className="panel-subtitle" style={{ marginBottom: 6 }}>
-              Tap to draft (already-drafted names are dimmed)
-            </div>
-            <div className="chip-list">
-              {availableCelebrities.map((name) => {
-                const drafted = draftedNames.has(name);
-                const isMine = pendingPick === name;
-                return (
-                  <button
-                    key={name}
-                    type="button"
-                    className={`chip ${drafted ? 'drafted' : ''} ${isMine ? 'selected' : ''}`}
-                    onClick={() => handlePick(name)}
-                    disabled={drafted || status === 'complete'}
-                  >
-                    {name}
-                  </button>
-                );
-              })}
+            <div className="field-row mt-8">
+              <div className="flex-1">
+                <label>
+                  Custom celebrity
+                  <input
+                    type="text"
+                    placeholder="e.g. Margot Robbie"
+                    value={customCelebrityName}
+                    onChange={(e) => setCustomCelebrityName(e.target.value)}
+                    style={{ width: '100%', marginTop: 4 }}
+                  />
+                </label>
+              </div>
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={handleCustomPick}
+                disabled={!customCelebrityName.trim() || status === 'complete'}
+              >
+                Draft custom
+              </button>
             </div>
           </div>
 
@@ -374,6 +515,24 @@ export const DraftBoard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {selectedPick && (
+        <EditPickModal
+          selectedPick={selectedPick}
+          isAdmin={isAdmin}
+          editCelebrityName={editCelebrityName}
+          setEditCelebrityName={setEditCelebrityName}
+          onClose={() => setSelectedPick(null)}
+          onSave={(pickId, nextName) => {
+            if (!nextName) {
+              setSelectedPick(null);
+              return;
+            }
+            editPick(pickId, nextName);
+            setSelectedPick(null);
+          }}
+        />
+      )}
     </div>
   );
 };
