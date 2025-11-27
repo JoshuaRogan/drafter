@@ -471,12 +471,17 @@ export const DraftBoard: React.FC = () => {
   }, [state?.picks.length, state]);
 
   // Prevent background scrolling while any modal is open so the
-  // modal/backdrop remain visually fixed at the center of the viewport.
+  // modal/backdrop remain visually fixed in the viewport.
+  // Also scroll to the top of the page whenever a modal is opened so that
+  // the modal starts in a predictable position, even if the user was
+  // scrolled far down the draft board.
   useEffect(() => {
     const hasModalOpen = !!selectedPick || !!proxyPickRequest;
     if (!hasModalOpen) {
       return;
     }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';

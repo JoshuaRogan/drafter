@@ -649,9 +649,10 @@ button {
 
 .modal {
   position: fixed;
-  top: 50%;
+  /* Position the modal so its top edge sits halfway down the viewport */
+  top: 50vh;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   width: 100%;
   max-width: 420px;
   max-height: calc(100vh - 64px);
