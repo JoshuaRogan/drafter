@@ -100,6 +100,7 @@ const PRECONFIGURED_DRAFTERS: Array<Pick<Drafter, 'id' | 'name' | 'order'>> = [
 
 const VALIDATION_FUNCTION_PATH = '/.netlify/functions/validate-celebrity';
 const CHECKPOINTS_FUNCTION_PATH = '/.netlify/functions/checkpoints';
+const DRAFT_FUNCTION_PATH = '/.netlify/functions/draft';
 
 const fetchCelebrityValidation = async (
   celebrityName: string
@@ -127,6 +128,76 @@ const fetchCelebrityValidation = async (
   } catch (err) {
     console.error('Error calling validation function', err);
     return null;
+  }
+};
+
+const fetchDraftStateFromServer = async (): Promise<DraftState | null> => {
+  try {
+    const response = await fetch(DRAFT_FUNCTION_PATH, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.status === 404) {
+      return null;
+    }
+
+    if (!response.ok) {
+      console.error('Draft state request failed', response.status, await response.text());
+      return null;
+    }
+
+    const data = (await response.json()) as { success?: boolean; state?: DraftState };
+    if (!data.success || !data.state) {
+      return null;
+    }
+
+    return data.state;
+  } catch (err) {
+    console.error('Error fetching draft state', err);
+    return null;
+  }
+};
+
+const postDraftAction = async (
+  body: Record<string, unknown>
+): Promise<{ state: DraftState | null; error: string | null }> => {
+  try {
+    const response = await fetch(DRAFT_FUNCTION_PATH, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error('Draft action request failed', response.status, text || 'Unknown error');
+      return { state: null, error: 'Draft action failed. Please try again.' };
+    }
+
+    const data = (await response.json()) as {
+      success?: boolean;
+      state?: DraftState;
+      error?: string;
+    };
+
+    if (!data.success || !data.state) {
+      const errorMessage = data.error || 'Draft action failed.';
+      console.error('Draft action error', errorMessage);
+      return { state: null, error: errorMessage };
+    }
+
+    return { state: data.state, error: null };
+  } catch (err) {
+    console.error('Error calling draft action function', err);
+    return {
+      state: null,
+      error: 'Draft action failed. Please check your connection and try again.'
+    };
   }
 };
 
@@ -180,7 +251,6 @@ export const DraftProvider: React.FC<{
   const [status, setStatus] = useState<DraftStatus>('not-started');
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [hasHydratedFromHistory, setHasHydratedFromHistory] = useState(false);
   const [history, setHistory] = useState<DraftState[]>([]);
   const [checkpoints, setCheckpoints] = useState<DraftCheckpointSummary[]>([]);
 
@@ -235,6 +305,25 @@ export const DraftProvider: React.FC<{
     };
   }, [client]);
 
+  // Initial load of canonical draft state from the Netlify blob-backed function.
+  useEffect(() => {
+    let cancelled = false;
+
+    const load = async () => {
+      const remote = await fetchDraftStateFromServer();
+      if (!cancelled && remote) {
+        setState(remote);
+        setStatus(remote.status);
+      }
+    };
+
+    void load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   // Load existing persistent checkpoints when an admin connects.
   useEffect(() => {
     if (!isAdmin) return;
@@ -271,418 +360,39 @@ export const DraftProvider: React.FC<{
     };
   }, [isAdmin]);
 
+  // Whenever any client broadcasts a small "state:updated" event over Ably,
+  // refresh the draft state from the Netlify-backed store.
   useEffect(() => {
-    if (!channel || !isConnected || hasHydratedFromHistory) return;
+    if (!channel) return;
 
-    try {
-      channel.history({ limit: 50 }, (err, result) => {
-        if (err || !result) {
-          setHasHydratedFromHistory(true);
-          return;
-        }
+    let cancelled = false;
 
-        const items = result.items ?? [];
-        let latestState: DraftState | null = null;
+    const syncFromServer = async () => {
+      const latest = await fetchDraftStateFromServer();
+      if (!latest || cancelled) return;
 
-        for (let i = items.length - 1; i >= 0; i -= 1) {
-          const message = items[i] as { data?: unknown };
-          const data = message.data as WireMessage | undefined;
-          if (data && data.type === 'state:replace') {
-            latestState = data.payload;
-            break;
-          }
-        }
-
-        if (latestState) {
-          setState(latestState);
-          setStatus(latestState.status);
-        }
-
-        setHasHydratedFromHistory(true);
-      });
-    } catch {
-      setHasHydratedFromHistory(true);
-    }
-  }, [channel, isConnected, hasHydratedFromHistory]);
-
-  useEffect(() => {
-    if (!channel || !user) return;
-
-    const pushHistory = (prevState: DraftState | null) => {
-      if (!prevState) return;
-      setHistory((prev) => {
-        const next = [...prev, prevState];
-        // Cap history to the last 20 states to avoid unbounded growth.
-        if (next.length > 20) {
-          next.shift();
-        }
-        return next;
-      });
-    };
-
-    const onMessage = (msg: WireMessage) => {
-      if (msg.type === 'state:replace') {
-        // Always prefer the most recent state by `updatedAt` to avoid
-        // older snapshots overwriting newer validation results.
-        setState((prev) => {
-          // If we don't have any state yet, always accept the incoming one.
-          if (!prev) {
-            setStatus(msg.payload.status);
-            return msg.payload;
-          }
-
-          const prevTime = Date.parse(prev.updatedAt);
-          const nextTime = Date.parse(msg.payload.updatedAt);
-
-          if (
-            Number.isFinite(prevTime) &&
-            Number.isFinite(nextTime) &&
-            nextTime <= prevTime
-          ) {
-            // Ignore stale (or equal) states that would clobber fresher data,
-            // such as recently returned validation results.
-            return prev;
-          }
-
-          setStatus(msg.payload.status);
-          return msg.payload;
-        });
-      } else if (msg.type === 'state:request') {
-        if (!isAdmin || !state) return;
-        const outgoing: WireMessage = {
-          type: 'state:replace',
-          payload: state
-        };
-        channel.publish('state', outgoing);
-      } else if (msg.type === 'action:pick') {
-        if (!isAdmin || !state) return;
-
-        const { drafterId, drafterName, celebrityName } = msg.payload;
-
-        // Map incoming drafter identity to the configured drafter seat.
-        const drafterSeat =
-          state.drafters.find((d) => d.id === drafterId) ??
-          state.drafters.find((d) => d.name.toLowerCase() === drafterName.toLowerCase());
-
-        if (!drafterSeat) {
-          return;
-        }
-
-        const current = getCurrentDrafter(state);
-        if (!current || current.id !== drafterSeat.id) {
-          return;
-        }
-
-        const alreadyPicked = state.picks.some(
-          (p) => p.celebrityName.toLowerCase() === celebrityName.toLowerCase()
-        );
-        if (alreadyPicked) return;
-
-        let celeb = state.celebrities.find(
-          (c) => c.name.toLowerCase() === celebrityName.toLowerCase()
-        );
-
-        let celebritiesWithCustom = state.celebrities;
-        if (!celeb) {
-          // Allow custom celebrities that were not part of the original pool.
-          celeb = {
-            id: `c-${state.celebrities.length}`,
-            name: celebrityName
-          };
-          celebritiesWithCustom = [...state.celebrities, celeb];
-        }
-
-        const nextIndex = state.currentPickIndex + 1;
-        const totalSlots = state.config.totalRounds * state.drafters.length;
-        const complete = nextIndex >= totalSlots;
-        const perRound = state.drafters.length;
-        const nextRound = Math.floor(nextIndex / perRound) + 1;
-
-        const now = new Date().toISOString();
-        pushHistory(state);
-        const newState: DraftState = {
-          ...state,
-          picks: [
-            ...state.picks,
-            {
-              id: `p-${state.picks.length + 1}`,
-              overallNumber: state.picks.length + 1,
-              round: state.currentRound,
-              drafterId: drafterSeat.id,
-              drafterName: drafterSeat.name,
-              celebrityName,
-              createdAt: now
-            }
-          ],
-          celebrities: celebritiesWithCustom.map((c) =>
-            c.id === celeb.id ? { ...c, draftedById: drafterSeat.id } : c
-          ),
-          currentPickIndex: nextIndex,
-          currentRound: complete ? state.currentRound : nextRound,
-          status: complete ? 'complete' : 'in-progress',
-          updatedAt: now
-        };
-
-        setState(newState);
-        setStatus(newState.status);
-
-        const outgoing: WireMessage = {
-          type: 'state:replace',
-          payload: newState
-        };
-        channel.publish('state', outgoing);
-
-        // Fire-and-forget validation of the drafted celebrity.
-        void (async () => {
-          const validation = await fetchCelebrityValidation(celebrityName);
-          if (!validation) return;
-
-          setState((prev) => {
-            if (!prev) return prev;
-
-            const target = prev.celebrities.find(
-              (c) => c.name.toLowerCase() === celebrityName.toLowerCase()
-            );
-            if (!target) return prev;
-
-            const updatedCelebrities = prev.celebrities.map((c) =>
-              c.id === target.id
-                ? {
-                    ...c,
-                    fullName: validation.fullName || c.fullName || c.name,
-                    dateOfBirth: validation.dateOfBirth || c.dateOfBirth,
-                    wikipediaUrl:
-                      validation.wikipediaUrl !== undefined
-                        ? validation.wikipediaUrl
-                        : c.wikipediaUrl ?? null,
-                    hasWikipediaPage:
-                      validation.hasWikipediaPage !== undefined
-                        ? validation.hasWikipediaPage
-                        : c.hasWikipediaPage,
-                    isValidated: validation.isValid,
-                    validationAttempted: true,
-                    isDeceased:
-                      typeof validation.isDeceased === 'boolean'
-                        ? validation.isDeceased
-                        : c.isDeceased,
-                    validationNotes: validation.notes ?? c.validationNotes ?? null
-                  }
-                : c
-            );
-
-            const updatedAt = new Date().toISOString();
-            const updatedState: DraftState = {
-              ...prev,
-              celebrities: updatedCelebrities,
-              updatedAt
-            };
-
-            const validationBroadcast: WireMessage = {
-              type: 'state:replace',
-              payload: updatedState
-            };
-            channel.publish('state', validationBroadcast);
-
-            return updatedState;
-          });
-        })();
-      } else if (msg.type === 'action:edit-pick') {
-        if (!isAdmin || !state) return;
-
-        const { pickId, newCelebrityName } = msg.payload;
-        const trimmedName = newCelebrityName.trim();
-        if (!trimmedName) return;
-
-        const pickIndex = state.picks.findIndex((p) => p.id === pickId);
-        if (pickIndex === -1) return;
-
-        const existingPick = state.picks[pickIndex];
-        const oldName = existingPick.celebrityName;
-
-        if (oldName.toLowerCase() === trimmedName.toLowerCase()) {
-          return;
-        }
-
-        const duplicate = state.picks.some(
-          (p, idx) =>
-            idx !== pickIndex &&
-            p.celebrityName.toLowerCase() === trimmedName.toLowerCase()
-        );
-        if (duplicate) return;
-
-        let celeb = state.celebrities.find(
-          (c) => c.name.toLowerCase() === trimmedName.toLowerCase()
-        );
-        let celebritiesWithCustom = state.celebrities;
-        if (!celeb) {
-          celeb = {
-            id: `c-${state.celebrities.length}`,
-            name: trimmedName
-          };
-          celebritiesWithCustom = [...state.celebrities, celeb];
-        }
-
-        const updatedPicks = state.picks.map((p, idx) =>
-          idx === pickIndex ? { ...p, celebrityName: trimmedName } : p
-        );
-
-        const otherStillUseOld = updatedPicks.some(
-          (p) => p.celebrityName.toLowerCase() === oldName.toLowerCase()
-        );
-
-        const updatedCelebritiesBase = celebritiesWithCustom.map((c) => {
-          if (c.name.toLowerCase() === oldName.toLowerCase() && !otherStillUseOld) {
-            return { ...c, draftedById: undefined };
-          }
-          if (c.id === celeb.id) {
-            return { ...c, draftedById: existingPick.drafterId };
-          }
-          return c;
-        });
-
-        const now = new Date().toISOString();
-        pushHistory(state);
-        const newState: DraftState = {
-          ...state,
-          picks: updatedPicks,
-          celebrities: updatedCelebritiesBase,
-          updatedAt: now
-        };
-
-        setState(newState);
-        setStatus(newState.status);
-
-        const outgoing: WireMessage = {
-          type: 'state:replace',
-          payload: newState
-        };
-        channel.publish('state', outgoing);
-
-        // Re-run validation for the new celebrity name.
-        void (async () => {
-          const validation = await fetchCelebrityValidation(trimmedName);
-          if (!validation) return;
-
-          setState((prev) => {
-            if (!prev) return prev;
-
-            const target = prev.celebrities.find(
-              (c) => c.name.toLowerCase() === trimmedName.toLowerCase()
-            );
-            if (!target) return prev;
-
-            const updatedCelebrities = prev.celebrities.map((c) =>
-              c.id === target.id
-                ? {
-                    ...c,
-                    fullName: validation.fullName || c.fullName || c.name,
-                    dateOfBirth: validation.dateOfBirth || c.dateOfBirth,
-                    wikipediaUrl:
-                      validation.wikipediaUrl !== undefined
-                        ? validation.wikipediaUrl
-                        : c.wikipediaUrl ?? null,
-                    hasWikipediaPage:
-                      validation.hasWikipediaPage !== undefined
-                        ? validation.hasWikipediaPage
-                        : c.hasWikipediaPage,
-                    isValidated: validation.isValid,
-                    validationAttempted: true,
-                    isDeceased:
-                      typeof validation.isDeceased === 'boolean'
-                        ? validation.isDeceased
-                        : c.isDeceased,
-                    validationNotes: validation.notes ?? c.validationNotes ?? null
-                  }
-                : c
-            );
-
-            const updatedAt = new Date().toISOString();
-            const updatedState: DraftState = {
-              ...prev,
-              celebrities: updatedCelebrities,
-              updatedAt
-            };
-
-            const validationBroadcast: WireMessage = {
-              type: 'state:replace',
-              payload: updatedState
-            };
-            channel.publish('state', validationBroadcast);
-
-            return updatedState;
-          });
-        })();
-      } else if (msg.type === 'action:reset') {
-        if (!isAdmin || !state || !user) return;
-        const now = new Date().toISOString();
-        pushHistory(state);
-        const newState: DraftState = {
-          ...state,
-          picks: [],
-          celebrities: state.celebrities.map((c) => ({ ...c, draftedById: undefined })),
-          currentPickIndex: 0,
-          currentRound: 1,
-          status: 'not-started',
-          updatedAt: now
-        };
-        setState(newState);
-        setStatus(newState.status);
-        const outgoing: WireMessage = { type: 'state:replace', payload: newState };
-        channel.publish('state', outgoing);
-      } else if (msg.type === 'action:undo') {
-        if (!isAdmin || !state) return;
-        if (!state.picks.length) return;
-
-        const last = state.picks[state.picks.length - 1];
-        const remaining = state.picks.slice(0, -1);
-        const now = new Date().toISOString();
-
-        pushHistory(state);
-        const newState: DraftState = {
-          ...state,
-          picks: remaining,
-          celebrities: state.celebrities.map((c) =>
-            c.draftedById === last.drafterId && c.name === last.celebrityName
-              ? { ...c, draftedById: undefined }
-              : c
-          ),
-          currentPickIndex: state.currentPickIndex - 1,
-          currentRound: last.round,
-          status: remaining.length ? 'in-progress' : 'not-started',
-          updatedAt: now
-        };
-
-        setState(newState);
-        setStatus(newState.status);
-
-        const outgoing: WireMessage = { type: 'state:replace', payload: newState };
-        channel.publish('state', outgoing);
-      }
+      setState(latest);
+      setStatus(latest.status);
     };
 
     const messageListener = (msg: { data: unknown }) => {
       try {
         const data = msg.data as WireMessage;
-        onMessage(data);
+        if (data && data.type === 'state:updated') {
+          void syncFromServer();
+        }
       } catch {
         // ignore malformed messages
       }
     };
 
     channel.subscribe('state', messageListener);
-    channel.subscribe('action', messageListener);
-
-    const request: WireMessage = {
-      type: 'state:request',
-      payload: { requesterId: user.id }
-    };
-    channel.publish('state', request);
 
     return () => {
+      cancelled = true;
       channel.unsubscribe('state', messageListener);
-      channel.unsubscribe('action', messageListener);
     };
-  }, [channel, user, isAdmin, state]);
+  }, [channel]);
 
   const saveCheckpoint = async (name: string): Promise<void> => {
     if (!state) {
@@ -757,14 +467,23 @@ export const DraftProvider: React.FC<{
 
       const restored = data.checkpoint.state;
 
+      const { state: serverState, error: serverError } = await postDraftAction({
+        action: 'replace',
+        state: restored
+      });
+
+      if (serverError || !serverState) {
+        throw new Error(serverError || 'Failed to apply checkpoint on server.');
+      }
+
       // Drop any local in-memory history so we fully "reset" to this checkpoint.
       setHistory([]);
-      setState(restored);
-      setStatus(restored.status);
+      setState(serverState);
+      setStatus(serverState.status);
 
       const outgoing: WireMessage = {
-        type: 'state:replace',
-        payload: restored
+        type: 'state:updated',
+        payload: { updatedAt: serverState.updatedAt }
       };
       channel.publish('state', outgoing);
     } catch (err) {
@@ -789,15 +508,27 @@ export const DraftProvider: React.FC<{
       });
     }
 
-    const initial = createInitialState(config.totalRounds, config.celebrityList);
-    setState(initial);
-    setStatus(initial.status);
+    void (async () => {
+      const { state: serverState, error: serverError } = await postDraftAction({
+        action: 'init',
+        totalRounds: config.totalRounds,
+        celebrityList: config.celebrityList
+      });
 
-    const outgoing: WireMessage = {
-      type: 'state:replace',
-      payload: initial
-    };
-    channel.publish('state', outgoing);
+      if (serverError || !serverState) {
+        setError(serverError || 'Failed to initialize draft on server.');
+        return;
+      }
+
+      setState(serverState);
+      setStatus(serverState.status);
+
+      const outgoing: WireMessage = {
+        type: 'state:updated',
+        payload: { updatedAt: serverState.updatedAt }
+      };
+      channel.publish('state', outgoing);
+    })();
   };
 
   const sendPick = (drafterId: string, celebrityName: string) => {
@@ -807,15 +538,54 @@ export const DraftProvider: React.FC<{
     const seat = state.drafters.find((d) => d.id === drafterId);
     if (!seat) return;
 
-    const msg: WireMessage = {
-      type: 'action:pick',
-      payload: {
+    const trimmedName = celebrityName.trim();
+    if (!trimmedName) return;
+
+    void (async () => {
+      const { state: nextState, error: actionError } = await postDraftAction({
+        action: 'pick',
         drafterId: seat.id,
         drafterName: seat.name,
-        celebrityName
+        celebrityName: trimmedName
+      });
+
+      if (actionError || !nextState) {
+        setError(actionError || 'Failed to apply pick on server.');
+        return;
       }
-    };
-    channel.publish('action', msg);
+
+      setState(nextState);
+      setStatus(nextState.status);
+
+      const outgoing: WireMessage = {
+        type: 'state:updated',
+        payload: { updatedAt: nextState.updatedAt }
+      };
+      channel.publish('state', outgoing);
+
+      // Fire-and-forget validation of the drafted celebrity, persisted on the server.
+      void (async () => {
+        const validation = await fetchCelebrityValidation(trimmedName);
+        if (!validation) return;
+
+        const { state: validatedState } = await postDraftAction({
+          action: 'applyValidation',
+          celebrityName: trimmedName,
+          validation
+        });
+
+        if (!validatedState) return;
+
+        setState(validatedState);
+        setStatus(validatedState.status);
+
+        const validationBroadcast: WireMessage = {
+          type: 'state:updated',
+          payload: { updatedAt: validatedState.updatedAt }
+        };
+        channel.publish('state', validationBroadcast);
+      })();
+    })();
   };
 
   const editPick = (pickId: string, newCelebrityName: string) => {
@@ -825,34 +595,116 @@ export const DraftProvider: React.FC<{
     const trimmedName = newCelebrityName.trim();
     if (!trimmedName) return;
 
-    const msg: WireMessage = {
-      type: 'action:edit-pick',
-      payload: {
+    void (async () => {
+      const { state: nextState, error: actionError } = await postDraftAction({
+        action: 'editPick',
         pickId,
-        newCelebrityName: trimmedName,
-        requestedById: user?.id ?? 'unknown',
-        requestedByName: user?.name ?? 'unknown'
+        newCelebrityName: trimmedName
+      });
+
+      if (actionError || !nextState) {
+        setError(actionError || 'Failed to edit pick on server.');
+        return;
       }
-    };
-    channel.publish('action', msg);
+
+      setState(nextState);
+      setStatus(nextState.status);
+
+      const outgoing: WireMessage = {
+        type: 'state:updated',
+        payload: { updatedAt: nextState.updatedAt }
+      };
+      channel.publish('state', outgoing);
+
+      // Re-run validation for the new celebrity name, persisted on the server.
+      const validation = await fetchCelebrityValidation(trimmedName);
+      if (!validation) return;
+
+      const { state: validatedState } = await postDraftAction({
+        action: 'applyValidation',
+        celebrityName: trimmedName,
+        validation
+      });
+
+      if (!validatedState) return;
+
+      setState(validatedState);
+      setStatus(validatedState.status);
+
+      const validationBroadcast: WireMessage = {
+        type: 'state:updated',
+        payload: { updatedAt: validatedState.updatedAt }
+      };
+      channel.publish('state', validationBroadcast);
+    })();
   };
 
   const resetDraft = () => {
     if (!user || !channel || !isAdmin) return;
-    const msg: WireMessage = {
-      type: 'action:reset',
-      payload: { requestedById: user.id, requestedByName: user.name }
-    };
-    channel.publish('action', msg);
+
+    void (async () => {
+      if (state) {
+        setHistory((prev) => {
+          const next = [...prev, state];
+          if (next.length > 20) next.shift();
+          return next;
+        });
+      }
+
+      const { state: nextState, error: actionError } = await postDraftAction({
+        action: 'reset',
+        requestedById: user.id,
+        requestedByName: user.name
+      });
+
+      if (actionError || !nextState) {
+        setError(actionError || 'Failed to reset draft on server.');
+        return;
+      }
+
+      setState(nextState);
+      setStatus(nextState.status);
+
+      const outgoing: WireMessage = {
+        type: 'state:updated',
+        payload: { updatedAt: nextState.updatedAt }
+      };
+      channel.publish('state', outgoing);
+    })();
   };
 
   const undoLastPick = () => {
     if (!user || !channel || !isAdmin) return;
-    const msg: WireMessage = {
-      type: 'action:undo',
-      payload: { requestedById: user.id, requestedByName: user.name }
-    };
-    channel.publish('action', msg);
+
+    void (async () => {
+      if (state) {
+        setHistory((prev) => {
+          const next = [...prev, state];
+          if (next.length > 20) next.shift();
+          return next;
+        });
+      }
+
+      const { state: nextState, error: actionError } = await postDraftAction({
+        action: 'undo',
+        requestedById: user.id,
+        requestedByName: user.name
+      });
+
+      if (actionError || !nextState) {
+        setError(actionError || 'Failed to undo last pick on server.');
+        return;
+      }
+
+      setState(nextState);
+      setStatus(nextState.status);
+
+      const outgoing: WireMessage = {
+        type: 'state:updated',
+        payload: { updatedAt: nextState.updatedAt }
+      };
+      channel.publish('state', outgoing);
+    })();
   };
 
   const restorePreviousState = () => {
@@ -869,14 +721,26 @@ export const DraftProvider: React.FC<{
         return prev;
       }
 
-      setState(restored);
-      setStatus(restored.status);
+      void (async () => {
+        const { state: serverState, error: serverError } = await postDraftAction({
+          action: 'replace',
+          state: restored
+        });
 
-      const outgoing: WireMessage = {
-        type: 'state:replace',
-        payload: restored
-      };
-      channel.publish('state', outgoing);
+        if (serverError || !serverState) {
+          setError(serverError || 'Failed to restore previous board on server.');
+          return;
+        }
+
+        setState(serverState);
+        setStatus(serverState.status);
+
+        const outgoing: WireMessage = {
+          type: 'state:updated',
+          payload: { updatedAt: serverState.updatedAt }
+        };
+        channel.publish('state', outgoing);
+      })();
 
       return next;
     });

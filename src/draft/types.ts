@@ -76,34 +76,9 @@ export interface LocalUser {
   isAdmin: boolean;
 }
 
-export type WireMessage =
-  | {
-      type: 'state:replace';
-      payload: DraftState;
-    }
-  | {
-      type: 'state:request';
-      payload: { requesterId: string };
-    }
-  | {
-      type: 'action:pick';
-      payload: { drafterId: string; drafterName: string; celebrityName: string };
-    }
-  | {
-      type: 'action:edit-pick';
-      payload: { pickId: string; newCelebrityName: string; requestedById: string; requestedByName: string };
-    }
-  | {
-      type: 'action:reset';
-      payload: { requestedById: string; requestedByName: string };
-    }
-  | {
-      type: 'action:undo';
-      payload: { requestedById: string; requestedByName: string };
-    }
-  | {
-      type: 'heartbeat';
-      payload: { fromId: string; at: string };
-    };
+export type WireMessage = {
+  type: 'state:updated';
+  payload: { updatedAt: string };
+};
 
 
