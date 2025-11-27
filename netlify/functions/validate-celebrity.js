@@ -118,7 +118,7 @@ async function getCelebrityFromOpenAI(name) {
         Authorization: `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-5.1',
         temperature: 0,
         messages: [
           {
