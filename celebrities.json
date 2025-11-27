@@ -2833,5 +2833,670 @@
     "wikipediaUrl": "https://en.wikipedia.org/wiki/Cornel_West",
     "age": 72,
     "notes": "American philosopher, political activist and public intellectual"
+  },
+  {
+    "fullName": "James Francis Cameron",
+    "dateOfBirth": "1954-08-16",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/James_Cameron",
+    "age": 71,
+    "notes": "Canadian filmmaker, director of Titanic and Avatar"
+  },
+  {
+    "fullName": "Kevin Michael Costner",
+    "dateOfBirth": "1955-01-18",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Kevin_Costner",
+    "age": 70,
+    "notes": "American actor and filmmaker"
+  },
+  {
+    "fullName": "Antonio Banderas",
+    "dateOfBirth": "1960-08-10",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Antonio_Banderas",
+    "age": 65,
+    "notes": "Spanish actor (born José Antonio Domínguez Bandera)"
+  },
+  {
+    "fullName": "Matthew Broderick",
+    "dateOfBirth": "1962-03-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Matthew_Broderick",
+    "age": 63,
+    "notes": "American actor known for Ferris Bueller's Day Off"
+  },
+  {
+    "fullName": "Dolph Lundgren",
+    "dateOfBirth": "1957-11-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Dolph_Lundgren",
+    "age": 68,
+    "notes": "Swedish actor and martial artist"
+  },
+  {
+    "fullName": "Simon Le Bon",
+    "dateOfBirth": "1958-10-27",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Simon_Le_Bon",
+    "age": 67,
+    "notes": "English musician, lead singer of Duran Duran"
+  },
+  {
+    "fullName": "Drew Blythe Barrymore",
+    "dateOfBirth": "1975-02-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Drew_Barrymore",
+    "age": 50,
+    "notes": "American actress and producer"
+  },
+  {
+    "fullName": "Penélope Cruz Sánchez",
+    "dateOfBirth": "1974-04-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Pen%C3%A9lope_Cruz",
+    "age": 51,
+    "notes": "Spanish actress"
+  },
+  {
+    "fullName": "John Stephen Goodman",
+    "dateOfBirth": "1952-06-20",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/John_Goodman",
+    "age": 73,
+    "notes": "American actor known for Roseanne and many films"
+  },
+  {
+    "fullName": "Billy Connolly",
+    "dateOfBirth": "1942-11-24",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Billy_Connolly",
+    "age": 83,
+    "notes": "Scottish comedian, actor and musician (born William Connolly)"
+  },
+  {
+    "fullName": "Denzel Hayes Washington Jr.",
+    "dateOfBirth": "1954-12-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Denzel_Washington",
+    "age": 70,
+    "notes": "American actor and filmmaker"
+  },
+  {
+    "fullName": "Javier Bardem",
+    "dateOfBirth": "1969-03-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Javier_Bardem",
+    "age": 56,
+    "notes": "Spanish actor"
+  },
+  {
+    "fullName": "Ang Lee",
+    "dateOfBirth": "1954-10-23",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Ang_Lee",
+    "age": 71,
+    "notes": "Taiwanese film director"
+  },
+  {
+    "fullName": "Aamir Khan",
+    "dateOfBirth": "1965-03-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Aamir_Khan",
+    "age": 60,
+    "notes": "Indian actor, producer and filmmaker"
+  },
+  {
+    "fullName": "Takeshi Kitano",
+    "dateOfBirth": "1947-01-18",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Takeshi_Kitano",
+    "age": 78,
+    "notes": "Japanese filmmaker, comedian and actor (aka Beat Takeshi)"
+  },
+  {
+    "fullName": "Lenny Kravitz",
+    "dateOfBirth": "1964-05-26",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Lenny_Kravitz",
+    "age": 61,
+    "notes": "American singer-songwriter and actor"
+  },
+  {
+    "fullName": "Bong Joon-ho",
+    "dateOfBirth": "1969-09-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Bong_Joon-ho",
+    "age": 56,
+    "notes": "South Korean film director and screenwriter"
+  },
+  {
+    "fullName": "Park Chan-wook",
+    "dateOfBirth": "1963-08-23",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Park_Chan-wook",
+    "age": 62,
+    "notes": "South Korean film director"
+  },
+  {
+    "fullName": "Maggie Cheung",
+    "dateOfBirth": "1964-09-20",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Maggie_Cheung",
+    "age": 61,
+    "notes": "Hong Kong actress"
+  },
+  {
+    "fullName": "Roman Polanski",
+    "dateOfBirth": "1933-08-18",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Roman_Polanski",
+    "age": 92,
+    "notes": "Film director, producer and screenwriter"
+  },
+  {
+    "fullName": "Tenzin Gyatso",
+    "dateOfBirth": "1935-07-06",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Dalai_Lama",
+    "age": 90,
+    "notes": "The 14th Dalai Lama, Tibetan spiritual leader"
+  },
+  {
+    "fullName": "Zubin Mehta",
+    "dateOfBirth": "1936-04-29",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Zubin_Mehta",
+    "age": 89,
+    "notes": "Indian conductor, longtime music director and conductor laureate"
+  },
+  {
+    "fullName": "William Shatner",
+    "dateOfBirth": "1931-03-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/William_Shatner",
+    "age": 94,
+    "notes": "Actor best known for Star Trek role as Captain James T. Kirk"
+  },
+  {
+    "fullName": "Malcolm McDowell",
+    "dateOfBirth": "1943-06-13",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Malcolm_McDowell",
+    "age": 82,
+    "notes": "English actor known for A Clockwork Orange and many film roles"
+  },
+  {
+    "fullName": "Vladimir Vladimirovich Putin",
+    "dateOfBirth": "1952-10-07",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Vladimir_Putin",
+    "age": 73,
+    "notes": "President of Russia and long-serving political leader"
+  },
+  {
+    "fullName": "Bob Geldof",
+    "dateOfBirth": "1951-10-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Bob_Geldof",
+    "age": 74,
+    "notes": "Irish singer-songwriter and activist, organiser of Live Aid"
+  },
+  {
+    "fullName": "Frankie Valli",
+    "dateOfBirth": "1934-05-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Frankie_Valli",
+    "age": 91,
+    "notes": "American singer, lead vocalist of The Four Seasons"
+  },
+  {
+    "fullName": "Art Garfunkel",
+    "dateOfBirth": "1941-11-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Art_Garfunkel",
+    "age": 84,
+    "notes": "Singer-songwriter, half of the duo Simon & Garfunkel"
+  },
+  {
+    "fullName": "Donald Sutherland",
+    "dateOfBirth": "1935-07-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Donald_Sutherland",
+    "age": 90,
+    "notes": "Canadian actor with a long international film career"
+  },
+  {
+    "fullName": "Patti Smith",
+    "dateOfBirth": "1946-12-30",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Patti_Smith",
+    "age": 78,
+    "notes": "American singer-songwriter, poet and influential punk artist"
+  },
+  {
+    "fullName": "Russell Crowe",
+    "dateOfBirth": "1964-04-07",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Russell_Crowe",
+    "age": 61,
+    "notes": "Actor (Gladiator, A Beautiful Mind)"
+  },
+  {
+    "fullName": "Sandra Bullock",
+    "dateOfBirth": "1964-07-26",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Sandra_Bullock",
+    "age": 61,
+    "notes": "Actress (Gravity, The Blind Side)"
+  },
+  {
+    "fullName": "Halle Berry",
+    "dateOfBirth": "1966-08-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Halle_Berry",
+    "age": 59,
+    "notes": "Actress (Monster's Ball, X-Men)"
+  },
+  {
+    "fullName": "Barry Manilow",
+    "dateOfBirth": "1943-06-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Barry_Manilow",
+    "age": 82,
+    "notes": "Singer-songwriter (Mandy, Copacabana)"
+  },
+  {
+    "fullName": "Susan Boyle",
+    "dateOfBirth": "1961-04-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Susan_Boyle",
+    "age": 64,
+    "notes": "Singer (Britain's Got Talent breakthrough)"
+  },
+  {
+    "fullName": "Tom Wilkinson",
+    "dateOfBirth": "1948-02-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Tom_Wilkinson",
+    "age": 77,
+    "notes": "Actor (In the Bedroom, Michael Clayton)"
+  },
+  {
+    "fullName": "Kate Winslet",
+    "dateOfBirth": "1975-10-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Kate_Winslet",
+    "age": 50,
+    "notes": "Actress (Titanic, Eternal Sunshine of the Spotless Mind)"
+  },
+  {
+    "fullName": "Colin Farrell",
+    "dateOfBirth": "1976-05-31",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Colin_Farrell",
+    "age": 49,
+    "notes": "Actor (In Bruges, Phone Booth)"
+  },
+  {
+    "fullName": "Aishwarya Rai",
+    "dateOfBirth": "1973-11-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Aishwarya_Rai",
+    "age": 52,
+    "notes": "Actress and former Miss World (India)"
+  },
+  {
+    "fullName": "Stellan Skarsgård",
+    "dateOfBirth": "1951-06-13",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Stellan_Skarsg%C3%A5rd",
+    "age": 74,
+    "notes": "Actor (Good Will Hunting, Mamma Mia!, Chernobyl)"
+  },
+  {
+    "fullName": "Pete Townshend",
+    "dateOfBirth": "1945-05-19",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Pete_Townshend",
+    "age": 80,
+    "notes": "English musician, guitarist and principal songwriter of The Who"
+  },
+  {
+    "fullName": "Kevin Kline",
+    "dateOfBirth": "1947-10-24",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Kevin_Kline",
+    "age": 78,
+    "notes": "American actor"
+  },
+  {
+    "fullName": "Martha Stewart",
+    "dateOfBirth": "1941-08-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Martha_Stewart",
+    "age": 84,
+    "notes": "American businesswoman, writer and television personality"
+  },
+  {
+    "fullName": "Paul Verhoeven",
+    "dateOfBirth": "1938-07-18",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Paul_Verhoeven",
+    "age": 87,
+    "notes": "Dutch film director and screenwriter"
+  },
+  {
+    "fullName": "Ed Harris",
+    "dateOfBirth": "1950-11-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Ed_Harris",
+    "age": 75,
+    "notes": "American actor and director"
+  },
+  {
+    "fullName": "Brian Cox",
+    "dateOfBirth": "1946-06-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Brian_Cox_(actor)",
+    "age": 79,
+    "notes": "Scottish actor"
+  },
+  {
+    "fullName": "Ken Burns",
+    "dateOfBirth": "1953-07-29",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Ken_Burns",
+    "age": 72,
+    "notes": "American documentary filmmaker"
+  },
+  {
+    "fullName": "Judy Collins",
+    "dateOfBirth": "1939-05-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Judy_Collins",
+    "age": 86,
+    "notes": "American singer and songwriter"
+  },
+  {
+    "fullName": "Debra Winger",
+    "dateOfBirth": "1955-05-16",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Debra_Winger",
+    "age": 70,
+    "notes": "American actress"
+  },
+  {
+    "fullName": "Danny DeVito",
+    "dateOfBirth": "1944-11-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Danny_DeVito",
+    "age": 81,
+    "notes": "American actor, comedian and filmmaker"
+  },
+  {
+    "fullName": "Cristiano Ronaldo",
+    "dateOfBirth": "1985-02-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Cristiano_Ronaldo",
+    "age": 40,
+    "notes": "Portuguese professional footballer, widely regarded as one of the greatest players."
+  },
+  {
+    "fullName": "Lionel Messi",
+    "dateOfBirth": "1987-06-24",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Lionel_Messi",
+    "age": 38,
+    "notes": "Argentinian professional footballer, multiple Ballon d'Or winner."
+  },
+  {
+    "fullName": "Narendra Modi",
+    "dateOfBirth": "1950-09-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Narendra_Modi",
+    "age": 75,
+    "notes": "Prime Minister of India and prominent global political figure."
+  },
+  {
+    "fullName": "Xi Jinping",
+    "dateOfBirth": "1953-06-15",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Xi_Jinping",
+    "age": 72,
+    "notes": "General Secretary of the Chinese Communist Party and President of China."
+  },
+  {
+    "fullName": "Tim Cook",
+    "dateOfBirth": "1960-11-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Tim_Cook",
+    "age": 65,
+    "notes": "CEO of Apple Inc."
+  },
+  {
+    "fullName": "Jeff Bezos",
+    "dateOfBirth": "1964-01-12",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jeff_Bezos",
+    "age": 61,
+    "notes": "Founder of Amazon and prominent entrepreneur."
+  },
+  {
+    "fullName": "Kurt Russell",
+    "dateOfBirth": "1951-03-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Kurt_Russell",
+    "age": 74,
+    "notes": "American actor known for film roles from the 1970s onward."
+  },
+  {
+    "fullName": "Chevy Chase",
+    "dateOfBirth": "1943-10-08",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Chevy_Chase",
+    "age": 82,
+    "notes": "American comedian and actor, original cast member of Saturday Night Live."
+  },
+  {
+    "fullName": "Volodymyr Zelenskyy",
+    "dateOfBirth": "1978-01-25",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Volodymyr_Zelenskyy",
+    "age": 47,
+    "notes": "President of Ukraine and former actor/comedian."
+  },
+  {
+    "fullName": "Rafael Nadal",
+    "dateOfBirth": "1986-06-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Rafael_Nadal",
+    "age": 39,
+    "notes": "Spanish professional tennis player, multiple Grand Slam champion."
+  },
+  {
+    "fullName": "Camilla, Queen Consort",
+    "dateOfBirth": "1947-07-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Camilla,_Queen_Consort",
+    "age": 78,
+    "notes": "Queen consort of the United Kingdom; formerly Camilla Parker Bowles"
+  },
+  {
+    "fullName": "Youn Yuh-jung",
+    "dateOfBirth": "1947-06-19",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Youn_Yuh-jung",
+    "age": 78,
+    "notes": "South Korean actress, Academy Award winner"
+  },
+  {
+    "fullName": "Agnetha Fältskog",
+    "dateOfBirth": "1950-04-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Agnetha_Fältskog",
+    "age": 75,
+    "notes": "Swedish singer, member of ABBA"
+  },
+  {
+    "fullName": "Tony Leung Chiu-wai",
+    "dateOfBirth": "1962-06-27",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Tony_Leung_Chiu-wai",
+    "age": 63,
+    "notes": "Hong Kong actor known for In the Mood for Love and international films"
+  },
+  {
+    "fullName": "Jet Li",
+    "dateOfBirth": "1963-04-26",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jet_Li",
+    "age": 62,
+    "notes": "Chinese martial artist and film star (Li Lianjie)"
+  },
+  {
+    "fullName": "Donnie Yen",
+    "dateOfBirth": "1963-07-27",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Donnie_Yen",
+    "age": 62,
+    "notes": "Hong Kong martial artist and actor, known for Ip Man series"
+  },
+  {
+    "fullName": "Akshay Kumar",
+    "dateOfBirth": "1967-09-09",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Akshay_Kumar",
+    "age": 58,
+    "notes": "Indian film actor and producer in Bollywood"
+  },
+  {
+    "fullName": "Arundhati Roy",
+    "dateOfBirth": "1961-11-24",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Arundhati_Roy",
+    "age": 64,
+    "notes": "Indian author and political activist, Booker Prize winner"
+  },
+  {
+    "fullName": "Sophie Marceau",
+    "dateOfBirth": "1966-11-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Sophie_Marceau",
+    "age": 59,
+    "notes": "French actress and director"
+  },
+  {
+    "fullName": "Kristin Scott Thomas",
+    "dateOfBirth": "1960-05-24",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Kristin_Scott_Thomas",
+    "age": 65,
+    "notes": "British-French actress known for The English Patient"
+  },
+  {
+    "fullName": "Neil deGrasse Tyson",
+    "dateOfBirth": "1958-10-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Neil_deGrasse_Tyson",
+    "age": 67,
+    "notes": "American astrophysicist and science communicator"
+  },
+  {
+    "fullName": "Condoleezza Rice",
+    "dateOfBirth": "1954-11-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Condoleezza_Rice",
+    "age": 71,
+    "notes": "American political scientist and former U.S. Secretary of State"
+  },
+  {
+    "fullName": "RuPaul Andre Charles",
+    "dateOfBirth": "1960-11-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/RuPaul",
+    "age": 65,
+    "notes": "American drag performer, television personality and singer (known as RuPaul)"
+  },
+  {
+    "fullName": "Shelton Jackson \"Spike\" Lee",
+    "dateOfBirth": "1957-03-20",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Spike_Lee",
+    "age": 68,
+    "notes": "American film director, producer and writer (known as Spike Lee)"
+  },
+  {
+    "fullName": "Itzhak Perlman",
+    "dateOfBirth": "1945-08-31",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Itzhak_Perlman",
+    "age": 80,
+    "notes": "Israeli-American violinist and conductor"
+  },
+  {
+    "fullName": "Seiji Ozawa",
+    "dateOfBirth": "1935-09-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Seiji_Ozawa",
+    "age": 90,
+    "notes": "Japanese conductor"
+  },
+  {
+    "fullName": "Richard Anthony \"Cheech\" Marin",
+    "dateOfBirth": "1946-07-13",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Cheech_Marin",
+    "age": 79,
+    "notes": "American actor and comedian (known as Cheech Marin)"
+  },
+  {
+    "fullName": "Yvette Marie Stevens",
+    "dateOfBirth": "1953-03-23",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Chaka_Khan",
+    "age": 72,
+    "notes": "American singer and songwriter (known as Chaka Khan)"
+  },
+  {
+    "fullName": "David Hockney",
+    "dateOfBirth": "1937-07-09",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/David_Hockney",
+    "age": 88,
+    "notes": "British painter and artist"
+  },
+  {
+    "fullName": "Yayoi Kusama",
+    "dateOfBirth": "1929-03-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Yayoi_Kusama",
+    "age": 96,
+    "notes": "Japanese contemporary artist"
+  },
+  {
+    "fullName": "Amartya Sen",
+    "dateOfBirth": "1933-11-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Amartya_Sen",
+    "age": 92,
+    "notes": "Indian economist and Nobel laureate"
+  },
+  {
+    "fullName": "Muhammad Yunus",
+    "dateOfBirth": "1940-06-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Muhammad_Yunus",
+    "age": 85,
+    "notes": "Bangladeshi social entrepreneur and Nobel laureate"
+  },
+  {
+    "fullName": "Garry Kasparov",
+    "dateOfBirth": "1963-04-13",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Garry_Kasparov",
+    "age": 62,
+    "notes": "Russian chess grandmaster and political activist"
+  },
+  {
+    "fullName": "Marina Abramović",
+    "dateOfBirth": "1946-11-30",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Marina_Abramovi%C4%87",
+    "age": 78,
+    "notes": "Serbian performance artist"
+  },
+  {
+    "fullName": "Jeff Koons",
+    "dateOfBirth": "1955-01-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jeff_Koons",
+    "age": 70,
+    "notes": "American contemporary artist"
+  },
+  {
+    "fullName": "Damien Hirst",
+    "dateOfBirth": "1965-06-07",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Damien_Hirst",
+    "age": 60,
+    "notes": "English artist associated with the Young British Artists"
+  },
+  {
+    "fullName": "Helena Bonham Carter",
+    "dateOfBirth": "1966-05-26",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Helena_Bonham_Carter",
+    "age": 59,
+    "notes": "English actress"
+  },
+  {
+    "fullName": "Viggo Mortensen",
+    "dateOfBirth": "1958-10-20",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Viggo_Mortensen",
+    "age": 67,
+    "notes": "American actor, author, and painter"
+  },
+  {
+    "fullName": "Carly Simon",
+    "dateOfBirth": "1945-06-25",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Carly_Simon",
+    "age": 80,
+    "notes": "American singer-songwriter"
+  },
+  {
+    "fullName": "Mia Farrow",
+    "dateOfBirth": "1945-02-09",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Mia_Farrow",
+    "age": 80,
+    "notes": "American actress and activist"
+  },
+  {
+    "fullName": "Laurie Anderson",
+    "dateOfBirth": "1947-06-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Laurie_Anderson",
+    "age": 78,
+    "notes": "American performance artist and musician"
+  },
+  {
+    "fullName": "Iggy Pop",
+    "dateOfBirth": "1947-04-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Iggy_Pop",
+    "age": 78,
+    "notes": "American singer-songwriter, 'Godfather of Punk'"
+  },
+  {
+    "fullName": "Alice Cooper",
+    "dateOfBirth": "1948-02-04",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Alice_Cooper",
+    "age": 77,
+    "notes": "American rock singer (born Vincent Damon Furnier)"
+  },
+  {
+    "fullName": "Elaine Paige",
+    "dateOfBirth": "1948-03-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Elaine_Paige",
+    "age": 77,
+    "notes": "English singer and musical theatre actress"
+  },
+  {
+    "fullName": "Emmylou Harris",
+    "dateOfBirth": "1947-04-02",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Emmylou_Harris",
+    "age": 78,
+    "notes": "American singer-songwriter"
   }
 ]

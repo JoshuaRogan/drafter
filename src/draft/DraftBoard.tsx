@@ -34,6 +34,49 @@ const AUTO_CELEBRITY_POOL: AutoCelebrity[] = (autoCelebritiesRaw as AutoCelebrit
   (c) => !!c && typeof c.fullName === 'string' && c.fullName.trim().length > 0
 );
 
+const AUTO_CELEBRITY_BY_NAME = new Map<string, AutoCelebrity>();
+for (const celeb of AUTO_CELEBRITY_POOL) {
+  const key = celeb.fullName.trim();
+  if (!key) continue;
+  if (!AUTO_CELEBRITY_BY_NAME.has(key)) {
+    AUTO_CELEBRITY_BY_NAME.set(key, celeb);
+  }
+}
+
+const getAgeFromDateOfBirth = (dob?: string | null): number | null => {
+  if (!dob) return null;
+  const timestamp = Date.parse(dob);
+  if (!Number.isFinite(timestamp)) return null;
+
+  const birthDate = new Date(timestamp);
+  const now = new Date();
+
+  let age = now.getFullYear() - birthDate.getFullYear();
+  const monthDiff = now.getMonth() - birthDate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < birthDate.getDate())) {
+    age -= 1;
+  }
+
+  if (!Number.isFinite(age) || age < 0 || age > 150) return null;
+  return age;
+};
+
+const getCelebrityAge = (celebrity: Celebrity): number | null => {
+  const fromDob = getAgeFromDateOfBirth(celebrity.dateOfBirth);
+  if (fromDob != null) return fromDob;
+
+  const lookupName = (celebrity.fullName || celebrity.name || '').trim();
+  if (!lookupName) return null;
+
+  const autoCeleb = AUTO_CELEBRITY_BY_NAME.get(lookupName);
+  if (autoCeleb && typeof autoCeleb.age === 'number' && Number.isFinite(autoCeleb.age)) {
+    const rounded = Math.round(autoCeleb.age);
+    if (rounded > 0 && rounded <= 150) return rounded;
+  }
+
+  return null;
+};
+
 interface ProxyPickRequest {
   drafterId: string;
   drafterName: string;
@@ -335,6 +378,29 @@ export const DraftBoard: React.FC = () => {
     }
     return counts;
   }, [state]);
+  const ageStatsByDrafter = useMemo(() => {
+    const stats = new Map<string, { count: number; sum: number; min: number; max: number }>();
+    if (!state) return stats;
+
+    for (const pick of state.picks) {
+      const celeb = celebritiesByName.get(pick.celebrityName);
+      if (!celeb) continue;
+      const age = getCelebrityAge(celeb);
+      if (age == null) continue;
+
+      const entry = stats.get(pick.drafterId);
+      if (!entry) {
+        stats.set(pick.drafterId, { count: 1, sum: age, min: age, max: age });
+      } else {
+        entry.count += 1;
+        entry.sum += age;
+        if (age < entry.min) entry.min = age;
+        if (age > entry.max) entry.max = age;
+      }
+    }
+
+    return stats;
+  }, [state, celebritiesByName]);
   const activeDrafter = useMemo(() => {
     if (!state || !state.drafters.length) return null;
     if (activeDrafterId) {
@@ -403,6 +469,22 @@ export const DraftBoard: React.FC = () => {
       window.clearTimeout(timeoutId);
     };
   }, [state?.picks.length, state]);
+
+  // Prevent background scrolling while any modal is open so the
+  // modal/backdrop remain visually fixed at the center of the viewport.
+  useEffect(() => {
+    const hasModalOpen = !!selectedPick || !!proxyPickRequest;
+    if (!hasModalOpen) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [selectedPick, proxyPickRequest]);
 
   const handleSaveCheckpoint = async () => {
     if (!state) {
@@ -650,7 +732,7 @@ export const DraftBoard: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid mt-12">
+          <div className="grid grid--picks mt-12">
             <div className="grid-header">
               <div>#</div>
               <div>Round</div>
@@ -808,18 +890,23 @@ export const DraftBoard: React.FC = () => {
             <div className="panel-subtitle" style={{ marginBottom: 6 }}>
               Drafters
             </div>
-            <div className="grid">
+            <div className="grid grid--drafters">
               <div className="grid-header">
                 <div>#</div>
                 <div>Drafter</div>
                 <div>Tonight</div>
-                <div />
+                <div>Avg age</div>
+                <div>Min age</div>
+                <div>Max age</div>
               </div>
               {(state?.drafters ?? getPreconfiguredDrafters()).map((d) => {
                 const isMe = user && d.name.toLowerCase() === user.name.toLowerCase();
                 const isCurrent = currentDrafter && d.id === currentDrafter.id;
                 const isActive = activeDrafter && d.id === activeDrafter.id;
                 const picksForDrafter = pickCounts.get(d.id) ?? 0;
+                const ageStats = ageStatsByDrafter.get(d.id);
+                const hasAgeStats = !!ageStats && ageStats.count > 0;
+                const averageAge = hasAgeStats ? ageStats.sum / ageStats.count : null;
 
                 return (
                   <div
@@ -848,7 +935,9 @@ export const DraftBoard: React.FC = () => {
                         {picksForDrafter} pick{picksForDrafter === 1 ? '' : 's'}
                       </span>
                     </div>
-                    <div />
+                    <div>{hasAgeStats && averageAge != null ? averageAge.toFixed(1) : '—'}</div>
+                    <div>{hasAgeStats ? ageStats.min : '—'}</div>
+                    <div>{hasAgeStats ? ageStats.max : '—'}</div>
                   </div>
                 );
               })}
@@ -948,8 +1037,8 @@ export const DraftBoard: React.FC = () => {
                 </div>
 
                 {checkpoints.length > 0 && (
-                  <div className="mt-4">
-                    <div className="grid">
+                  <div className="mt-8">
+                    <div className="grid grid--checkpoints">
                       <div className="grid-header">
                         <div>Name</div>
                         <div>Created</div>
@@ -960,9 +1049,11 @@ export const DraftBoard: React.FC = () => {
                           key={cp.id}
                           className="grid-row"
                         >
-                          <div>{cp.name}</div>
-                          <div>{new Date(cp.createdAt).toLocaleString()}</div>
-                          <div style={{ textAlign: 'right' }}>
+                          <div className="checkpoint-name">{cp.name || 'Untitled checkpoint'}</div>
+                          <div className="checkpoint-created">
+                            {new Date(cp.createdAt).toLocaleString()}
+                          </div>
+                          <div className="checkpoint-actions">
                             <button
                               type="button"
                               className="btn-secondary"

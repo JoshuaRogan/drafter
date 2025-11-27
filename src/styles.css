@@ -326,9 +326,13 @@ button {
 .grid-header,
 .grid-row {
   display: grid;
-  /* # | Round | Drafter | Celebrity (give more space to celebrity name) */
-  grid-template-columns: 32px 120px 0.6fr 1.4fr;
   font-size: 12px;
+}
+
+/* Draft board grid: # | Round | Drafter | Celebrity (give more space to celebrity name) */
+.grid--picks .grid-header,
+.grid--picks .grid-row {
+  grid-template-columns: 32px 120px 0.6fr 1.4fr;
 }
 
 .grid-header {
@@ -359,6 +363,34 @@ button {
 
 .grid-row:last-child > div {
   border-bottom: none;
+}
+
+.grid--drafters .grid-header,
+.grid--drafters .grid-row {
+  /* # | Drafter | Tonight | Avg age | Min age | Max age */
+  grid-template-columns: 32px minmax(0, 1.1fr) minmax(0, 0.9fr) 0.6fr 0.6fr 0.6fr;
+}
+
+/* Checkpoints grid: Name | Created | Actions */
+.grid--checkpoints .grid-header,
+.grid--checkpoints .grid-row {
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.3fr) auto;
+  align-items: center;
+}
+
+.checkpoint-name {
+  font-size: 12px;
+  color: #e5e7eb;
+  word-break: break-word;
+}
+
+.checkpoint-created {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.checkpoint-actions {
+  text-align: right;
 }
 
 .round-grid {
@@ -601,15 +633,18 @@ button {
   position: fixed;
   inset: 0;
   background: rgba(15, 23, 42, 0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 40;
 }
 
 .modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100%;
   max-width: 420px;
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
   background: rgba(15, 23, 42, 0.98);
   border-radius: 16px;
   border: 1px solid rgba(148, 163, 184, 0.4);

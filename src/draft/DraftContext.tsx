@@ -322,8 +322,31 @@ export const DraftProvider: React.FC<{
 
     const onMessage = (msg: WireMessage) => {
       if (msg.type === 'state:replace') {
-        setState(msg.payload);
-        setStatus(msg.payload.status);
+        // Always prefer the most recent state by `updatedAt` to avoid
+        // older snapshots overwriting newer validation results.
+        setState((prev) => {
+          // If we don't have any state yet, always accept the incoming one.
+          if (!prev) {
+            setStatus(msg.payload.status);
+            return msg.payload;
+          }
+
+          const prevTime = Date.parse(prev.updatedAt);
+          const nextTime = Date.parse(msg.payload.updatedAt);
+
+          if (
+            Number.isFinite(prevTime) &&
+            Number.isFinite(nextTime) &&
+            nextTime <= prevTime
+          ) {
+            // Ignore stale (or equal) states that would clobber fresher data,
+            // such as recently returned validation results.
+            return prev;
+          }
+
+          setStatus(msg.payload.status);
+          return msg.payload;
+        });
       } else if (msg.type === 'state:request') {
         if (!isAdmin || !state) return;
         const outgoing: WireMessage = {
