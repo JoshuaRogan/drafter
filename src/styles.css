@@ -705,6 +705,16 @@ button {
   text-align: right;
 }
 
+.modal-value a {
+  color: #bfdbfe;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.modal-value a:hover {
+  color: #e5e7eb;
+}
+
 .modal-input {
   border-radius: 999px;
   border: 1px solid rgba(148, 163, 184, 0.6);
