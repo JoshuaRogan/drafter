@@ -732,215 +732,169 @@ export const DraftBoard: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid--picks mt-12">
-            <div className="grid-header">
-              <div>#</div>
-              <div>Round</div>
-              <div>Drafter</div>
-              <div>Celebrity</div>
-            </div>
-            {state?.picks.map((pick) => (
-              <div
-                key={pick.id}
-                className="grid-row"
-              >
-                <div>{pick.overallNumber}</div>
-                <div>Round {pick.round}</div>
-                <div>
-                  <span className="badge">{pick.drafterName}</span>
-                </div>
-                <div>
-                  {(() => {
-                    const celeb = celebritiesByName.get(pick.celebrityName);
-                    const attempted = !!celeb?.validationAttempted || !!celeb?.isValidated;
-                    const isValidated = !!celeb?.isValidated;
-                    const isDeceased = !!celeb?.isDeceased;
-                    const dob = celeb?.dateOfBirth;
-                    const hasWikipedia = !!celeb?.hasWikipediaPage;
+          <div className="table-scroll">
+            <div className="grid grid--picks mt-12">
+              <div className="grid-header">
+                <div>#</div>
+                <div>Rd</div>
+                <div>Drafter</div>
+                <div>Celebrity</div>
+              </div>
+              {state?.picks.map((pick) => (
+                <div
+                  key={pick.id}
+                  className="grid-row"
+                >
+                  <div>{pick.overallNumber}</div>
+                  <div>{pick.round}</div>
+                  <div>
+                    <span className="badge">{pick.drafterName}</span>
+                  </div>
+                  <div>
+                    {(() => {
+                      const celeb = celebritiesByName.get(pick.celebrityName);
+                      const attempted = !!celeb?.validationAttempted || !!celeb?.isValidated;
+                      const isValidated = !!celeb?.isValidated;
+                      const isDeceased = !!celeb?.isDeceased;
+                      const dob = celeb?.dateOfBirth;
+                      const hasWikipedia = !!celeb?.hasWikipediaPage;
 
-                    const titleParts: string[] = [];
-                    if (isValidated) {
-                      titleParts.push('Validated');
-                    }
-                    if (dob) {
-                      titleParts.push(`DOB: ${dob}`);
-                    }
-                    if (hasWikipedia && celeb?.wikipediaUrl) {
-                      titleParts.push('Wikipedia linked');
-                    }
-                    if (attempted) {
-                      titleParts.push(isDeceased ? 'Reported deceased' : 'Believed alive');
-                    }
+                      const titleParts: string[] = [];
+                      if (isValidated) {
+                        titleParts.push('Validated');
+                      }
+                      if (dob) {
+                        titleParts.push(`DOB: ${dob}`);
+                      }
+                      if (hasWikipedia && celeb?.wikipediaUrl) {
+                        titleParts.push('Wikipedia linked');
+                      }
+                      if (attempted) {
+                        titleParts.push(isDeceased ? 'Reported deceased' : 'Believed alive');
+                      }
 
-                    const title = titleParts.join(' • ');
+                      const title = titleParts.join(' • ');
 
-                    const handleOpenDetails = () => {
-                      if (!celeb) return;
-                      setSelectedPick({ pickId: pick.id, celebrity: celeb });
-                      setEditCelebrityName(pick.celebrityName);
-                    };
+                      const handleOpenDetails = () => {
+                        if (!celeb) return;
+                        setSelectedPick({ pickId: pick.id, celebrity: celeb });
+                        setEditCelebrityName(pick.celebrityName);
+                      };
 
-                    return (
-                      <>
-                        <div className="celebrity-main">
-                          <button
-                            type="button"
-                            onClick={handleOpenDetails}
-                            className="celebrity-name-button"
-                            title="Click to view validation details"
-                          >
-                            {pick.celebrityName}
-                          </button>
-                          {isDeceased && (
-                            <span
-                              className="deceased-indicator"
-                              title="Reported deceased"
-                            >
-                              ☠
-                            </span>
-                          )}
-                          {attempted && (
-                            <span
-                              className={`validation-icon ${isValidated ? 'valid' : 'invalid'}`}
-                              title={
-                                title ||
-                                (isValidated
-                                  ? 'Validated celebrity'
-                                  : 'No clear match found for this name')
-                              }
-                              role="button"
-                              tabIndex={0}
+                      return (
+                        <>
+                          <div className="celebrity-main">
+                            <button
+                              type="button"
                               onClick={handleOpenDetails}
+                              className="celebrity-name-button"
+                              title="Click to view validation details"
                             >
-                              {isValidated ? '✓' : '✕'}
-                            </span>
-                          )}
-                        </div>
-                        {dob && <div className="celebrity-meta">{dob}</div>}
-                      </>
-                    );
-                  })()}
-                </div>
-              </div>
-            ))}
-            {!state?.picks.length && (
-              <div className="grid-row">
-                <div />
-                <div />
-                <div style={{ fontSize: 12, color: '#6b7280', padding: '8px 10px' }}>
-                  No picks yet. Once the leader starts and the first drafter selects a celebrity, the board will fill
-                  in here.
-                </div>
-                <div />
-              </div>
-            )}
-          </div>
-
-          {state && orderedDrafters.length > 0 && (
-            <div className="mt-12">
-              <div className="panel-subtitle" style={{ marginBottom: 6 }}>
-                Picks by round
-              </div>
-              <div className="round-grid">
-                <div className="round-grid-header">
-                  <div>Round</div>
-                  {orderedDrafters.map((d) => (
-                    <div key={d.id}>{d.name}</div>
-                  ))}
-                </div>
-                {Array.from({ length: state.config.totalRounds }, (_, idx) => {
-                  const roundNumber = idx + 1;
-                  return (
-                    <div
-                      key={roundNumber}
-                      className="round-grid-row"
-                    >
-                      <div>Round {roundNumber}</div>
-                      {orderedDrafters.map((d) => {
-                        const key = `${roundNumber}-${d.id}`;
-                        const celebName = picksByRoundAndDrafter.get(key);
-                        return (
-                          <div key={d.id}>
-                            {celebName ? (
-                              <span className="round-grid-cell">{celebName}</span>
-                            ) : (
-                              <span className="round-grid-cell round-grid-cell-empty">—</span>
+                              {pick.celebrityName}
+                            </button>
+                            {isDeceased && (
+                              <span
+                                className="deceased-indicator"
+                                title="Reported deceased"
+                              >
+                                ☠
+                              </span>
+                            )}
+                            {attempted && (
+                              <span
+                                className={`validation-icon ${isValidated ? 'valid' : 'invalid'}`}
+                                title={
+                                  title ||
+                                  (isValidated
+                                    ? 'Validated celebrity'
+                                    : 'No clear match found for this name')
+                                }
+                                role="button"
+                                tabIndex={0}
+                                onClick={handleOpenDetails}
+                              >
+                                {isValidated ? '✓' : '✕'}
+                              </span>
                             )}
                           </div>
-                        );
-                      })}
-                    </div>
-                  );
-                })}
-              </div>
-              <div style={{ marginTop: 8, textAlign: 'right' }}>
-                <button
-                  type="button"
-                  className="btn-secondary"
-                  onClick={handleDownloadCsv}
-                  disabled={!state.picks.length}
-                >
-                  Download CSV
-                </button>
-              </div>
+                          {dob && <div className="celebrity-meta">{dob}</div>}
+                        </>
+                      );
+                    })()}
+                  </div>
+                </div>
+              ))}
+              {!state?.picks.length && (
+                <div className="grid-row">
+                  <div />
+                  <div />
+                  <div style={{ fontSize: 12, color: '#6b7280', padding: '8px 10px' }}>
+                    No picks yet. Once the leader starts and the first drafter selects a celebrity, the board will fill
+                    in here.
+                  </div>
+                  <div />
+                </div>
+              )}
             </div>
-          )}
+          </div>
 
           <div className="mt-12">
             <div className="panel-subtitle" style={{ marginBottom: 6 }}>
               Drafters
             </div>
-            <div className="grid grid--drafters">
-              <div className="grid-header">
-                <div>#</div>
-                <div>Drafter</div>
-                <div>Tonight</div>
-                <div>Avg age</div>
-                <div>Min age</div>
-                <div>Max age</div>
-              </div>
-              {(state?.drafters ?? getPreconfiguredDrafters()).map((d) => {
-                const isMe = user && d.name.toLowerCase() === user.name.toLowerCase();
-                const isCurrent = currentDrafter && d.id === currentDrafter.id;
-                const isActive = activeDrafter && d.id === activeDrafter.id;
-                const picksForDrafter = pickCounts.get(d.id) ?? 0;
-                const ageStats = ageStatsByDrafter.get(d.id);
-                const hasAgeStats = !!ageStats && ageStats.count > 0;
-                const averageAge = hasAgeStats ? ageStats.sum / ageStats.count : null;
+            <div className="table-scroll">
+              <div className="grid grid--drafters">
+                <div className="grid-header">
+                  <div>#</div>
+                  <div>Drafter</div>
+                  <div>Tonight</div>
+                  <div>Avg age</div>
+                  <div>Min age</div>
+                  <div>Max age</div>
+                </div>
+                {(state?.drafters ?? getPreconfiguredDrafters()).map((d) => {
+                  const isMe = user && d.name.toLowerCase() === user.name.toLowerCase();
+                  const isCurrent = currentDrafter && d.id === currentDrafter.id;
+                  const isActive = activeDrafter && d.id === activeDrafter.id;
+                  const picksForDrafter = pickCounts.get(d.id) ?? 0;
+                  const ageStats = ageStatsByDrafter.get(d.id);
+                  const hasAgeStats = !!ageStats && ageStats.count > 0;
+                  const averageAge = hasAgeStats ? ageStats.sum / ageStats.count : null;
 
-                return (
-                  <div
-                    key={d.id}
-                    className="grid-row"
-                    onClick={() => setActiveDrafterId(d.id)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <div>{d.order}</div>
-                    <div>
-                      <span
-                        className={`badge ${isMe ? 'me' : ''} ${isCurrent ? 'leader' : ''}`}
-                        style={
-                          isActive
-                            ? {
-                                boxShadow: '0 0 0 1px rgba(34,197,94,0.8)'
-                              }
-                            : undefined
-                        }
-                      >
-                        {d.name}
-                      </span>
+                  return (
+                    <div
+                      key={d.id}
+                      className="grid-row"
+                      onClick={() => setActiveDrafterId(d.id)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <div>{d.order}</div>
+                      <div>
+                        <span
+                          className={`badge ${isMe ? 'me' : ''} ${isCurrent ? 'leader' : ''}`}
+                          style={
+                            isActive
+                              ? {
+                                  boxShadow: '0 0 0 1px rgba(34,197,94,0.8)'
+                                }
+                              : undefined
+                          }
+                        >
+                          {d.name}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="badge pick-count">
+                          {picksForDrafter} pick{picksForDrafter === 1 ? '' : 's'}
+                        </span>
+                      </div>
+                      <div>{hasAgeStats && averageAge != null ? averageAge.toFixed(1) : '—'}</div>
+                      <div>{hasAgeStats ? ageStats.min : '—'}</div>
+                      <div>{hasAgeStats ? ageStats.max : '—'}</div>
                     </div>
-                    <div>
-                      <span className="badge pick-count">
-                        {picksForDrafter} pick{picksForDrafter === 1 ? '' : 's'}
-                      </span>
-                    </div>
-                    <div>{hasAgeStats && averageAge != null ? averageAge.toFixed(1) : '—'}</div>
-                    <div>{hasAgeStats ? ageStats.min : '—'}</div>
-                    <div>{hasAgeStats ? ageStats.max : '—'}</div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
@@ -1038,33 +992,35 @@ export const DraftBoard: React.FC = () => {
 
                 {checkpoints.length > 0 && (
                   <div className="mt-8">
-                    <div className="grid grid--checkpoints">
-                      <div className="grid-header">
-                        <div>Name</div>
-                        <div>Created</div>
-                        <div />
-                      </div>
-                      {checkpoints.map((cp) => (
-                        <div
-                          key={cp.id}
-                          className="grid-row"
-                        >
-                          <div className="checkpoint-name">{cp.name || 'Untitled checkpoint'}</div>
-                          <div className="checkpoint-created">
-                            {new Date(cp.createdAt).toLocaleString()}
-                          </div>
-                          <div className="checkpoint-actions">
-                            <button
-                              type="button"
-                              className="btn-secondary"
-                              onClick={() => handleRestoreCheckpoint(cp.id)}
-                              disabled={isRestoringCheckpoint}
-                            >
-                              Restore
-                            </button>
-                          </div>
+                    <div className="table-scroll">
+                      <div className="grid grid--checkpoints">
+                        <div className="grid-header">
+                          <div>Name</div>
+                          <div>Created</div>
+                          <div />
                         </div>
-                      ))}
+                        {checkpoints.map((cp) => (
+                          <div
+                            key={cp.id}
+                            className="grid-row"
+                          >
+                            <div className="checkpoint-name">{cp.name || 'Untitled checkpoint'}</div>
+                            <div className="checkpoint-created">
+                              {new Date(cp.createdAt).toLocaleString()}
+                            </div>
+                            <div className="checkpoint-actions">
+                              <button
+                                type="button"
+                                className="btn-secondary"
+                                onClick={() => handleRestoreCheckpoint(cp.id)}
+                                disabled={isRestoringCheckpoint}
+                              >
+                                Restore
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -1124,6 +1080,80 @@ export const DraftBoard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {state && orderedDrafters.length > 0 && (
+        <div className="mt-12">
+          <div className="panel-subtitle" style={{ marginBottom: 6 }}>
+            Picks by round
+          </div>
+          <div className="table-scroll">
+            <div className="round-grid">
+              <div className="round-grid-header">
+                <div>Round</div>
+                {orderedDrafters.map((d) => (
+                  <div key={d.id}>{d.name}</div>
+                ))}
+              </div>
+              {Array.from({ length: state.config.totalRounds }, (_, idx) => {
+                const roundNumber = idx + 1;
+                return (
+                  <div
+                    key={roundNumber}
+                    className="round-grid-row"
+                  >
+                    <div>Round {roundNumber}</div>
+                    {orderedDrafters.map((d) => {
+                      const key = `${roundNumber}-${d.id}`;
+                      const celebName = picksByRoundAndDrafter.get(key);
+                      const pickForCell = state.picks.find(
+                        (p) => p.round === roundNumber && p.drafterId === d.id && p.celebrityName === celebName
+                      );
+                      const celeb = celebName ? celebritiesByName.get(celebName) : undefined;
+
+                      const handleOpenDetails = () => {
+                        if (!pickForCell || !celeb) return;
+                        setSelectedPick({ pickId: pickForCell.id, celebrity: celeb });
+                        setEditCelebrityName(pickForCell.celebrityName);
+                      };
+
+                      return (
+                        <div key={d.id}>
+                          {celebName ? (
+                            celeb ? (
+                              <button
+                                type="button"
+                                className="celebrity-name-button round-grid-cell"
+                                onClick={handleOpenDetails}
+                                title="Click to view validation details"
+                              >
+                                {celebName}
+                              </button>
+                            ) : (
+                              <span className="round-grid-cell">{celebName}</span>
+                            )
+                          ) : (
+                            <span className="round-grid-cell round-grid-cell-empty">—</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div style={{ marginTop: 8, textAlign: 'right' }}>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={handleDownloadCsv}
+              disabled={!state.picks.length}
+            >
+              Download CSV
+            </button>
+          </div>
+        </div>
+      )}
 
       {selectedPick && (
         <EditPickModal

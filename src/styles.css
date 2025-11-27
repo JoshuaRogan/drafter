@@ -74,6 +74,7 @@ body {
   grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.3fr);
   gap: 16px;
   margin-top: 12px;
+  align-items: flex-start;
 }
 
 @media (max-width: 960px) {
@@ -323,6 +324,16 @@ button {
   overflow: hidden;
 }
 
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
 .grid-header,
 .grid-row {
   display: grid;
@@ -332,7 +343,7 @@ button {
 /* Draft board grid: # | Round | Drafter | Celebrity (give more space to celebrity name) */
 .grid--picks .grid-header,
 .grid--picks .grid-row {
-  grid-template-columns: 32px 120px 0.6fr 1.4fr;
+  grid-template-columns: 32px 56px 0.6fr 1.6fr;
 }
 
 .grid-header {
@@ -725,6 +736,46 @@ button {
   background: rgba(239, 68, 68, 0.18);
   color: #fecaca;
   border: 1px solid rgba(248, 113, 113, 0.8);
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    padding: 16px 10px;
+  }
+
+  .card {
+    padding: 16px 14px;
+    border-radius: 14px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .onclock-name {
+    font-size: 20px;
+  }
+
+  .onclock-timer {
+    font-size: 18px;
+  }
+
+  .draft-notification-main {
+    font-size: 18px;
+  }
+
+  .grid--picks,
+  .grid--drafters,
+  .grid--checkpoints,
+  .round-grid {
+    min-width: 520px;
+  }
+
+  .grid-header > div,
+  .grid-row > div {
+    padding: 6px 8px;
+  }
 }
 
 
