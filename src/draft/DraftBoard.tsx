@@ -34,6 +34,18 @@ const AUTO_CELEBRITY_POOL: AutoCelebrity[] = (autoCelebritiesRaw as AutoCelebrit
   (c) => !!c && typeof c.fullName === 'string' && c.fullName.trim().length > 0
 );
 
+interface ProxyPickRequest {
+  drafterId: string;
+  drafterName: string;
+  celebrityName: string;
+  requestedByName: string;
+}
+
+interface LastPickDisplay {
+  drafterName: string;
+  celebrityName: string;
+}
+
 interface EditPickModalProps {
   selectedPick: SelectedPick;
   isAdmin: boolean;
@@ -152,6 +164,76 @@ const EditPickModal: React.FC<EditPickModalProps> = ({
   );
 };
 
+interface ProxyPickConfirmationModalProps {
+  request: ProxyPickRequest;
+  onConfirm(): void;
+  onCancel(): void;
+}
+
+const ProxyPickConfirmationModal: React.FC<ProxyPickConfirmationModalProps> = ({
+  request,
+  onConfirm,
+  onCancel
+}) => {
+  const { drafterName, celebrityName, requestedByName } = request;
+
+  return (
+    <div
+      className="modal-backdrop"
+      onClick={onCancel}
+    >
+      <div
+        className="modal"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="modal-header">
+          <div>
+            <div className="modal-title">Drafting on behalf of {drafterName}?</div>
+            <div className="modal-subtitle">
+              Your display name is <strong>{requestedByName || 'Unknown'}</strong>, but it is currently{' '}
+              <strong>{drafterName}</strong>
+              {"'s"} turn.
+            </div>
+          </div>
+        </div>
+
+        <div className="modal-body">
+          <div className="modal-row">
+            <span className="modal-label">Player to draft</span>
+            <span className="modal-value">
+              <strong>{celebrityName}</strong>
+            </span>
+          </div>
+          <div className="modal-row">
+            <span className="modal-label">Confirmation</span>
+            <span className="modal-value">
+              Are you sure you want to draft on behalf of <strong>{drafterName}</strong>?
+            </span>
+          </div>
+        </div>
+
+        <div className="modal-footer">
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={onConfirm}
+            style={{ marginRight: 8 }}
+          >
+            Yes, draft for {drafterName}
+          </button>
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={onCancel}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const pickAutoCelebrity = (
   draftedNames: Set<string>
 ): AutoCelebrity | null => {
@@ -213,7 +295,6 @@ export const DraftBoard: React.FC = () => {
   } = useDraft();
 
   const [roundsInput, setRoundsInput] = useState(3);
-  const [pendingPick, setPendingPick] = useState<string | null>(null);
   const [lastError, setLastError] = useState<string | null>(null);
   const [activeDrafterId, setActiveDrafterId] = useState<string | null>(null);
   const [customCelebrityName, setCustomCelebrityName] = useState('');
@@ -225,6 +306,9 @@ export const DraftBoard: React.FC = () => {
   const [checkpointError, setCheckpointError] = useState<string | null>(null);
   const [isSavingCheckpoint, setIsSavingCheckpoint] = useState(false);
   const [isRestoringCheckpoint, setIsRestoringCheckpoint] = useState(false);
+  const [proxyPickRequest, setProxyPickRequest] = useState<ProxyPickRequest | null>(null);
+  const [lastPickDisplay, setLastPickDisplay] = useState<LastPickDisplay | null>(null);
+  const [isLastPickHighlighting, setIsLastPickHighlighting] = useState(false);
 
   const currentDrafter = useMemo(() => getCurrentDrafter(state), [state]);
   const currentDrafterName = currentDrafter?.name ?? null;
@@ -300,6 +384,26 @@ export const DraftBoard: React.FC = () => {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }, [secondsRemaining]);
 
+  useEffect(() => {
+    if (!state || !state.picks.length) return;
+    const last = state.picks[state.picks.length - 1];
+    if (!last) return;
+
+    setLastPickDisplay({
+      drafterName: last.drafterName,
+      celebrityName: last.celebrityName
+    });
+    setIsLastPickHighlighting(true);
+
+    const timeoutId = window.setTimeout(() => {
+      setIsLastPickHighlighting(false);
+    }, 1800);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [state?.picks.length, state]);
+
   const handleSaveCheckpoint = async () => {
     if (!state) {
       setCheckpointError('There is no draft board to checkpoint yet.');
@@ -359,7 +463,13 @@ export const DraftBoard: React.FC = () => {
     initDraft({ totalRounds, celebrityList: list });
   };
 
-  const handlePick = (name: string): boolean => {
+  const attemptPick = (
+    name: string,
+    options?: {
+      seatOverrideId?: string;
+      skipProxyCheck?: boolean;
+    }
+  ): boolean => {
     if (!state) return false;
     if (!currentDrafter) {
       setLastError('The draft has not been started yet.');
@@ -373,26 +483,43 @@ export const DraftBoard: React.FC = () => {
       return false;
     }
 
-    const seat =
-      (activeDrafterId && state.drafters.find((d) => d.id === activeDrafterId)) ?? currentDrafter;
+    const baseSeat =
+      (options?.seatOverrideId &&
+        state.drafters.find((d) => d.id === options.seatOverrideId)) ||
+      (activeDrafterId && state.drafters.find((d) => d.id === activeDrafterId)) ||
+      currentDrafter;
 
-    if (!seat) {
+    if (!baseSeat) {
       setLastError('No drafter selected.');
       setTimeout(() => setLastError(null), 2000);
       return false;
     }
 
-    if (seat.id !== currentDrafter.id) {
+    if (baseSeat.id !== currentDrafter.id) {
       setLastError(`It is ${currentDrafter.name}'s turn right now.`);
       setTimeout(() => setLastError(null), 2500);
       return false;
     }
 
-    setPendingPick(name);
-    sendPick(seat.id, name);
-    setTimeout(() => setPendingPick(null), 500);
+    if (!options?.skipProxyCheck && !isAdmin) {
+      const userName = (user?.name || '').trim();
+      const seatName = (baseSeat.name || '').trim();
+      if (!userName || !seatName || userName.toLowerCase() !== seatName.toLowerCase()) {
+        setProxyPickRequest({
+          drafterId: baseSeat.id,
+          drafterName: baseSeat.name,
+          celebrityName: name,
+          requestedByName: userName
+        });
+        return true;
+      }
+    }
+
+    sendPick(baseSeat.id, name);
     return true;
   };
+
+  const handlePick = (name: string): boolean => attemptPick(name);
 
   const handleCustomPick = () => {
     const name = customCelebrityName.trim();
@@ -469,6 +596,20 @@ export const DraftBoard: React.FC = () => {
 
   return (
     <div className="mt-16">
+      {lastPickDisplay && (
+        <div
+          className={`draft-notification-banner${
+            isLastPickHighlighting ? ' draft-notification-banner--pulse' : ''
+          }`}
+        >
+          <div className="draft-notification-label">Latest pick</div>
+          <div className="draft-notification-main">
+            <span className="draft-notification-drafter">{lastPickDisplay.drafterName}</span>
+            <span style={{ margin: '0 6px' }}>drafted</span>
+            <span className="draft-notification-celebrity">{lastPickDisplay.celebrityName}</span>
+          </div>
+        </div>
+      )}
       {status === 'in-progress' && currentDrafter && (
         <div className="onclock-banner">
           <div className="onclock-label">On the clock</div>
@@ -908,6 +1049,20 @@ export const DraftBoard: React.FC = () => {
             editPick(pickId, nextName);
             setSelectedPick(null);
           }}
+        />
+      )}
+      {proxyPickRequest && (
+        <ProxyPickConfirmationModal
+          request={proxyPickRequest}
+          onConfirm={() => {
+            if (!proxyPickRequest) return;
+            attemptPick(proxyPickRequest.celebrityName, {
+              seatOverrideId: proxyPickRequest.drafterId,
+              skipProxyCheck: true
+            });
+            setProxyPickRequest(null);
+          }}
+          onCancel={() => setProxyPickRequest(null)}
         />
       )}
     </div>
