@@ -19,7 +19,7 @@ const getCurrentDrafter = (state: DraftState | null) => {
 
 interface SelectedPick {
   pickId: string;
-  celebrity: Celebrity;
+  celebrityName: string;
 }
 
 interface AutoCelebrity {
@@ -108,8 +108,45 @@ const EditPickPopover: React.FC<EditPickPopoverProps> = ({
   onSave,
   onClose
 }) => {
-  const { pickId, celebrity } = selectedPick;
+  const { pickId, celebrityName } = selectedPick;
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const { state, revalidateCelebrity } = useDraft();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [refreshError, setRefreshError] = useState<string | null>(null);
+
+  const celebrity =
+    state?.celebrities.find(
+      (c) => c.name && c.name.toLowerCase() === celebrityName.toLowerCase()
+    ) ?? null;
+
+  const displayName = celebrity?.name || celebrityName;
+  const displayFullName = celebrity?.fullName || displayName;
+  const isValidated = !!celebrity?.isValidated;
+  const attempted = !!celebrity?.validationAttempted || isValidated;
+  const dob = celebrity?.dateOfBirth;
+  const hasWikipedia = !!celebrity?.hasWikipediaPage && !!celebrity?.wikipediaUrl;
+  const isDeceased = !!celebrity?.isDeceased;
+  const notes = celebrity?.validationNotes;
+
+  const handleRefresh = async () => {
+    if (isRefreshing) return;
+
+    const targetName = celebrityName.trim();
+    if (!targetName) return;
+
+    setIsRefreshing(true);
+    setRefreshError(null);
+
+    try {
+      await revalidateCelebrity(targetName, { force: true });
+    } catch (err) {
+      console.error('Failed to refresh celebrity validation', err);
+      setRefreshError('Failed to refresh validation. Please try again.');
+      setTimeout(() => setRefreshError(null), 3000);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   // Close when the user clicks anywhere outside of the popover.
   useEffect(() => {
@@ -136,16 +173,16 @@ const EditPickPopover: React.FC<EditPickPopoverProps> = ({
     >
       <div className="modal-header">
         <div>
-          <div className="modal-title">{celebrity.fullName || celebrity.name}</div>
-          <div className="modal-subtitle">{celebrity.name}</div>
+          <div className="modal-title">{displayFullName}</div>
+          <div className="modal-subtitle">{displayName}</div>
         </div>
         <div>
           <span
             className={`status-pill ${
-              celebrity.isValidated ? 'status-pill-valid' : 'status-pill-invalid'
+              isValidated ? 'status-pill-valid' : 'status-pill-invalid'
             }`}
           >
-            {celebrity.isValidated ? 'Validated' : 'No clear match'}
+            {isValidated ? 'Validated' : 'No clear match'}
           </span>
         </div>
       </div>
@@ -166,22 +203,18 @@ const EditPickPopover: React.FC<EditPickPopoverProps> = ({
         )}
         <div className="modal-row">
           <span className="modal-label">Date of birth</span>
-          <span className="modal-value">{celebrity.dateOfBirth || 'Not available'}</span>
+          <span className="modal-value">{dob || 'Not available'}</span>
         </div>
         <div className="modal-row">
           <span className="modal-label">Life status</span>
           <span className="modal-value">
-            {celebrity.isDeceased === true
-              ? 'Reported deceased'
-              : celebrity.validationAttempted
-              ? 'Believed alive'
-              : 'Unknown'}
+            {isDeceased ? 'Reported deceased' : attempted ? 'Believed alive' : 'Unknown'}
           </span>
         </div>
         <div className="modal-row">
           <span className="modal-label">Wikipedia</span>
           <span className="modal-value">
-            {celebrity.hasWikipediaPage && celebrity.wikipediaUrl ? (
+            {hasWikipedia && celebrity?.wikipediaUrl ? (
               <a
                 href={celebrity.wikipediaUrl || undefined}
                 target="_blank"
@@ -196,20 +229,42 @@ const EditPickPopover: React.FC<EditPickPopoverProps> = ({
         </div>
         <div className="modal-row">
           <span className="modal-label">Notes</span>
-          <span className="modal-value">{celebrity.validationNotes || '—'}</span>
+          <span className="modal-value">{notes || '—'}</span>
         </div>
+        {refreshError && (
+          <div className="modal-row">
+            <span className="modal-label" />
+            <span
+              className="modal-value"
+              style={{ color: '#fecaca' }}
+            >
+              {refreshError}
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="modal-footer">
         {isAdmin && (
-          <button
-            type="button"
-            className="btn-primary"
-            onClick={() => onSave(pickId, editCelebrityName.trim())}
-            style={{ marginRight: 8 }}
-          >
-            Save changes
-          </button>
+          <>
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={() => onSave(pickId, editCelebrityName.trim())}
+              style={{ marginRight: 8 }}
+            >
+              Save changes
+            </button>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              style={{ marginRight: 8 }}
+            >
+              {isRefreshing ? 'Re-checking…' : 'Re-check validation'}
+            </button>
+          </>
         )}
         <button
           type="button"
@@ -945,7 +1000,7 @@ export const DraftBoard: React.FC = () => {
 
                         y = Math.max(margin, y);
 
-                        setSelectedPick({ pickId: pick.id, celebrity: celeb });
+                        setSelectedPick({ pickId: pick.id, celebrityName: pick.celebrityName });
                         setSelectedPickAnchor({ x, y });
                         setEditCelebrityName(pick.celebrityName);
                       };
@@ -1326,7 +1381,10 @@ export const DraftBoard: React.FC = () => {
 
                         y = Math.max(margin, y);
 
-                        setSelectedPick({ pickId: pickForCell.id, celebrity: celeb });
+                        setSelectedPick({
+                          pickId: pickForCell.id,
+                          celebrityName: pickForCell.celebrityName
+                        });
                         setSelectedPickAnchor({ x, y });
                         setEditCelebrityName(pickForCell.celebrityName);
                       };

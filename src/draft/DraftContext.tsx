@@ -31,6 +31,7 @@ interface DraftContextValue {
   resetDraft(): void;
   undoLastPick(): void;
   restorePreviousState(): void;
+  revalidateCelebrity(celebrityName: string, options?: { force?: boolean }): Promise<void>;
   saveCheckpoint(name: string): Promise<void>;
   restoreCheckpoint(id: string): Promise<void>;
 }
@@ -103,15 +104,21 @@ const CHECKPOINTS_FUNCTION_PATH = '/.netlify/functions/checkpoints';
 const DRAFT_FUNCTION_PATH = '/.netlify/functions/draft';
 
 const fetchCelebrityValidation = async (
-  celebrityName: string
+  celebrityName: string,
+  options?: { force?: boolean }
 ): Promise<CelebrityValidationResult | null> => {
   try {
+    const payload: Record<string, unknown> = { name: celebrityName };
+    if (options?.force) {
+      payload.force = true;
+    }
+
     const response = await fetch(VALIDATION_FUNCTION_PATH, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ name: celebrityName })
+      body: JSON.stringify(payload)
     });
 
     if (!response.ok) {
@@ -639,6 +646,36 @@ export const DraftProvider: React.FC<{
     })();
   };
 
+  const revalidateCelebrity = async (
+    celebrityName: string,
+    options?: { force?: boolean }
+  ): Promise<void> => {
+    const trimmedName = celebrityName.trim();
+    if (!trimmedName) return;
+
+    const validation = await fetchCelebrityValidation(trimmedName, options);
+    if (!validation) return;
+
+    const { state: validatedState } = await postDraftAction({
+      action: 'applyValidation',
+      celebrityName: trimmedName,
+      validation
+    });
+
+    if (!validatedState) return;
+
+    setState(validatedState);
+    setStatus(validatedState.status);
+
+    if (channel) {
+      const validationBroadcast: WireMessage = {
+        type: 'state:updated',
+        payload: { updatedAt: validatedState.updatedAt }
+      };
+      channel.publish('state', validationBroadcast);
+    }
+  };
+
   const resetDraft = () => {
     if (!user || !channel || !isAdmin) return;
 
@@ -763,6 +800,7 @@ export const DraftProvider: React.FC<{
       resetDraft,
       undoLastPick,
       restorePreviousState,
+      revalidateCelebrity,
       saveCheckpoint,
       restoreCheckpoint
     }),
