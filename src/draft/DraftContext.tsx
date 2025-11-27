@@ -9,6 +9,12 @@ import type {
   CelebrityValidationResult
 } from './types';
 
+interface DraftCheckpointSummary {
+  id: string;
+  name: string;
+  createdAt: string;
+}
+
 interface DraftContextValue {
   user: LocalUser | null;
   status: DraftStatus;
@@ -17,11 +23,16 @@ interface DraftContextValue {
   isAdmin: boolean;
   isConnected: boolean;
   error: string | null;
+  canRestorePreviousState: boolean;
+   checkpoints: DraftCheckpointSummary[];
   initDraft(config: { totalRounds: number; celebrityList: string[] }): void;
   sendPick(drafterId: string, celebrityName: string): void;
   editPick(pickId: string, newCelebrityName: string): void;
   resetDraft(): void;
   undoLastPick(): void;
+  restorePreviousState(): void;
+  saveCheckpoint(name: string): Promise<void>;
+  restoreCheckpoint(id: string): Promise<void>;
 }
 
 const DraftContext = createContext<DraftContextValue | undefined>(undefined);
@@ -88,6 +99,7 @@ const PRECONFIGURED_DRAFTERS: Array<Pick<Drafter, 'id' | 'name' | 'order'>> = [
 ];
 
 const VALIDATION_FUNCTION_PATH = '/.netlify/functions/validate-celebrity';
+const CHECKPOINTS_FUNCTION_PATH = '/.netlify/functions/checkpoints';
 
 const fetchCelebrityValidation = async (
   celebrityName: string
@@ -169,6 +181,8 @@ export const DraftProvider: React.FC<{
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasHydratedFromHistory, setHasHydratedFromHistory] = useState(false);
+  const [history, setHistory] = useState<DraftState[]>([]);
+  const [checkpoints, setCheckpoints] = useState<DraftCheckpointSummary[]>([]);
 
   const isAdmin = !!user && user.isAdmin;
 
@@ -221,6 +235,42 @@ export const DraftProvider: React.FC<{
     };
   }, [client]);
 
+  // Load existing persistent checkpoints when an admin connects.
+  useEffect(() => {
+    if (!isAdmin) return;
+
+    let cancelled = false;
+
+    const load = async () => {
+      try {
+        const response = await fetch(CHECKPOINTS_FUNCTION_PATH, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ action: 'list' })
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const data = (await response.json()) as { checkpoints?: DraftCheckpointSummary[] };
+        if (!cancelled && Array.isArray(data.checkpoints)) {
+          setCheckpoints(data.checkpoints);
+        }
+      } catch (err) {
+        console.error('Failed to load checkpoints', err);
+      }
+    };
+
+    void load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isAdmin]);
+
   useEffect(() => {
     if (!channel || !isConnected || hasHydratedFromHistory) return;
 
@@ -257,6 +307,18 @@ export const DraftProvider: React.FC<{
 
   useEffect(() => {
     if (!channel || !user) return;
+
+    const pushHistory = (prevState: DraftState | null) => {
+      if (!prevState) return;
+      setHistory((prev) => {
+        const next = [...prev, prevState];
+        // Cap history to the last 20 states to avoid unbounded growth.
+        if (next.length > 20) {
+          next.shift();
+        }
+        return next;
+      });
+    };
 
     const onMessage = (msg: WireMessage) => {
       if (msg.type === 'state:replace') {
@@ -314,6 +376,7 @@ export const DraftProvider: React.FC<{
         const nextRound = Math.floor(nextIndex / perRound) + 1;
 
         const now = new Date().toISOString();
+        pushHistory(state);
         const newState: DraftState = {
           ...state,
           picks: [
@@ -455,6 +518,7 @@ export const DraftProvider: React.FC<{
         });
 
         const now = new Date().toISOString();
+        pushHistory(state);
         const newState: DraftState = {
           ...state,
           picks: updatedPicks,
@@ -528,6 +592,7 @@ export const DraftProvider: React.FC<{
       } else if (msg.type === 'action:reset') {
         if (!isAdmin || !state || !user) return;
         const now = new Date().toISOString();
+        pushHistory(state);
         const newState: DraftState = {
           ...state,
           picks: [],
@@ -549,6 +614,7 @@ export const DraftProvider: React.FC<{
         const remaining = state.picks.slice(0, -1);
         const now = new Date().toISOString();
 
+        pushHistory(state);
         const newState: DraftState = {
           ...state,
           picks: remaining,
@@ -595,9 +661,110 @@ export const DraftProvider: React.FC<{
     };
   }, [channel, user, isAdmin, state]);
 
+  const saveCheckpoint = async (name: string): Promise<void> => {
+    if (!state) {
+      throw new Error('There is no current draft state to save.');
+    }
+
+    const trimmed = name.trim() || `Checkpoint @ ${new Date().toLocaleString()}`;
+
+    try {
+      const response = await fetch(CHECKPOINTS_FUNCTION_PATH, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          action: 'save',
+          name: trimmed,
+          state
+        })
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`Failed to save checkpoint (${response.status}): ${text || 'Unknown error'}`);
+      }
+
+      const data = (await response.json()) as {
+        checkpoints?: DraftCheckpointSummary[];
+      };
+
+      if (Array.isArray(data.checkpoints)) {
+        setCheckpoints(data.checkpoints);
+      }
+    } catch (err) {
+      console.error('Error saving checkpoint', err);
+      if (err instanceof Error) {
+        throw err;
+      }
+      throw new Error('Failed to save checkpoint.');
+    }
+  };
+
+  const restoreCheckpoint = async (id: string): Promise<void> => {
+    if (!channel || !isAdmin) {
+      throw new Error('Only the admin can restore a checkpoint when the channel is connected.');
+    }
+
+    try {
+      const response = await fetch(CHECKPOINTS_FUNCTION_PATH, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          action: 'load',
+          id
+        })
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`Failed to load checkpoint (${response.status}): ${text || 'Unknown error'}`);
+      }
+
+      const data = (await response.json()) as {
+        checkpoint?: { id: string; name: string; createdAt: string; state: DraftState };
+      };
+
+      if (!data.checkpoint || !data.checkpoint.state) {
+        throw new Error('Checkpoint not found or invalid.');
+      }
+
+      const restored = data.checkpoint.state;
+
+      // Drop any local in-memory history so we fully "reset" to this checkpoint.
+      setHistory([]);
+      setState(restored);
+      setStatus(restored.status);
+
+      const outgoing: WireMessage = {
+        type: 'state:replace',
+        payload: restored
+      };
+      channel.publish('state', outgoing);
+    } catch (err) {
+      console.error('Error restoring checkpoint', err);
+      if (err instanceof Error) {
+        throw err;
+      }
+      throw new Error('Failed to restore checkpoint.');
+    }
+  };
+
   const initDraft = (config: { totalRounds: number; celebrityList: string[] }) => {
     if (!channel) return;
     if (!isAdmin) return;
+
+    if (state) {
+      // Preserve the entire previous board before starting a new one.
+      setHistory((prev) => {
+        const next = [...prev, state];
+        if (next.length > 20) next.shift();
+        return next;
+      });
+    }
 
     const initial = createInitialState(config.totalRounds, config.celebrityList);
     setState(initial);
@@ -665,6 +832,33 @@ export const DraftProvider: React.FC<{
     channel.publish('action', msg);
   };
 
+  const restorePreviousState = () => {
+    if (!channel || !isAdmin) return;
+
+    setHistory((prev) => {
+      if (!prev.length) {
+        return prev;
+      }
+
+      const next = [...prev];
+      const restored = next.pop();
+      if (!restored) {
+        return prev;
+      }
+
+      setState(restored);
+      setStatus(restored.status);
+
+      const outgoing: WireMessage = {
+        type: 'state:replace',
+        payload: restored
+      };
+      channel.publish('state', outgoing);
+
+      return next;
+    });
+  };
+
   const value: DraftContextValue = useMemo(
     () => ({
       user,
@@ -674,13 +868,18 @@ export const DraftProvider: React.FC<{
       isAdmin,
       isConnected,
       error,
+      canRestorePreviousState: history.length > 0,
+      checkpoints,
       initDraft,
       sendPick,
       editPick,
       resetDraft,
-      undoLastPick
+      undoLastPick,
+      restorePreviousState,
+      saveCheckpoint,
+      restoreCheckpoint
     }),
-    [user, status, state, channel, isAdmin, isConnected, error]
+    [user, status, state, channel, isAdmin, isConnected, error, history.length, checkpoints]
   );
 
   return <DraftContext.Provider value={value}>{children}</DraftContext.Provider>;

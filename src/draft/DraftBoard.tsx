@@ -204,7 +204,12 @@ export const DraftBoard: React.FC = () => {
     sendPick,
     editPick,
     resetDraft,
-    undoLastPick
+    undoLastPick,
+    canRestorePreviousState,
+    restorePreviousState,
+    checkpoints,
+    saveCheckpoint,
+    restoreCheckpoint
   } = useDraft();
 
   const [roundsInput, setRoundsInput] = useState(3);
@@ -215,6 +220,11 @@ export const DraftBoard: React.FC = () => {
   const [selectedPick, setSelectedPick] = useState<SelectedPick | null>(null);
   const [editCelebrityName, setEditCelebrityName] = useState('');
   const [secondsRemaining, setSecondsRemaining] = useState<number>(0);
+  const [checkpointName, setCheckpointName] = useState('');
+  const [checkpointMessage, setCheckpointMessage] = useState<string | null>(null);
+  const [checkpointError, setCheckpointError] = useState<string | null>(null);
+  const [isSavingCheckpoint, setIsSavingCheckpoint] = useState(false);
+  const [isRestoringCheckpoint, setIsRestoringCheckpoint] = useState(false);
 
   const currentDrafter = useMemo(() => getCurrentDrafter(state), [state]);
   const currentDrafterName = currentDrafter?.name ?? null;
@@ -289,6 +299,47 @@ export const DraftBoard: React.FC = () => {
     const seconds = secondsRemaining % 60;
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }, [secondsRemaining]);
+
+  const handleSaveCheckpoint = async () => {
+    if (!state) {
+      setCheckpointError('There is no draft board to checkpoint yet.');
+      setTimeout(() => setCheckpointError(null), 2500);
+      return;
+    }
+
+    try {
+      setIsSavingCheckpoint(true);
+      await saveCheckpoint(checkpointName);
+      setCheckpointName('');
+      setCheckpointMessage('Checkpoint saved.');
+      setTimeout(() => setCheckpointMessage(null), 2000);
+    } catch (err) {
+      console.error(err);
+      setCheckpointError(
+        err instanceof Error ? err.message : 'Failed to save checkpoint. Please try again.'
+      );
+      setTimeout(() => setCheckpointError(null), 3000);
+    } finally {
+      setIsSavingCheckpoint(false);
+    }
+  };
+
+  const handleRestoreCheckpoint = async (id: string) => {
+    try {
+      setIsRestoringCheckpoint(true);
+      await restoreCheckpoint(id);
+      setCheckpointMessage('Checkpoint restored.');
+      setTimeout(() => setCheckpointMessage(null), 2000);
+    } catch (err) {
+      console.error(err);
+      setCheckpointError(
+        err instanceof Error ? err.message : 'Failed to restore checkpoint. Please try again.'
+      );
+      setTimeout(() => setCheckpointError(null), 3000);
+    } finally {
+      setIsRestoringCheckpoint(false);
+    }
+  };
 
   const handleInit = () => {
     if (!isAdmin) {
@@ -709,12 +760,81 @@ export const DraftBoard: React.FC = () => {
                       Undo last pick
                     </button>
                     <button
+                      className="btn-secondary"
+                      onClick={restorePreviousState}
+                      disabled={!canRestorePreviousState}
+                    >
+                      Restore previous board
+                    </button>
+                    <button
                       className="btn-danger"
                       onClick={resetDraft}
                     >
                       Reset board
                     </button>
                   </>
+                )}
+              </div>
+
+              <div className="mt-8">
+                <div className="panel-subtitle" style={{ marginBottom: 6 }}>
+                  Persistent checkpoints
+                </div>
+                <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 8 }}>
+                  Saved to the server (max 10). Use this to recover if the draft state ever gets stuck.
+                </div>
+                <div className="field-row">
+                  <div className="flex-1">
+                    <label>
+                      Checkpoint name
+                      <input
+                        type="text"
+                        placeholder="e.g. After round 3"
+                        value={checkpointName}
+                        onChange={(e) => setCheckpointName(e.target.value)}
+                        style={{ width: '100%', marginTop: 4 }}
+                      />
+                    </label>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={handleSaveCheckpoint}
+                    disabled={!state || isSavingCheckpoint}
+                  >
+                    {isSavingCheckpoint ? 'Saving…' : 'Save checkpoint'}
+                  </button>
+                </div>
+
+                {checkpoints.length > 0 && (
+                  <div className="mt-4">
+                    <div className="grid">
+                      <div className="grid-header">
+                        <div>Name</div>
+                        <div>Created</div>
+                        <div />
+                      </div>
+                      {checkpoints.map((cp) => (
+                        <div
+                          key={cp.id}
+                          className="grid-row"
+                        >
+                          <div>{cp.name}</div>
+                          <div>{new Date(cp.createdAt).toLocaleString()}</div>
+                          <div style={{ textAlign: 'right' }}>
+                            <button
+                              type="button"
+                              className="btn-secondary"
+                              onClick={() => handleRestoreCheckpoint(cp.id)}
+                              disabled={isRestoringCheckpoint}
+                            >
+                              Restore
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
@@ -765,6 +885,10 @@ export const DraftBoard: React.FC = () => {
           <div className="mt-12">
             {lastError && <div className="error-text">{lastError}</div>}
             {error && <div className="error-text">{error}</div>}
+            {checkpointError && <div className="error-text">{checkpointError}</div>}
+            {checkpointMessage && !checkpointError && (
+              <div style={{ fontSize: 11, color: '#bbf7d0' }}>{checkpointMessage}</div>
+            )}
           </div>
         </div>
       </div>

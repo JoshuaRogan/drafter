@@ -1643,5 +1643,1195 @@
     "wikipediaUrl": "https://en.wikipedia.org/wiki/Donatella_Versace",
     "age": 70,
     "notes": "Italian fashion designer and businesswoman"
+  },
+  {
+    "fullName": "Claudia Cardinale",
+    "dateOfBirth": "1938-04-15",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Claudia_Cardinale",
+    "age": 87,
+    "notes": "Italian film actress, prominent in 1960s–70s"
+  },
+  {
+    "fullName": "Franco Nero",
+    "dateOfBirth": "1941-11-23",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Franco_Nero",
+    "age": 84,
+    "notes": "Italian actor, known for Once Upon a Time in the West"
+  },
+  {
+    "fullName": "Charlotte Rampling",
+    "dateOfBirth": "1946-02-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Charlotte_Rampling",
+    "age": 79,
+    "notes": "English actress with a long international film career"
+  },
+  {
+    "fullName": "Patrick Stewart",
+    "dateOfBirth": "1940-07-13",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Patrick_Stewart",
+    "age": 85,
+    "notes": "English actor, known for Star Trek: The Next Generation and stage work"
+  },
+  {
+    "fullName": "Billy Crystal",
+    "dateOfBirth": "1948-03-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Billy_Crystal",
+    "age": 77,
+    "notes": "American comedian and actor"
+  },
+  {
+    "fullName": "Carmen Maura",
+    "dateOfBirth": "1945-09-15",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Carmen_Maura",
+    "age": 80,
+    "notes": "Spanish actress, frequent collaborator with Pedro Almodóvar"
+  },
+  {
+    "fullName": "Isabella Rossellini",
+    "dateOfBirth": "1952-06-18",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Isabella_Rossellini",
+    "age": 73,
+    "notes": "Italian-American actress and model"
+  },
+  {
+    "fullName": "Chow Yun-fat",
+    "dateOfBirth": "1955-05-18",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Chow_Yun-fat",
+    "age": 70,
+    "notes": "Hong Kong actor known for action and dramatic roles"
+  },
+  {
+    "fullName": "Amitabh Bachchan",
+    "dateOfBirth": "1942-10-11",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Amitabh_Bachchan",
+    "age": 83,
+    "notes": "Indian film actor and cultural icon"
+  },
+  {
+    "fullName": "Marianne Faithfull",
+    "dateOfBirth": "1946-12-29",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Marianne_Faithfull",
+    "age": 78,
+    "notes": "English singer and actress"
+  },
+  {
+    "fullName": "Michael Rubens Bloomberg",
+    "dateOfBirth": "1942-02-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Michael_Bloomberg",
+    "age": 83,
+    "notes": "American businessman, politician and philanthropist"
+  },
+  {
+    "fullName": "Willie Hugh Nelson",
+    "dateOfBirth": "1933-04-29",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Willie_Nelson",
+    "age": 92,
+    "notes": "American country music singer-songwriter"
+  },
+  {
+    "fullName": "Stephen Glenn Martin",
+    "dateOfBirth": "1945-08-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Steve_Martin",
+    "age": 80,
+    "notes": "American comedian, actor and writer"
+  },
+  {
+    "fullName": "Martin Sheen (Ramón Antonio Gerardo Estévez)",
+    "dateOfBirth": "1940-08-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Martin_Sheen",
+    "age": 85,
+    "notes": "American actor and activist"
+  },
+  {
+    "fullName": "Rajinikanth (Shivaji Rao Gaekwad)",
+    "dateOfBirth": "1950-12-12",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Rajinikanth",
+    "age": 74,
+    "notes": "Indian film actor and cultural icon"
+  },
+  {
+    "fullName": "John Towner Williams",
+    "dateOfBirth": "1932-02-08",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/John_Williams_(composer)",
+    "age": 93,
+    "notes": "American composer and conductor"
+  },
+  {
+    "fullName": "Plácido Domingo (José Plácido Domingo Embil)",
+    "dateOfBirth": "1941-01-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Pl%C3%A1cido_Domingo",
+    "age": 84,
+    "notes": "Spanish operatic tenor and conductor"
+  },
+  {
+    "fullName": "Mikhail Nikolayevich Baryshnikov",
+    "dateOfBirth": "1948-01-27",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Mikhail_Baryshnikov",
+    "age": 77,
+    "notes": "Latvian-American dancer, choreographer and actor"
+  },
+  {
+    "fullName": "Derek George Jacobi",
+    "dateOfBirth": "1938-10-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Derek_Jacobi",
+    "age": 87,
+    "notes": "English actor of stage and screen"
+  },
+  {
+    "fullName": "Mel Brooks (Melvin Kaminsky)",
+    "dateOfBirth": "1926-06-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Mel_Brooks",
+    "age": 99,
+    "notes": "American filmmaker, comedian and actor"
+  },
+  {
+    "fullName": "Shirley MacLaine",
+    "dateOfBirth": "1934-04-24",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Shirley_MacLaine",
+    "age": 91,
+    "notes": "American actress and author"
+  },
+  {
+    "fullName": "Julie Christie",
+    "dateOfBirth": "1940-04-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Julie_Christie",
+    "age": 85,
+    "notes": "English actress"
+  },
+  {
+    "fullName": "Ann-Margret",
+    "dateOfBirth": "1941-04-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Ann-Margret",
+    "age": 84,
+    "notes": "Swedish-American actress and singer"
+  },
+  {
+    "fullName": "Isabel Allende",
+    "dateOfBirth": "1942-08-02",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Isabel_Allende",
+    "age": 83,
+    "notes": "Chilean-American author"
+  },
+  {
+    "fullName": "Ken Loach",
+    "dateOfBirth": "1936-06-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Ken_Loach",
+    "age": 89,
+    "notes": "British film director"
+  },
+  {
+    "fullName": "Hayao Miyazaki",
+    "dateOfBirth": "1941-01-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Hayao_Miyazaki",
+    "age": 84,
+    "notes": "Japanese animator and filmmaker"
+  },
+  {
+    "fullName": "Van Morrison",
+    "dateOfBirth": "1945-08-31",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Van_Morrison",
+    "age": 80,
+    "notes": "Northern Irish singer-songwriter"
+  },
+  {
+    "fullName": "Neil Diamond",
+    "dateOfBirth": "1941-01-24",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Neil_Diamond",
+    "age": 84,
+    "notes": "American singer-songwriter"
+  },
+  {
+    "fullName": "Tom Waits",
+    "dateOfBirth": "1949-12-07",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Tom_Waits",
+    "age": 75,
+    "notes": "American singer-songwriter and actor"
+  },
+  {
+    "fullName": "Joni Mitchell",
+    "dateOfBirth": "1943-11-07",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Joni_Mitchell",
+    "age": 82,
+    "notes": "Canadian singer-songwriter and painter"
+  },
+  {
+    "fullName": "David Byrne",
+    "dateOfBirth": "1952-05-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/David_Byrne",
+    "age": 73,
+    "notes": "Scottish-American singer-songwriter, founding member of Talking Heads"
+  },
+  {
+    "fullName": "Tilda Swinton",
+    "dateOfBirth": "1960-11-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Tilda_Swinton",
+    "age": 65,
+    "notes": "British actress and producer"
+  },
+  {
+    "fullName": "Julianne Moore",
+    "dateOfBirth": "1960-12-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Julianne_Moore",
+    "age": 64,
+    "notes": "American actress and author"
+  },
+  {
+    "fullName": "Ellen Burstyn",
+    "dateOfBirth": "1932-12-07",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Ellen_Burstyn",
+    "age": 92,
+    "notes": "American actress"
+  },
+  {
+    "fullName": "Sacha Baron Cohen",
+    "dateOfBirth": "1971-10-13",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Sacha_Baron_Cohen",
+    "age": 54,
+    "notes": "English actor, comedian, and writer"
+  },
+  {
+    "fullName": "Jeff Goldblum",
+    "dateOfBirth": "1952-10-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jeff_Goldblum",
+    "age": 73,
+    "notes": "American actor"
+  },
+  {
+    "fullName": "Isabelle Huppert",
+    "dateOfBirth": "1953-03-16",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Isabelle_Huppert",
+    "age": 72,
+    "notes": "French actress"
+  },
+  {
+    "fullName": "Ken Watanabe",
+    "dateOfBirth": "1959-10-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Ken_Watanabe",
+    "age": 66,
+    "notes": "Japanese actor"
+  },
+  {
+    "fullName": "Herbie Hancock",
+    "dateOfBirth": "1940-04-12",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Herbie_Hancock",
+    "age": 85,
+    "notes": "American jazz pianist and composer"
+  },
+  {
+    "fullName": "Bill Nighy",
+    "dateOfBirth": "1949-12-12",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Bill_Nighy",
+    "age": 75,
+    "notes": "English actor"
+  },
+  {
+    "fullName": "Catherine Elise Blanchett",
+    "dateOfBirth": "1969-05-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Cate_Blanchett",
+    "age": 56,
+    "notes": "Australian actress and producer"
+  },
+  {
+    "fullName": "Nicole Mary Kidman",
+    "dateOfBirth": "1967-06-20",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Nicole_Kidman",
+    "age": 58,
+    "notes": "Australian-American actress and producer"
+  },
+  {
+    "fullName": "Mads Dittmann Mikkelsen",
+    "dateOfBirth": "1965-11-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Mads_Mikkelsen",
+    "age": 60,
+    "notes": "Danish actor"
+  },
+  {
+    "fullName": "James Newell Osterberg Jr.",
+    "dateOfBirth": "1947-04-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Iggy_Pop",
+    "age": 78,
+    "notes": "American singer-songwriter (known as Iggy Pop)"
+  },
+  {
+    "fullName": "Timothy Walter Burton",
+    "dateOfBirth": "1958-08-25",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Tim_Burton",
+    "age": 67,
+    "notes": "American film director and producer"
+  },
+  {
+    "fullName": "Shah Rukh Khan",
+    "dateOfBirth": "1965-11-02",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Shah_Rukh_Khan",
+    "age": 60,
+    "notes": "Indian actor and film producer"
+  },
+  {
+    "fullName": "Annette Carol Bening",
+    "dateOfBirth": "1958-05-29",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Annette_Bening",
+    "age": 67,
+    "notes": "American actress"
+  },
+  {
+    "fullName": "Nicholas King Nolte",
+    "dateOfBirth": "1941-02-08",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Nick_Nolte",
+    "age": 84,
+    "notes": "American actor"
+  },
+  {
+    "fullName": "Jeffrey Leon Bridges",
+    "dateOfBirth": "1949-12-04",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jeff_Bridges",
+    "age": 75,
+    "notes": "American actor"
+  },
+  {
+    "fullName": "Roger Harry Daltrey",
+    "dateOfBirth": "1944-03-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Roger_Daltrey",
+    "age": 81,
+    "notes": "English singer, lead vocalist of the Who"
+  },
+  {
+    "fullName": "Julio Iglesias",
+    "dateOfBirth": "1943-09-23",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Julio_Iglesias",
+    "age": 82,
+    "notes": "Spanish singer-songwriter, international pop star"
+  },
+  {
+    "fullName": "Alain Delon",
+    "dateOfBirth": "1935-11-08",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Alain_Delon",
+    "age": 90,
+    "notes": "French actor and film icon"
+  },
+  {
+    "fullName": "Peter Gabriel",
+    "dateOfBirth": "1950-02-13",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Peter_Gabriel",
+    "age": 75,
+    "notes": "English musician, founding member of Genesis"
+  },
+  {
+    "fullName": "Yo-Yo Ma",
+    "dateOfBirth": "1955-10-07",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Yo-Yo_Ma",
+    "age": 70,
+    "notes": "American cellist, classical musician"
+  },
+  {
+    "fullName": "Andrea Bocelli",
+    "dateOfBirth": "1958-09-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Andrea_Bocelli",
+    "age": 67,
+    "notes": "Italian tenor and classical crossover singer"
+  },
+  {
+    "fullName": "Debbie Harry",
+    "dateOfBirth": "1945-07-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Debbie_Harry",
+    "age": 80,
+    "notes": "American singer and frontwoman of Blondie"
+  },
+  {
+    "fullName": "Grace Jones",
+    "dateOfBirth": "1948-05-19",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Grace_Jones",
+    "age": 77,
+    "notes": "Jamaican-American model, singer, and actress"
+  },
+  {
+    "fullName": "Ozzy Osbourne",
+    "dateOfBirth": "1948-12-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Ozzy_Osbourne",
+    "age": 76,
+    "notes": "English singer, lead vocalist of Black Sabbath"
+  },
+  {
+    "fullName": "James Taylor",
+    "dateOfBirth": "1948-03-12",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/James_Taylor",
+    "age": 77,
+    "notes": "American singer-songwriter known for folk-rock"
+  },
+  {
+    "fullName": "Gloria Estefan",
+    "dateOfBirth": "1957-09-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Gloria_Estefan",
+    "age": 68,
+    "notes": "Cuban-American singer-songwriter and actress"
+  },
+  {
+    "fullName": "Mariah Carey",
+    "dateOfBirth": "1969-03-27",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Mariah_Carey",
+    "age": 56,
+    "notes": "American singer-songwriter and actress"
+  },
+  {
+    "fullName": "Brad Pitt",
+    "dateOfBirth": "1963-12-18",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Brad_Pitt",
+    "age": 61,
+    "notes": "American actor and film producer"
+  },
+  {
+    "fullName": "Stevie Nicks",
+    "dateOfBirth": "1948-05-26",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Stevie_Nicks",
+    "age": 77,
+    "notes": "American singer-songwriter, member of Fleetwood Mac"
+  },
+  {
+    "fullName": "John Lithgow",
+    "dateOfBirth": "1945-10-19",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/John_Lithgow",
+    "age": 80,
+    "notes": "American actor and author"
+  },
+  {
+    "fullName": "Michael Keaton",
+    "dateOfBirth": "1951-09-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Michael_Keaton",
+    "age": 74,
+    "notes": "American actor"
+  },
+  {
+    "fullName": "Julia Roberts",
+    "dateOfBirth": "1967-10-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Julia_Roberts",
+    "age": 58,
+    "notes": "American actress"
+  },
+  {
+    "fullName": "Kevin Bacon",
+    "dateOfBirth": "1958-07-08",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Kevin_Bacon",
+    "age": 67,
+    "notes": "American actor and musician"
+  },
+  {
+    "fullName": "Salma Hayek",
+    "dateOfBirth": "1966-09-02",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Salma_Hayek",
+    "age": 59,
+    "notes": "Mexican and American actress and producer"
+  },
+  {
+    "fullName": "Björk",
+    "dateOfBirth": "1965-11-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Bj%C3%B6rk",
+    "age": 60,
+    "notes": "Icelandic singer-songwriter and actress"
+  },
+  {
+    "fullName": "Eric Idle",
+    "dateOfBirth": "1943-03-29",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Eric_Idle",
+    "age": 82,
+    "notes": "English comedian, actor, writer; member of Monty Python"
+  },
+  {
+    "fullName": "Ralph Fiennes",
+    "dateOfBirth": "1962-12-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Ralph_Fiennes",
+    "age": 62,
+    "notes": "English actor and director"
+  },
+  {
+    "fullName": "Michael York",
+    "dateOfBirth": "1942-03-27",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Michael_York",
+    "age": 83,
+    "notes": "English-born actor"
+  },
+  {
+    "fullName": "Gérard Depardieu",
+    "dateOfBirth": "1948-12-27",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/G%C3%A9rard_Depardieu",
+    "age": 76,
+    "notes": "French actor"
+  },
+  {
+    "fullName": "Monica Bellucci",
+    "dateOfBirth": "1964-09-30",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Monica_Bellucci",
+    "age": 61,
+    "notes": "Italian actress and model"
+  },
+  {
+    "fullName": "Kenneth Branagh",
+    "dateOfBirth": "1960-12-10",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Kenneth_Branagh",
+    "age": 64,
+    "notes": "Northern Irish actor and director"
+  },
+  {
+    "fullName": "Christoph Waltz",
+    "dateOfBirth": "1956-10-04",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Christoph_Waltz",
+    "age": 69,
+    "notes": "Austrian-German actor"
+  },
+  {
+    "fullName": "Eddie Murphy",
+    "dateOfBirth": "1961-04-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Eddie_Murphy",
+    "age": 64,
+    "notes": "American actor and comedian"
+  },
+  {
+    "fullName": "Isabelle Adjani",
+    "dateOfBirth": "1955-06-27",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Isabelle_Adjani",
+    "age": 70,
+    "notes": "French actress"
+  },
+  {
+    "fullName": "Bryan Ferry",
+    "dateOfBirth": "1945-09-26",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Bryan_Ferry",
+    "age": 80,
+    "notes": "English singer-songwriter"
+  },
+  {
+    "fullName": "Ricky Gervais",
+    "dateOfBirth": "1961-06-25",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Ricky_Gervais",
+    "age": 64,
+    "notes": "English comedian, actor, and writer"
+  },
+  {
+    "fullName": "Quincy Delight Jones Jr.",
+    "dateOfBirth": "1933-03-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Quincy_Jones",
+    "age": 92,
+    "notes": "American record producer, composer and arranger"
+  },
+  {
+    "fullName": "Dionne Warwick",
+    "dateOfBirth": "1940-12-12",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Dionne_Warwick",
+    "age": 84,
+    "notes": "American singer and humanitarian"
+  },
+  {
+    "fullName": "Kamal Haasan",
+    "dateOfBirth": "1954-11-07",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Kamal_Haasan",
+    "age": 71,
+    "notes": "Indian actor, filmmaker and politician"
+  },
+  {
+    "fullName": "Salman Khan",
+    "dateOfBirth": "1965-12-27",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Salman_Khan",
+    "age": 59,
+    "notes": "Indian film actor and producer"
+  },
+  {
+    "fullName": "Naomi Elaine Campbell",
+    "dateOfBirth": "1970-05-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Naomi_Campbell",
+    "age": 55,
+    "notes": "British supermodel and actress"
+  },
+  {
+    "fullName": "Catherine Zeta-Jones",
+    "dateOfBirth": "1969-09-25",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Catherine_Zeta-Jones",
+    "age": 56,
+    "notes": "Welsh actress"
+  },
+  {
+    "fullName": "Juliette Binoche",
+    "dateOfBirth": "1964-03-09",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Juliette_Binoche",
+    "age": 61,
+    "notes": "French actress"
+  },
+  {
+    "fullName": "Roberto Benigni",
+    "dateOfBirth": "1952-10-27",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Roberto_Benigni",
+    "age": 73,
+    "notes": "Italian actor, comedian and filmmaker"
+  },
+  {
+    "fullName": "Kimila Ann Basinger",
+    "dateOfBirth": "1953-12-08",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Kim_Basinger",
+    "age": 71,
+    "notes": "American actress and former fashion model (known as Kim Basinger)"
+  },
+  {
+    "fullName": "Frances Louise McDormand",
+    "dateOfBirth": "1957-06-23",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Frances_McDormand",
+    "age": 68,
+    "notes": "American actress"
+  },
+  {
+    "fullName": "Ben Kingsley",
+    "dateOfBirth": "1943-12-31",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Ben_Kingsley",
+    "age": 81,
+    "notes": "English actor (born Krishna Pandit Bhanji), Academy Award winner"
+  },
+  {
+    "fullName": "Imelda Staunton",
+    "dateOfBirth": "1956-01-09",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Imelda_Staunton",
+    "age": 69,
+    "notes": "English actress, known for film and theatre roles"
+  },
+  {
+    "fullName": "Paul Hogan",
+    "dateOfBirth": "1939-10-08",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Paul_Hogan_(actor)",
+    "age": 86,
+    "notes": "Australian actor and comedian, star of Crocodile Dundee"
+  },
+  {
+    "fullName": "Sônia Braga",
+    "dateOfBirth": "1950-06-08",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/S%C3%B4nia_Braga",
+    "age": 75,
+    "notes": "Brazilian actress, noted for international film career"
+  },
+  {
+    "fullName": "Alan Alda",
+    "dateOfBirth": "1936-01-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Alan_Alda",
+    "age": 89,
+    "notes": "American actor, director and writer, star of M*A*S*H"
+  },
+  {
+    "fullName": "Phil Collins",
+    "dateOfBirth": "1951-01-30",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Phil_Collins",
+    "age": 74,
+    "notes": "English drummer, singer-songwriter and record producer"
+  },
+  {
+    "fullName": "Kiri Te Kanawa",
+    "dateOfBirth": "1944-03-06",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Kiri_Te_Kanawa",
+    "age": 81,
+    "notes": "New Zealand operatic soprano (Dame Kiri Te Kanawa)"
+  },
+  {
+    "fullName": "Mary Berry",
+    "dateOfBirth": "1935-03-24",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Mary_Berry",
+    "age": 90,
+    "notes": "English food writer and television presenter, baking expert"
+  },
+  {
+    "fullName": "Gloria Steinem",
+    "dateOfBirth": "1934-03-25",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Gloria_Steinem",
+    "age": 91,
+    "notes": "American feminist, journalist and social-political activist"
+  },
+  {
+    "fullName": "Carole King",
+    "dateOfBirth": "1942-02-09",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Carole_King",
+    "age": 83,
+    "notes": "American singer-songwriter, influential 20th-century songwriter"
+  },
+  {
+    "fullName": "Andrew Lloyd Webber",
+    "dateOfBirth": "1948-03-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Andrew_Lloyd_Webber",
+    "age": 77,
+    "notes": "English composer and musical theatre impresario"
+  },
+  {
+    "fullName": "Brian May",
+    "dateOfBirth": "1947-07-19",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Brian_May",
+    "age": 78,
+    "notes": "English musician, guitarist of Queen"
+  },
+  {
+    "fullName": "Daniel Barenboim",
+    "dateOfBirth": "1942-11-15",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Daniel_Barenboim",
+    "age": 83,
+    "notes": "Argentine-Israeli conductor and pianist"
+  },
+  {
+    "fullName": "Bryan Adams",
+    "dateOfBirth": "1959-11-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Bryan_Adams",
+    "age": 66,
+    "notes": "Canadian singer-songwriter and photographer"
+  },
+  {
+    "fullName": "Daniel Day-Lewis",
+    "dateOfBirth": "1957-04-29",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Daniel_Day-Lewis",
+    "age": 68,
+    "notes": "English-born Irish actor"
+  },
+  {
+    "fullName": "Colin Firth",
+    "dateOfBirth": "1960-09-10",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Colin_Firth",
+    "age": 65,
+    "notes": "English actor"
+  },
+  {
+    "fullName": "Sam Neill",
+    "dateOfBirth": "1947-09-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Sam_Neill",
+    "age": 78,
+    "notes": "New Zealand actor"
+  },
+  {
+    "fullName": "Sean Bean",
+    "dateOfBirth": "1959-04-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Sean_Bean",
+    "age": 66,
+    "notes": "English actor"
+  },
+  {
+    "fullName": "Jean-Paul Gaultier",
+    "dateOfBirth": "1952-04-24",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jean-Paul_Gaultier",
+    "age": 73,
+    "notes": "French fashion designer"
+  },
+  {
+    "fullName": "Kazuo Ishiguro",
+    "dateOfBirth": "1954-11-08",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Kazuo_Ishiguro",
+    "age": 71,
+    "notes": "British novelist and Nobel laureate"
+  },
+  {
+    "fullName": "Nancy Pelosi",
+    "dateOfBirth": "1940-03-26",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Nancy_Pelosi",
+    "age": 85,
+    "notes": "American politician, former Speaker of the U.S. House of Representatives"
+  },
+  {
+    "fullName": "Harvey Keitel",
+    "dateOfBirth": "1939-05-13",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Harvey_Keitel",
+    "age": 86,
+    "notes": "American actor known for roles in films by Scorsese and Tarantino"
+  },
+  {
+    "fullName": "Smokey Robinson",
+    "dateOfBirth": "1940-02-19",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Smokey_Robinson",
+    "age": 85,
+    "notes": "American singer-songwriter and Motown icon (William 'Smokey' Robinson Jr.)"
+  },
+  {
+    "fullName": "Mel Gibson",
+    "dateOfBirth": "1956-01-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Mel_Gibson",
+    "age": 69,
+    "notes": "American-Australian actor and director"
+  },
+  {
+    "fullName": "Michael Bolton",
+    "dateOfBirth": "1953-02-26",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Michael_Bolton",
+    "age": 72,
+    "notes": "American singer and songwriter"
+  },
+  {
+    "fullName": "Engelbert Humperdinck",
+    "dateOfBirth": "1936-05-02",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Engelbert_Humperdinck",
+    "age": 89,
+    "notes": "British pop singer (stage name of Arnold Dorsey)"
+  },
+  {
+    "fullName": "Michael Flatley",
+    "dateOfBirth": "1958-07-16",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Michael_Flatley",
+    "age": 67,
+    "notes": "Irish-American dancer, choreographer and creator of Riverdance"
+  },
+  {
+    "fullName": "Germaine Greer",
+    "dateOfBirth": "1939-01-29",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Germaine_Greer",
+    "age": 86,
+    "notes": "Australian-born feminist writer and academic"
+  },
+  {
+    "fullName": "André Rieu",
+    "dateOfBirth": "1949-10-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Andr%C3%A9_Rieu",
+    "age": 76,
+    "notes": "Dutch violinist and conductor known for classical-popular concerts"
+  },
+  {
+    "fullName": "Elvis Costello",
+    "dateOfBirth": "1954-08-25",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Elvis_Costello",
+    "age": 71,
+    "notes": "English singer-songwriter (born Declan Patrick MacManus)"
+  },
+  {
+    "fullName": "Michael Jeffrey Jordan",
+    "dateOfBirth": "1963-02-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Michael_Jordan",
+    "age": 62,
+    "notes": "Former NBA player and entrepreneur"
+  },
+  {
+    "fullName": "Jean Reno",
+    "dateOfBirth": "1948-07-30",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jean_Reno",
+    "age": 77,
+    "notes": "French actor known for Léon: The Professional"
+  },
+  {
+    "fullName": "Shelton Jackson Lee",
+    "dateOfBirth": "1957-03-20",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Spike_Lee",
+    "age": 68,
+    "notes": "American film director (known as Spike Lee)"
+  },
+  {
+    "fullName": "Hugh John Mungo Grant",
+    "dateOfBirth": "1960-09-09",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Hugh_Grant",
+    "age": 65,
+    "notes": "English actor"
+  },
+  {
+    "fullName": "Thomas William Selleck",
+    "dateOfBirth": "1945-01-29",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Tom_Selleck",
+    "age": 80,
+    "notes": "American actor"
+  },
+  {
+    "fullName": "John Francis Bongiovi Jr.",
+    "dateOfBirth": "1962-03-02",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jon_Bon_Jovi",
+    "age": 63,
+    "notes": "American singer-songwriter (known as Jon Bon Jovi)"
+  },
+  {
+    "fullName": "Timothy Dalton",
+    "dateOfBirth": "1946-03-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Timothy_Dalton",
+    "age": 79,
+    "notes": "Welsh actor"
+  },
+  {
+    "fullName": "George Walker Bush",
+    "dateOfBirth": "1946-07-06",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/George_W._Bush",
+    "age": 79,
+    "notes": "43rd President of the United States"
+  },
+  {
+    "fullName": "Robert John Odenkirk",
+    "dateOfBirth": "1962-10-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Bob_Odenkirk",
+    "age": 63,
+    "notes": "American actor, comedian and writer"
+  },
+  {
+    "fullName": "Anthony Stephen Fauci",
+    "dateOfBirth": "1940-12-24",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Anthony_Fauci",
+    "age": 84,
+    "notes": "American immunologist and public health official"
+  },
+  {
+    "fullName": "Jeremy Irons",
+    "dateOfBirth": "1948-09-19",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jeremy_Irons",
+    "age": 77,
+    "notes": "English actor"
+  },
+  {
+    "fullName": "Mary Steenburgen",
+    "dateOfBirth": "1953-02-08",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Mary_Steenburgen",
+    "age": 72,
+    "notes": "American actress"
+  },
+  {
+    "fullName": "Gladys Knight",
+    "dateOfBirth": "1944-05-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Gladys_Knight",
+    "age": 81,
+    "notes": "American singer"
+  },
+  {
+    "fullName": "Catherine O'Hara",
+    "dateOfBirth": "1954-03-04",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Catherine_O%27Hara",
+    "age": 71,
+    "notes": "Canadian actress and comedian"
+  },
+  {
+    "fullName": "Martin Short",
+    "dateOfBirth": "1950-03-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Martin_Short",
+    "age": 75,
+    "notes": "Canadian-American comedian and actor"
+  },
+  {
+    "fullName": "Steve Martin",
+    "dateOfBirth": "1945-08-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Steve_Martin",
+    "age": 80,
+    "notes": "American comedian, actor, and writer"
+  },
+  {
+    "fullName": "Stockard Channing",
+    "dateOfBirth": "1944-02-13",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Stockard_Channing",
+    "age": 81,
+    "notes": "American actress"
+  },
+  {
+    "fullName": "Bryan Cranston",
+    "dateOfBirth": "1956-03-07",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Bryan_Cranston",
+    "age": 69,
+    "notes": "American actor and producer"
+  },
+  {
+    "fullName": "Albert Leornes Greene",
+    "dateOfBirth": "1946-04-13",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Al_Green",
+    "age": 79,
+    "notes": "American singer (professionally known as Al Green)"
+  },
+  {
+    "fullName": "Annie Potts",
+    "dateOfBirth": "1952-10-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Annie_Potts",
+    "age": 73,
+    "notes": "American actress"
+  },
+  {
+    "fullName": "Kate Bush",
+    "dateOfBirth": "1958-07-30",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Kate_Bush",
+    "age": 67,
+    "notes": "English singer-songwriter and musician"
+  },
+  {
+    "fullName": "Lionel Richie",
+    "dateOfBirth": "1949-06-20",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Lionel_Richie",
+    "age": 76,
+    "notes": "American singer, songwriter and record producer"
+  },
+  {
+    "fullName": "Christopher Nolan",
+    "dateOfBirth": "1970-07-30",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Christopher_Nolan",
+    "age": 55,
+    "notes": "British-American film director, screenwriter and producer"
+  },
+  {
+    "fullName": "Roger Federer",
+    "dateOfBirth": "1981-08-08",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Roger_Federer",
+    "age": 44,
+    "notes": "Swiss professional tennis player"
+  },
+  {
+    "fullName": "Serena Williams",
+    "dateOfBirth": "1981-09-26",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Serena_Williams",
+    "age": 44,
+    "notes": "American professional tennis player"
+  },
+  {
+    "fullName": "Helen Hunt",
+    "dateOfBirth": "1963-06-15",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Helen_Hunt",
+    "age": 62,
+    "notes": "American actress and director"
+  },
+  {
+    "fullName": "Liv Ullmann",
+    "dateOfBirth": "1938-12-16",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Liv_Ullmann",
+    "age": 86,
+    "notes": "Norwegian actress and film director"
+  },
+  {
+    "fullName": "Michael Stipe",
+    "dateOfBirth": "1960-01-04",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Michael_Stipe",
+    "age": 65,
+    "notes": "American singer-songwriter, lead singer of R.E.M."
+  },
+  {
+    "fullName": "Zinedine Zidane",
+    "dateOfBirth": "1972-06-23",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Zinedine_Zidane",
+    "age": 53,
+    "notes": "French former professional footballer and manager"
+  },
+  {
+    "fullName": "Enya",
+    "dateOfBirth": "1961-05-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Enya",
+    "age": 64,
+    "notes": "Irish singer, songwriter and composer (stage name)"
+  },
+  {
+    "fullName": "Haruki Murakami",
+    "dateOfBirth": "1949-01-12",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Haruki_Murakami",
+    "age": 76,
+    "notes": "Japanese novelist and translator"
+  },
+  {
+    "fullName": "Ian McEwan",
+    "dateOfBirth": "1948-06-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Ian_McEwan",
+    "age": 77,
+    "notes": "English novelist and screenwriter"
+  },
+  {
+    "fullName": "Richard Branson",
+    "dateOfBirth": "1950-07-18",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Richard_Branson",
+    "age": 75,
+    "notes": "British entrepreneur, founder of the Virgin Group"
+  },
+  {
+    "fullName": "Warren Buffett",
+    "dateOfBirth": "1930-08-30",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Warren_Buffett",
+    "age": 95,
+    "notes": "American investor and philanthropist, chairman of Berkshire Hathaway"
+  },
+  {
+    "fullName": "Sharon Osbourne",
+    "dateOfBirth": "1952-10-09",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Sharon_Osbourne",
+    "age": 73,
+    "notes": "Television personality, music manager and author"
+  },
+  {
+    "fullName": "Mark Hamill",
+    "dateOfBirth": "1951-09-25",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Mark_Hamill",
+    "age": 74,
+    "notes": "American actor and voice actor, known for Star Wars"
+  },
+  {
+    "fullName": "Fran Lebowitz",
+    "dateOfBirth": "1950-10-27",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Fran_Lebowitz",
+    "age": 75,
+    "notes": "American author, essayist, and cultural commentator"
+  },
+  {
+    "fullName": "Bernard Arnault",
+    "dateOfBirth": "1949-03-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Bernard_Arnault",
+    "age": 76,
+    "notes": "French businessman, chairman and CEO of LVMH"
+  },
+  {
+    "fullName": "Paul Schrader",
+    "dateOfBirth": "1946-07-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Paul_Schrader",
+    "age": 79,
+    "notes": "American filmmaker and screenwriter"
+  },
+  {
+    "fullName": "Gillian Anderson",
+    "dateOfBirth": "1968-08-09",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Gillian_Anderson",
+    "age": 57,
+    "notes": "American-British actress, known for The X-Files"
+  },
+  {
+    "fullName": "Noam Chomsky",
+    "dateOfBirth": "1928-12-07",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Noam_Chomsky",
+    "age": 96,
+    "notes": "American linguist, philosopher, cognitive scientist and political activist"
+  },
+  {
+    "fullName": "Anupam Kher",
+    "dateOfBirth": "1955-03-07",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Anupam_Kher",
+    "age": 70,
+    "notes": "Indian film and stage actor"
+  },
+  {
+    "fullName": "Anderson Cooper",
+    "dateOfBirth": "1967-06-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Anderson_Cooper",
+    "age": 58,
+    "notes": "American journalist and television personality"
+  },
+  {
+    "fullName": "Guillermo del Toro",
+    "dateOfBirth": "1964-10-09",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Guillermo_del_Toro",
+    "age": 61,
+    "notes": "Mexican filmmaker, author and visual artist"
+  },
+  {
+    "fullName": "Alejandro González Iñárritu",
+    "dateOfBirth": "1963-08-15",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Alejandro_Gonz%C3%A1lez_I%C3%B1%C3%A1rritu",
+    "age": 62,
+    "notes": "Mexican film director, producer and screenwriter"
+  },
+  {
+    "fullName": "Jean-Claude Van Damme",
+    "dateOfBirth": "1960-10-18",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jean-Claude_Van_Damme",
+    "age": 65,
+    "notes": "Belgian actor and martial artist"
+  },
+  {
+    "fullName": "Wim Wenders",
+    "dateOfBirth": "1945-08-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Wim_Wenders",
+    "age": 80,
+    "notes": "German filmmaker, playwright and photographer"
+  },
+  {
+    "fullName": "Björn Ulvaeus",
+    "dateOfBirth": "1945-04-25",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Bj%C3%B6rn_Ulvaeus",
+    "age": 80,
+    "notes": "Swedish musician, composer and former member of ABBA"
+  },
+  {
+    "fullName": "Anna Wintour",
+    "dateOfBirth": "1954-11-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Anna_Wintour",
+    "age": 71,
+    "notes": "British-American journalist and editor-in-chief of Vogue"
+  },
+  {
+    "fullName": "Cornel West",
+    "dateOfBirth": "1953-06-02",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Cornel_West",
+    "age": 72,
+    "notes": "American philosopher, political activist and public intellectual"
   }
 ]

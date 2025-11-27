@@ -28,7 +28,7 @@ const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
 // Config
 const TOTAL_TARGET = 500;
-const BATCH_SIZE = 40; // number of celebs requested per API call (keep this modest to avoid huge responses)
+const BATCH_SIZE = 10; // number of celebs requested per API call (keep this modest to avoid huge responses)
 const MODEL = 'gpt-5-mini';
 const TEMPERATURE = 0;
 const REQUEST_TIMEOUT_MS = 120_000; // 2 minutes per OpenAI request

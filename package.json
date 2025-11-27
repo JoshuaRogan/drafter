@@ -9,6 +9,7 @@
     "generate:celebs": "node generate-celebrities.mjs"
   },
   "dependencies": {
+    "@netlify/blobs": "^10.4.1",
     "ably": "^1.2.44",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
@@ -21,5 +22,3 @@
     "vite": "^5.2.0"
   }
 }
-
-
