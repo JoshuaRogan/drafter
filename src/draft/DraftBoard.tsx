@@ -354,6 +354,7 @@ export const DraftBoard: React.FC = () => {
   } = useDraft();
 
   const boardContainerRef = useRef<HTMLDivElement | null>(null);
+  const picksScrollRef = useRef<HTMLDivElement | null>(null);
 
   const [roundsInput, setRoundsInput] = useState(3);
   const [lastError, setLastError] = useState<string | null>(null);
@@ -373,6 +374,8 @@ export const DraftBoard: React.FC = () => {
   const [proxyPickRequest, setProxyPickRequest] = useState<ProxyPickRequest | null>(null);
   const [lastPickDisplay, setLastPickDisplay] = useState<LastPickDisplay | null>(null);
   const [isLastPickHighlighting, setIsLastPickHighlighting] = useState(false);
+
+  const pickCount = state?.picks.length ?? 0;
 
   const currentDrafter = useMemo(() => getCurrentDrafter(state), [state]);
   const currentDrafterName = currentDrafter?.name ?? null;
@@ -491,6 +494,12 @@ export const DraftBoard: React.FC = () => {
     };
   }, [state?.picks.length, state]);
 
+  useEffect(() => {
+    const container = picksScrollRef.current;
+    if (!container) return;
+    container.scrollTop = container.scrollHeight;
+  }, [pickCount]);
+
   // Prevent background scrolling while the confirmation modal is open so the
   // modal/backdrop remain visually fixed in the viewport.
   // Also scroll to the top of the page whenever that modal is opened so that
@@ -565,7 +574,7 @@ export const DraftBoard: React.FC = () => {
       return;
     }
 
-    const totalRounds = Math.max(1, Math.min(20, roundsInput));
+    const totalRounds = Math.max(1, Math.min(200, roundsInput));
     const list = getDefaultCelebrityList();
     initDraft({ totalRounds, celebrityList: list });
   };
@@ -761,7 +770,10 @@ export const DraftBoard: React.FC = () => {
             </div>
           </div>
 
-          <div className="table-scroll">
+          <div
+            className="table-scroll table-scroll--picks"
+            ref={picksScrollRef}
+          >
             <div className="grid grid--picks mt-12">
               <div className="grid-header">
                 <div>#</div>
@@ -981,7 +993,7 @@ export const DraftBoard: React.FC = () => {
                     <input
                       type="number"
                       min={1}
-                      max={20}
+                      max={200}
                       value={roundsInput}
                       onChange={(e) => setRoundsInput(Number(e.target.value) || 1)}
                       style={{ width: 80, marginTop: 4 }}

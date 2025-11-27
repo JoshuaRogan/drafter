@@ -330,6 +330,11 @@ button {
   -webkit-overflow-scrolling: touch;
 }
 
+.table-scroll--picks {
+  max-height: 420px;
+  overflow-y: auto;
+}
+
 .table-scroll::-webkit-scrollbar {
   height: 6px;
 }

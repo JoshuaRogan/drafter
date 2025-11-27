@@ -133,7 +133,7 @@ function createInitialState(totalRounds, celebrityList) {
 
   const safeRounds =
     Number.isFinite(Number(totalRounds)) && Number(totalRounds) > 0
-      ? Math.max(1, Math.min(20, Number(totalRounds)))
+      ? Math.max(1, Math.min(200, Number(totalRounds)))
       : 3;
 
   const drafters = PRECONFIGURED_DRAFTERS.map((d) => ({ ...d }));
