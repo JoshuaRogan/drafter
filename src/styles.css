@@ -648,12 +648,6 @@ button {
 }
 
 .modal {
-  position: fixed;
-  /* Position the modal so its top edge sits halfway down the viewport */
-  top: 50vh;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
   max-width: 420px;
   max-height: calc(100vh - 64px);
   overflow-y: auto;
@@ -662,6 +656,20 @@ button {
   border: 1px solid rgba(148, 163, 184, 0.4);
   box-shadow: 0 24px 80px rgba(15, 23, 42, 0.9);
   padding: 16px 18px 14px;
+}
+
+.modal-centered {
+  position: fixed;
+  /* Position the modal so its top edge sits halfway down the viewport */
+  top: 50vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+}
+
+.modal-popover {
+  position: absolute;
+  z-index: 50;
 }
 
 .modal-header {

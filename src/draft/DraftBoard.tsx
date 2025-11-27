@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useDraft, getDefaultCelebrityList, getPreconfiguredDrafters } from './DraftContext';
 import type { Celebrity, DraftState } from './types';
 import autoCelebritiesRaw from '../../celebrities.json';
@@ -89,119 +89,135 @@ interface LastPickDisplay {
   celebrityName: string;
 }
 
-interface EditPickModalProps {
+interface EditPickPopoverProps {
   selectedPick: SelectedPick;
   isAdmin: boolean;
+  anchorPosition: { x: number; y: number };
   editCelebrityName: string;
   setEditCelebrityName(value: string): void;
   onSave(pickId: string, nextName: string): void;
   onClose(): void;
 }
 
-const EditPickModal: React.FC<EditPickModalProps> = ({
+const EditPickPopover: React.FC<EditPickPopoverProps> = ({
   selectedPick,
   isAdmin,
+  anchorPosition,
   editCelebrityName,
   setEditCelebrityName,
   onSave,
   onClose
 }) => {
   const { pickId, celebrity } = selectedPick;
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  // Close when the user clicks anywhere outside of the popover.
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!containerRef.current) return;
+      if (!containerRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onClose]);
+
+  const { x, y } = anchorPosition;
 
   return (
     <div
-      className="modal-backdrop"
-      onClick={onClose}
+      ref={containerRef}
+      className="modal modal-popover"
+      style={{ top: y, left: x }}
     >
-      <div
-        className="modal"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="modal-header">
-          <div>
-            <div className="modal-title">{celebrity.fullName || celebrity.name}</div>
-            <div className="modal-subtitle">{celebrity.name}</div>
-          </div>
-          <div>
-            <span
-              className={`status-pill ${
-                celebrity.isValidated ? 'status-pill-valid' : 'status-pill-invalid'
-              }`}
-            >
-              {celebrity.isValidated ? 'Validated' : 'No clear match'}
-            </span>
-          </div>
+      <div className="modal-header">
+        <div>
+          <div className="modal-title">{celebrity.fullName || celebrity.name}</div>
+          <div className="modal-subtitle">{celebrity.name}</div>
         </div>
-
-        <div className="modal-body">
-          {isAdmin && (
-            <div className="modal-row">
-              <span className="modal-label">Edit drafted name</span>
-              <span className="modal-value">
-                <input
-                  type="text"
-                  className="modal-input"
-                  value={editCelebrityName}
-                  onChange={(e) => setEditCelebrityName(e.target.value)}
-                />
-              </span>
-            </div>
-          )}
-          <div className="modal-row">
-            <span className="modal-label">Date of birth</span>
-            <span className="modal-value">{celebrity.dateOfBirth || 'Not available'}</span>
-          </div>
-          <div className="modal-row">
-            <span className="modal-label">Life status</span>
-            <span className="modal-value">
-              {celebrity.isDeceased === true
-                ? 'Reported deceased'
-                : celebrity.validationAttempted
-                ? 'Believed alive'
-                : 'Unknown'}
-            </span>
-          </div>
-          <div className="modal-row">
-            <span className="modal-label">Wikipedia</span>
-            <span className="modal-value">
-              {celebrity.hasWikipediaPage && celebrity.wikipediaUrl ? (
-                <a
-                  href={celebrity.wikipediaUrl || undefined}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Open page
-                </a>
-              ) : (
-                'Not found'
-              )}
-            </span>
-          </div>
-          <div className="modal-row">
-            <span className="modal-label">Notes</span>
-            <span className="modal-value">{celebrity.validationNotes || '—'}</span>
-          </div>
+        <div>
+          <span
+            className={`status-pill ${
+              celebrity.isValidated ? 'status-pill-valid' : 'status-pill-invalid'
+            }`}
+          >
+            {celebrity.isValidated ? 'Validated' : 'No clear match'}
+          </span>
         </div>
+      </div>
 
-        <div className="modal-footer">
-          {isAdmin && (
-            <button
-              type="button"
-              className="btn-primary"
-              onClick={() => onSave(pickId, editCelebrityName.trim())}
-              style={{ marginRight: 8 }}
-            >
-              Save changes
-            </button>
-          )}
+      <div className="modal-body">
+        {isAdmin && (
+          <div className="modal-row">
+            <span className="modal-label">Edit drafted name</span>
+            <span className="modal-value">
+              <input
+                type="text"
+                className="modal-input"
+                value={editCelebrityName}
+                onChange={(e) => setEditCelebrityName(e.target.value)}
+              />
+            </span>
+          </div>
+        )}
+        <div className="modal-row">
+          <span className="modal-label">Date of birth</span>
+          <span className="modal-value">{celebrity.dateOfBirth || 'Not available'}</span>
+        </div>
+        <div className="modal-row">
+          <span className="modal-label">Life status</span>
+          <span className="modal-value">
+            {celebrity.isDeceased === true
+              ? 'Reported deceased'
+              : celebrity.validationAttempted
+              ? 'Believed alive'
+              : 'Unknown'}
+          </span>
+        </div>
+        <div className="modal-row">
+          <span className="modal-label">Wikipedia</span>
+          <span className="modal-value">
+            {celebrity.hasWikipediaPage && celebrity.wikipediaUrl ? (
+              <a
+                href={celebrity.wikipediaUrl || undefined}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open page
+              </a>
+            ) : (
+              'Not found'
+            )}
+          </span>
+        </div>
+        <div className="modal-row">
+          <span className="modal-label">Notes</span>
+          <span className="modal-value">{celebrity.validationNotes || '—'}</span>
+        </div>
+      </div>
+
+      <div className="modal-footer">
+        {isAdmin && (
           <button
             type="button"
-            className="btn-secondary"
-            onClick={onClose}
+            className="btn-primary"
+            onClick={() => onSave(pickId, editCelebrityName.trim())}
+            style={{ marginRight: 8 }}
           >
-            Close
+            Save changes
           </button>
-        </div>
+        )}
+        <button
+          type="button"
+          className="btn-secondary"
+          onClick={onClose}
+        >
+          Close
+        </button>
       </div>
     </div>
   );
@@ -226,7 +242,7 @@ const ProxyPickConfirmationModal: React.FC<ProxyPickConfirmationModalProps> = ({
       onClick={onCancel}
     >
       <div
-        className="modal"
+        className="modal modal-centered"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header">
@@ -337,11 +353,16 @@ export const DraftBoard: React.FC = () => {
     restoreCheckpoint
   } = useDraft();
 
+  const boardContainerRef = useRef<HTMLDivElement | null>(null);
+
   const [roundsInput, setRoundsInput] = useState(3);
   const [lastError, setLastError] = useState<string | null>(null);
   const [activeDrafterId, setActiveDrafterId] = useState<string | null>(null);
   const [customCelebrityName, setCustomCelebrityName] = useState('');
   const [selectedPick, setSelectedPick] = useState<SelectedPick | null>(null);
+  const [selectedPickAnchor, setSelectedPickAnchor] = useState<{ x: number; y: number } | null>(
+    null
+  );
   const [editCelebrityName, setEditCelebrityName] = useState('');
   const [secondsRemaining, setSecondsRemaining] = useState<number>(0);
   const [checkpointName, setCheckpointName] = useState('');
@@ -470,14 +491,13 @@ export const DraftBoard: React.FC = () => {
     };
   }, [state?.picks.length, state]);
 
-  // Prevent background scrolling while any modal is open so the
+  // Prevent background scrolling while the confirmation modal is open so the
   // modal/backdrop remain visually fixed in the viewport.
-  // Also scroll to the top of the page whenever a modal is opened so that
+  // Also scroll to the top of the page whenever that modal is opened so that
   // the modal starts in a predictable position, even if the user was
   // scrolled far down the draft board.
   useEffect(() => {
-    const hasModalOpen = !!selectedPick || !!proxyPickRequest;
-    if (!hasModalOpen) {
+    if (!proxyPickRequest) {
       return;
     }
 
@@ -489,7 +509,7 @@ export const DraftBoard: React.FC = () => {
     return () => {
       document.body.style.overflow = previousOverflow;
     };
-  }, [selectedPick, proxyPickRequest]);
+  }, [proxyPickRequest]);
 
   const handleSaveCheckpoint = async () => {
     if (!state) {
@@ -682,7 +702,11 @@ export const DraftBoard: React.FC = () => {
   };
 
   return (
-    <div className="mt-16">
+    <div
+      ref={boardContainerRef}
+      className="mt-16"
+      style={{ position: 'relative' }}
+    >
       {lastPickDisplay && (
         <div
           className={`draft-notification-banner${
@@ -780,9 +804,39 @@ export const DraftBoard: React.FC = () => {
 
                       const title = titleParts.join(' • ');
 
-                      const handleOpenDetails = () => {
+                      const handleOpenDetails = (event: React.MouseEvent<HTMLElement>) => {
                         if (!celeb) return;
+
+                        const cellRect = event.currentTarget.getBoundingClientRect();
+                        const containerRect = boardContainerRef.current?.getBoundingClientRect();
+                        const margin = 12;
+
+                        let x: number;
+                        let y: number;
+
+                        if (containerRect) {
+                          // Position relative to the draft board container so the popover
+                          // tracks the cell in both tables regardless of scroll position.
+                          x = cellRect.left - containerRect.left;
+                          y = cellRect.bottom - containerRect.top + 8;
+
+                          const estimatedWidth = 360;
+                          if (x + estimatedWidth > containerRect.width - margin) {
+                            x = Math.max(margin, containerRect.width - margin - estimatedWidth);
+                          }
+                          x = Math.max(margin, x);
+                        } else {
+                          // Fallback to viewport-relative coordinates.
+                          const viewportWidth =
+                            window.innerWidth || document.documentElement.clientWidth;
+                          x = Math.max(margin, Math.min(viewportWidth - margin, cellRect.left));
+                          y = cellRect.bottom + 8;
+                        }
+
+                        y = Math.max(margin, y);
+
                         setSelectedPick({ pickId: pick.id, celebrity: celeb });
+                        setSelectedPickAnchor({ x, y });
                         setEditCelebrityName(pick.celebrityName);
                       };
 
@@ -1115,9 +1169,36 @@ export const DraftBoard: React.FC = () => {
                       );
                       const celeb = celebName ? celebritiesByName.get(celebName) : undefined;
 
-                      const handleOpenDetails = () => {
+                      const handleOpenDetails = (event: React.MouseEvent<HTMLElement>) => {
                         if (!pickForCell || !celeb) return;
+
+                        const cellRect = event.currentTarget.getBoundingClientRect();
+                        const containerRect = boardContainerRef.current?.getBoundingClientRect();
+                        const margin = 12;
+
+                        let x: number;
+                        let y: number;
+
+                        if (containerRect) {
+                          x = cellRect.left - containerRect.left;
+                          y = cellRect.bottom - containerRect.top + 8;
+
+                          const estimatedWidth = 360;
+                          if (x + estimatedWidth > containerRect.width - margin) {
+                            x = Math.max(margin, containerRect.width - margin - estimatedWidth);
+                          }
+                          x = Math.max(margin, x);
+                        } else {
+                          const viewportWidth =
+                            window.innerWidth || document.documentElement.clientWidth;
+                          x = Math.max(margin, Math.min(viewportWidth - margin, cellRect.left));
+                          y = cellRect.bottom + 8;
+                        }
+
+                        y = Math.max(margin, y);
+
                         setSelectedPick({ pickId: pickForCell.id, celebrity: celeb });
+                        setSelectedPickAnchor({ x, y });
                         setEditCelebrityName(pickForCell.celebrityName);
                       };
 
@@ -1160,20 +1241,26 @@ export const DraftBoard: React.FC = () => {
         </div>
       )}
 
-      {selectedPick && (
-        <EditPickModal
+      {selectedPick && selectedPickAnchor && (
+        <EditPickPopover
           selectedPick={selectedPick}
           isAdmin={isAdmin}
+          anchorPosition={selectedPickAnchor}
           editCelebrityName={editCelebrityName}
           setEditCelebrityName={setEditCelebrityName}
-          onClose={() => setSelectedPick(null)}
+          onClose={() => {
+            setSelectedPick(null);
+            setSelectedPickAnchor(null);
+          }}
           onSave={(pickId, nextName) => {
             if (!nextName) {
               setSelectedPick(null);
+              setSelectedPickAnchor(null);
               return;
             }
             editPick(pickId, nextName);
             setSelectedPick(null);
+            setSelectedPickAnchor(null);
           }}
         />
       )}
