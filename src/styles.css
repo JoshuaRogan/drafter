@@ -428,8 +428,12 @@ button {
 
 .round-grid-header > div,
 .round-grid-row > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 6px 10px;
   border-bottom: 1px solid rgba(31, 41, 55, 0.85);
+  text-align: center;
 }
 
 .round-grid-row:nth-child(odd) {
