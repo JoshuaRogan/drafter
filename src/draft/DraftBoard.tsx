@@ -374,6 +374,9 @@ export const DraftBoard: React.FC = () => {
   const [proxyPickRequest, setProxyPickRequest] = useState<ProxyPickRequest | null>(null);
   const [lastPickDisplay, setLastPickDisplay] = useState<LastPickDisplay | null>(null);
   const [isLastPickHighlighting, setIsLastPickHighlighting] = useState(false);
+  const [autoDraftTargetRound, setAutoDraftTargetRound] = useState<number | null>(null);
+  const [isAutoDraftingRound, setIsAutoDraftingRound] = useState(false);
+  const lastAutoDraftedIndexRef = useRef<number | null>(null);
 
   const pickCount = state?.picks.length ?? 0;
 
@@ -499,6 +502,60 @@ export const DraftBoard: React.FC = () => {
     if (!container) return;
     container.scrollTop = container.scrollHeight;
   }, [pickCount]);
+
+  useEffect(() => {
+    if (!isAutoDraftingRound || !state || !state.drafters.length || !currentDrafter) {
+      return;
+    }
+
+    if (status === 'complete' || autoDraftTargetRound == null) {
+      setIsAutoDraftingRound(false);
+      setAutoDraftTargetRound(null);
+      lastAutoDraftedIndexRef.current = null;
+      return;
+    }
+
+    if (state.currentRound !== autoDraftTargetRound) {
+      setIsAutoDraftingRound(false);
+      setAutoDraftTargetRound(null);
+      lastAutoDraftedIndexRef.current = null;
+      return;
+    }
+
+    const perRound = state.drafters.length;
+    const firstIndexThisRound = (autoDraftTargetRound - 1) * perRound;
+    const lastIndexThisRoundExclusive = firstIndexThisRound + perRound;
+
+    if (state.currentPickIndex >= lastIndexThisRoundExclusive) {
+      setIsAutoDraftingRound(false);
+      setAutoDraftTargetRound(null);
+      lastAutoDraftedIndexRef.current = null;
+      return;
+    }
+
+    if (lastAutoDraftedIndexRef.current === state.currentPickIndex) {
+      return;
+    }
+
+    const candidate = pickAutoCelebrity(draftedNames);
+    if (!candidate) {
+      setLastError('No eligible celebrities left in the auto-draft list.');
+      setTimeout(() => setLastError(null), 2500);
+      setIsAutoDraftingRound(false);
+      setAutoDraftTargetRound(null);
+      lastAutoDraftedIndexRef.current = null;
+      return;
+    }
+
+    lastAutoDraftedIndexRef.current = state.currentPickIndex;
+    const ok = attemptPick(candidate.fullName.trim());
+    if (!ok) {
+      // attemptPick already surfaced a user-facing error; stop to avoid loops.
+      setIsAutoDraftingRound(false);
+      setAutoDraftTargetRound(null);
+      lastAutoDraftedIndexRef.current = null;
+    }
+  }, [autoDraftTargetRound, isAutoDraftingRound, state, status, currentDrafter, draftedNames]);
 
   // Prevent background scrolling while the confirmation modal is open so the
   // modal/backdrop remain visually fixed in the viewport.
@@ -666,6 +723,47 @@ export const DraftBoard: React.FC = () => {
       // handlePick already surfaced a user-facing error.
       return;
     }
+  };
+
+  const handleAutoDraftRound = () => {
+    if (!state) return;
+    if (!isAdmin) {
+      setLastError('Only the admin can auto-draft the rest of a round.');
+      setTimeout(() => setLastError(null), 2500);
+      return;
+    }
+
+    if (!currentDrafter) {
+      setLastError('The draft has not been started yet.');
+      setTimeout(() => setLastError(null), 2000);
+      return;
+    }
+
+    if (!state.drafters.length) {
+      setLastError('No drafters have been configured.');
+      setTimeout(() => setLastError(null), 2000);
+      return;
+    }
+
+    if (status === 'complete') {
+      setLastError('The draft is already complete.');
+      setTimeout(() => setLastError(null), 2000);
+      return;
+    }
+
+    const perRound = state.drafters.length;
+    const currentRound = state.currentRound;
+    const firstIndexThisRound = (currentRound - 1) * perRound;
+    const lastIndexThisRoundExclusive = firstIndexThisRound + perRound;
+
+    if (state.currentPickIndex >= lastIndexThisRoundExclusive) {
+      setLastError('This round is already complete.');
+      setTimeout(() => setLastError(null), 2000);
+      return;
+    }
+
+    setAutoDraftTargetRound(currentRound);
+    setIsAutoDraftingRound(true);
   };
 
   const handleDownloadCsv = () => {
@@ -1139,6 +1237,25 @@ export const DraftBoard: React.FC = () => {
                 Favors older celebrities but keeps some randomness.
               </div>
             </div>
+            {isAdmin && (
+              <div className="field-row mt-8">
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={handleAutoDraftRound}
+                  disabled={
+                    !state || !currentDrafter || status === 'complete' || isAutoDraftingRound
+                  }
+                >
+                  Auto-draft rest of round
+                </button>
+                <div style={{ fontSize: 12, color: '#6b7280' }}>
+                  {isAutoDraftingRound && autoDraftTargetRound != null
+                    ? `Auto-drafting remaining picks for round ${autoDraftTargetRound}…`
+                    : 'Drafts everyone who has not yet picked this round from the auto list.'}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="mt-12">
