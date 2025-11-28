@@ -3498,5 +3498,194 @@
     "wikipediaUrl": "https://en.wikipedia.org/wiki/Emmylou_Harris",
     "age": 78,
     "notes": "American singer-songwriter"
+  },
+  {
+    "fullName": "Roger Penrose",
+    "dateOfBirth": "1931-08-08",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Roger_Penrose",
+    "age": 94,
+    "notes": "British mathematical physicist and Nobel laureate"
+  },
+  {
+    "fullName": "Philip Glass",
+    "dateOfBirth": "1937-01-31",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Philip_Glass",
+    "age": 88,
+    "notes": "American composer and minimalist music pioneer"
+  },
+  {
+    "fullName": "Orhan Pamuk",
+    "dateOfBirth": "1952-06-07",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Orhan_Pamuk",
+    "age": 73,
+    "notes": "Turkish novelist and Nobel Prize in Literature laureate"
+  },
+  {
+    "fullName": "Alejandro Jodorowsky",
+    "dateOfBirth": "1929-02-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Alejandro_Jodorowsky",
+    "age": 96,
+    "notes": "Chilean-French filmmaker, playwright and artist"
+  },
+  {
+    "fullName": "Vladimir Ashkenazy",
+    "dateOfBirth": "1937-07-06",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Vladimir_Ashkenazy",
+    "age": 88,
+    "notes": "Icelandic-Russian classical pianist and conductor"
+  },
+  {
+    "fullName": "Jonathan Pryce",
+    "dateOfBirth": "1947-06-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jonathan_Pryce",
+    "age": 78,
+    "notes": "Welsh actor known for stage and film roles"
+  },
+  {
+    "fullName": "Yusuf Islam",
+    "dateOfBirth": "1948-07-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Yusuf_Islam",
+    "age": 77,
+    "notes": "Also known as Cat Stevens, British singer-songwriter"
+  },
+  {
+    "fullName": "Terry Gilliam",
+    "dateOfBirth": "1940-11-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Terry_Gilliam",
+    "age": 85,
+    "notes": "American-born British film director and Monty Python member"
+  },
+  {
+    "fullName": "Carlos Slim Helú",
+    "dateOfBirth": "1940-01-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Carlos_Slim",
+    "age": 85,
+    "notes": "Mexican business magnate and philanthropist"
+  },
+  {
+    "fullName": "Ralph Nader",
+    "dateOfBirth": "1934-02-27",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Ralph_Nader",
+    "age": 91,
+    "notes": "American political activist, author, and former presidential candidate"
+  },
+  {
+    "fullName": "Benjamin Netanyahu",
+    "dateOfBirth": "1949-10-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Benjamin_Netanyahu",
+    "age": 76,
+    "notes": "Israeli politician and former Prime Minister"
+  },
+  {
+    "fullName": "Emmanuel Macron",
+    "dateOfBirth": "1977-12-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Emmanuel_Macron",
+    "age": 47,
+    "notes": "President of France"
+  },
+  {
+    "fullName": "Joaquin Phoenix",
+    "dateOfBirth": "1974-10-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Joaquin_Phoenix",
+    "age": 51,
+    "notes": "American actor"
+  },
+  {
+    "fullName": "Forest Whitaker",
+    "dateOfBirth": "1961-07-15",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Forest_Whitaker",
+    "age": 64,
+    "notes": "American actor, producer and director"
+  },
+  {
+    "fullName": "Christian Bale",
+    "dateOfBirth": "1974-01-30",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Christian_Bale",
+    "age": 51,
+    "notes": "English actor"
+  },
+  {
+    "fullName": "Tom Brady",
+    "dateOfBirth": "1977-08-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Tom_Brady",
+    "age": 48,
+    "notes": "American former professional football quarterback"
+  },
+  {
+    "fullName": "Idris Elba",
+    "dateOfBirth": "1972-09-06",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Idris_Elba",
+    "age": 53,
+    "notes": "English actor, producer and musician"
+  },
+  {
+    "fullName": "Mary Louise Streep",
+    "dateOfBirth": "1949-06-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Meryl_Streep",
+    "age": 76,
+    "notes": "American actress, widely regarded as one of the greatest living performers"
+  },
+  {
+    "fullName": "Angela Yvonne Davis",
+    "dateOfBirth": "1944-01-26",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Angela_Davis",
+    "age": 81,
+    "notes": "American political activist, scholar, and author"
+  },
+  {
+    "fullName": "William Oliver Stone",
+    "dateOfBirth": "1946-09-15",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Oliver_Stone",
+    "age": 79,
+    "notes": "American film director, screenwriter and producer"
+  },
+  {
+    "fullName": "Clinton Richard Dawkins",
+    "dateOfBirth": "1941-03-26",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Richard_Dawkins",
+    "age": 84,
+    "notes": "British evolutionary biologist and author"
+  },
+  {
+    "fullName": "Paul Auster",
+    "dateOfBirth": "1947-02-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Paul_Auster",
+    "age": 78,
+    "notes": "American novelist and essayist"
+  },
+  {
+    "fullName": "Peter Robert Jackson",
+    "dateOfBirth": "1961-10-31",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Peter_Jackson",
+    "age": 64,
+    "notes": "New Zealand film director, producer and screenwriter"
+  },
+  {
+    "fullName": "John Maxwell Coetzee",
+    "dateOfBirth": "1940-02-09",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/J._M._Coetzee",
+    "age": 85,
+    "notes": "South African-born Australian novelist and Nobel laureate"
+  },
+  {
+    "fullName": "Tom Stoppard",
+    "dateOfBirth": "1937-07-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Tom_Stoppard",
+    "age": 88,
+    "notes": "British playwright and screenwriter (born Tomáš Straussler)"
+  },
+  {
+    "fullName": "John Ray Grisham Jr.",
+    "dateOfBirth": "1955-02-08",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/John_Grisham",
+    "age": 70,
+    "notes": "American novelist known for legal thrillers"
+  },
+  {
+    "fullName": "Alfre Woodard",
+    "dateOfBirth": "1952-11-08",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Alfre_Woodard",
+    "age": 73,
+    "notes": "American actress and producer"
   }
 ]

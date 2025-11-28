@@ -432,11 +432,18 @@ export const DraftBoard: React.FC = () => {
   const [autoDraftTargetRound, setAutoDraftTargetRound] = useState<number | null>(null);
   const [isAutoDraftingRound, setIsAutoDraftingRound] = useState(false);
   const lastAutoDraftedIndexRef = useRef<number | null>(null);
+  const onClockAudioContextRef = useRef<AudioContext | null>(null);
+  const wasUserOnClockRef = useRef(false);
 
   const pickCount = state?.picks.length ?? 0;
 
   const currentDrafter = useMemo(() => getCurrentDrafter(state), [state]);
   const currentDrafterName = currentDrafter?.name ?? null;
+  const isUserOnClock =
+    status === 'in-progress' &&
+    !!user?.name &&
+    !!currentDrafter?.name &&
+    user.name.trim().toLowerCase() === currentDrafter.name.trim().toLowerCase();
 
   const draftedNames = useMemo(() => {
     if (!state) return new Set<string>();
@@ -531,6 +538,59 @@ export const DraftBoard: React.FC = () => {
     const seconds = secondsRemaining % 60;
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }, [secondsRemaining]);
+
+  const playOnClockSound = () => {
+    if (typeof window === 'undefined') return;
+
+    try {
+      const AnyWindow = window as typeof window & {
+        webkitAudioContext?: typeof AudioContext;
+      };
+
+      const AudioContextCtor = AnyWindow.AudioContext || AnyWindow.webkitAudioContext;
+      if (!AudioContextCtor) {
+        return;
+      }
+
+      let ctx = onClockAudioContextRef.current;
+      if (!ctx) {
+        ctx = new AudioContextCtor();
+        onClockAudioContextRef.current = ctx;
+      }
+
+      if (ctx.state === 'suspended') {
+        void ctx.resume();
+      }
+
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(880, now);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(0.4, now + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.6);
+    } catch (err) {
+      // If audio fails (e.g., browser blocking autoplay), fail silently.
+      // eslint-disable-next-line no-console
+      console.error('Failed to play on-clock sound', err);
+    }
+  };
+
+  useEffect(() => {
+    if (isUserOnClock && !wasUserOnClockRef.current) {
+      playOnClockSound();
+    }
+    wasUserOnClockRef.current = isUserOnClock;
+  }, [isUserOnClock]);
 
   useEffect(() => {
     if (!state || !state.picks.length) return;
@@ -884,13 +944,20 @@ export const DraftBoard: React.FC = () => {
         </div>
       )}
       {status === 'in-progress' && currentDrafter && (
-        <div className="onclock-banner">
-          <div className="onclock-label">On the clock</div>
+        <div className={`onclock-banner${isUserOnClock ? ' onclock-banner--self' : ''}`}>
+          <div className="onclock-label">
+            On the clock{isUserOnClock ? ' (you)' : ''}
+          </div>
           <div className="onclock-main">
-            <span className="onclock-name">{currentDrafter.name}</span>
+            <span className={`onclock-name${isUserOnClock ? ' onclock-name--self' : ''}`}>
+              {currentDrafter.name}
+            </span>
             <span className="onclock-separator">•</span>
             <span className="onclock-timer">{clockDisplay}</span>
           </div>
+          {isUserOnClock && (
+            <div className="onclock-self-hint">Make your pick now — the clock is yours.</div>
+          )}
         </div>
       )}
       <div className="layout">
@@ -916,8 +983,15 @@ export const DraftBoard: React.FC = () => {
               </div>
               {status === 'complete' && <div className="status-badge done">Draft complete</div>}
               {status === 'in-progress' && (
-                <div className="status-badge turn">
-                  On the clock: <strong style={{ marginLeft: 4 }}>{currentDrafterName}</strong>
+                <div className={`status-badge turn${isUserOnClock ? ' turn-self' : ''}`}>
+                  On the clock:{' '}
+                  <strong
+                    className={isUserOnClock ? 'turn-self-name' : undefined}
+                    style={{ marginLeft: 4 }}
+                  >
+                    {currentDrafterName}
+                  </strong>
+                  {isUserOnClock && <span className="turn-self-pill">That's you</span>}
                 </div>
               )}
             </div>

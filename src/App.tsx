@@ -1,10 +1,29 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { DraftProvider } from './draft/DraftContext';
 import { DraftBoard } from './draft/DraftBoard';
 import { UserSetup } from './draft/UserSetup';
 
 export const App: React.FC = () => {
-  const [name, setName] = useState<string>('');
+  const [name, setName] = useState<string>(() => {
+    try {
+      const stored = window.localStorage.getItem('drafterDisplayName');
+      return stored || '';
+    } catch {
+      return '';
+    }
+  });
+
+  useEffect(() => {
+    try {
+      if (name) {
+        window.localStorage.setItem('drafterDisplayName', name);
+      } else {
+        window.localStorage.removeItem('drafterDisplayName');
+      }
+    } catch {
+      // Ignore storage errors (e.g., privacy mode)
+    }
+  }, [name]);
 
   const isConfigured = useMemo(() => !!name, [name]);
 

@@ -27,7 +27,7 @@ import { fileURLToPath } from 'url';
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
 // Config
-const TOTAL_TARGET = 500;
+const TOTAL_TARGET = 800;
 const BATCH_SIZE = 10; // number of celebs requested per API call (keep this modest to avoid huge responses)
 const MODEL = 'gpt-5-mini';
 const TEMPERATURE = 0;
