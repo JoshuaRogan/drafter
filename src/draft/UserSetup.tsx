@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { getPreconfiguredDrafters } from './DraftContext';
 
 interface Props {
   name: string;
@@ -6,38 +7,49 @@ interface Props {
 }
 
 export const UserSetup: React.FC<Props> = ({ name, onNameChange }) => {
-  const [localName, setLocalName] = useState(name);
+  const drafters = useMemo(() => getPreconfiguredDrafters(), []);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const canApply = useMemo(() => !!localName, [localName]);
+  useEffect(() => {
+    if (!name) return;
+    const lower = name.trim().toLowerCase();
+    const match = drafters.find((d) => d.name.trim().toLowerCase() === lower);
+    if (match) {
+      setSelectedId(match.id);
+    }
+  }, [name, drafters]);
 
-  const apply = () => {
-    if (!canApply) return;
-    onNameChange(localName.trim());
+  const handleSelect = (id: string, displayName: string) => {
+    setSelectedId(id);
+    onNameChange(displayName);
   };
 
   return (
-    <div className="field-row">
-      <div className="flex-1">
-        <label>
-          Display name
-          <input
-            type="text"
-            placeholder="e.g. Alex"
-            value={localName}
-            onChange={(e) => setLocalName(e.target.value)}
-            style={{ width: '100%', marginTop: 4 }}
-          />
-        </label>
+    <div>
+      <div style={{ fontSize: 12, color: '#9ca3af', marginBottom: 6 }}>
+        Choose which drafter you are. This controls whose custom auto-draft list you can edit.
       </div>
-
-      <div>
-        <button
-          className="btn-primary"
-          onClick={apply}
-          disabled={!canApply}
-        >
-          Join room
-        </button>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 8
+        }}
+      >
+        {drafters.map((d) => {
+          const isSelected = selectedId === d.id;
+          return (
+            <button
+              key={d.id}
+              type="button"
+              className={isSelected ? 'btn-primary' : 'btn-secondary'}
+              onClick={() => handleSelect(d.id, d.name)}
+            >
+              {d.name}
+              {isSelected && <span style={{ fontSize: 11 }}>(you)</span>}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

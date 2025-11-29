@@ -4,6 +4,8 @@ export interface Drafter {
   id: string;
   name: string;
   order: number;
+  /** Optional 4-digit code used to unlock this drafter's custom auto-draft list in the UI. */
+  password?: string;
 }
 
 export interface Pick {
@@ -80,5 +82,22 @@ export type WireMessage = {
   type: 'state:updated';
   payload: { updatedAt: string };
 };
+
+// ---------------------------
+// Custom auto‑draft lists
+// ---------------------------
+
+/** Celebrity entry stored in a per‑drafter custom auto‑draft list. */
+export interface CustomAutoCelebrity extends Celebrity {}
+
+export interface CustomAutoDraftList {
+  drafterId: string;
+  drafterName: string;
+  celebrities: CustomAutoCelebrity[];
+  updatedAt: string;
+}
+
+export type CustomAutoListsByDrafter = Record<string, CustomAutoDraftList>;
+
 
 

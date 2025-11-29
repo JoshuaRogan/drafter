@@ -6,7 +6,9 @@ import type {
   WireMessage,
   DraftStatus,
   Drafter,
-  CelebrityValidationResult
+  CelebrityValidationResult,
+  CustomAutoDraftList,
+  CustomAutoListsByDrafter
 } from './types';
 
 interface DraftCheckpointSummary {
@@ -24,7 +26,8 @@ interface DraftContextValue {
   isConnected: boolean;
   error: string | null;
   canRestorePreviousState: boolean;
-   checkpoints: DraftCheckpointSummary[];
+  checkpoints: DraftCheckpointSummary[];
+  customListsByDrafter: CustomAutoListsByDrafter;
   initDraft(config: { totalRounds: number; celebrityList: string[] }): void;
   sendPick(drafterId: string, celebrityName: string): void;
   editPick(pickId: string, newCelebrityName: string): void;
@@ -34,6 +37,13 @@ interface DraftContextValue {
   revalidateCelebrity(celebrityName: string, options?: { force?: boolean }): Promise<void>;
   saveCheckpoint(name: string): Promise<void>;
   restoreCheckpoint(id: string): Promise<void>;
+  addToCustomAutoList(
+    drafterId: string,
+    drafterName: string,
+    celebrityName: string
+  ): Promise<void>;
+  removeFromCustomAutoList(drafterId: string, celebrityId: string): Promise<void>;
+  reorderCustomAutoList(drafterId: string, orderedIds: string[]): Promise<void>;
 }
 
 const DraftContext = createContext<DraftContextValue | undefined>(undefined);
@@ -61,47 +71,55 @@ const defaultCelebrities: string[] = [
   'Dua Lipa'
 ];
 
-const PRECONFIGURED_DRAFTERS: Array<Pick<Drafter, 'id' | 'name' | 'order'>> = [
+const PRECONFIGURED_DRAFTERS: Array<Pick<Drafter, 'id' | 'name' | 'order' | 'password'>> = [
   {
     id: 'drafter-josh',
     name: 'Josh',
-    order: 1
+    order: 1,
+    password: '1111'
   },
   {
     id: 'drafter-jim',
     name: 'Jim',
-    order: 2
+    order: 2,
+    password: '2222'
   },
   {
     id: 'drafter-kyle',
     name: 'Kyle',
-    order: 3
+    order: 3,
+    password: '3333'
   },
   {
     id: 'drafter-pj',
     name: 'Pj',
-    order: 4
+    order: 4,
+    password: '4444'
   },
   {
     id: 'drafter-zaccheo',
     name: 'Zaccheo',
-    order: 5
+    order: 5,
+    password: '5555'
   },
   {
     id: 'drafter-cory',
     name: 'Cory',
-    order: 6
+    order: 6,
+    password: '6666'
   },
   {
     id: 'drafter-pat',
     name: 'Pat',
-    order: 7
+    order: 7,
+    password: '7777'
   }
 ];
 
 const VALIDATION_FUNCTION_PATH = '/.netlify/functions/validate-celebrity';
 const CHECKPOINTS_FUNCTION_PATH = '/.netlify/functions/checkpoints';
 const DRAFT_FUNCTION_PATH = '/.netlify/functions/draft';
+const CUSTOM_LISTS_FUNCTION_PATH = '/.netlify/functions/custom-auto-lists';
 
 const fetchCelebrityValidation = async (
   celebrityName: string,
@@ -260,6 +278,8 @@ export const DraftProvider: React.FC<{
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<DraftState[]>([]);
   const [checkpoints, setCheckpoints] = useState<DraftCheckpointSummary[]>([]);
+  const [customListsByDrafter, setCustomListsByDrafter] =
+    useState<CustomAutoListsByDrafter>({});
 
   const isAdmin = !!user && user.isAdmin;
 
@@ -366,6 +386,43 @@ export const DraftProvider: React.FC<{
       cancelled = true;
     };
   }, [isAdmin]);
+
+  // Load any existing per‑drafter custom auto‑draft lists when the app starts.
+  useEffect(() => {
+    let cancelled = false;
+
+    const load = async () => {
+      try {
+        const response = await fetch(CUSTOM_LISTS_FUNCTION_PATH, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ action: 'list' })
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const data = (await response.json()) as {
+          listsByDrafter?: CustomAutoListsByDrafter;
+        };
+
+        if (!cancelled && data.listsByDrafter && typeof data.listsByDrafter === 'object') {
+          setCustomListsByDrafter(data.listsByDrafter);
+        }
+      } catch (err) {
+        console.error('Failed to load custom auto-draft lists', err);
+      }
+    };
+
+    void load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Whenever any client broadcasts a small "state:updated" event over Ably,
   // refresh the draft state from the Netlify-backed store.
@@ -499,6 +556,172 @@ export const DraftProvider: React.FC<{
         throw err;
       }
       throw new Error('Failed to restore checkpoint.');
+    }
+  };
+
+  const addToCustomAutoList = async (
+    drafterId: string,
+    drafterName: string,
+    celebrityName: string
+  ): Promise<void> => {
+    const trimmedName = celebrityName.trim();
+    if (!trimmedName) return;
+
+    const validation = await fetchCelebrityValidation(trimmedName);
+    if (!validation) {
+      throw new Error('Failed to validate celebrity for custom auto-draft list.');
+    }
+
+    try {
+      const response = await fetch(CUSTOM_LISTS_FUNCTION_PATH, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          action: 'add',
+          drafterId,
+          drafterName,
+          name: trimmedName,
+          validation
+        })
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(
+          `Failed to update custom auto-draft list (${response.status}): ${
+            text || 'Unknown error'
+          }`
+        );
+      }
+
+      const data = (await response.json()) as {
+        listsByDrafter?: CustomAutoListsByDrafter;
+        list?: CustomAutoDraftList;
+      };
+
+      if (data.listsByDrafter && typeof data.listsByDrafter === 'object') {
+        setCustomListsByDrafter(data.listsByDrafter);
+      } else if (data.list) {
+        setCustomListsByDrafter((prev) => ({
+          ...prev,
+          [data.list!.drafterId]: data.list!
+        }));
+      }
+    } catch (err) {
+      console.error('Error adding to custom auto-draft list', err);
+      if (err instanceof Error) {
+        throw err;
+      }
+      throw new Error('Failed to update custom auto-draft list.');
+    }
+  };
+
+  const removeFromCustomAutoList = async (
+    drafterId: string,
+    celebrityId: string
+  ): Promise<void> => {
+    if (!drafterId || !celebrityId) return;
+
+    try {
+      const response = await fetch(CUSTOM_LISTS_FUNCTION_PATH, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          action: 'remove',
+          drafterId,
+          celebrityId
+        })
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(
+          `Failed to remove from custom auto-draft list (${response.status}): ${
+            text || 'Unknown error'
+          }`
+        );
+      }
+
+      const data = (await response.json()) as {
+        listsByDrafter?: CustomAutoListsByDrafter;
+        list?: CustomAutoDraftList | null;
+      };
+
+      if (data.listsByDrafter && typeof data.listsByDrafter === 'object') {
+        setCustomListsByDrafter(data.listsByDrafter);
+      } else if (data.list) {
+        setCustomListsByDrafter((prev) => ({
+          ...prev,
+          [data.list!.drafterId]: data.list!
+        }));
+      } else {
+        // If the list no longer exists, remove it locally as well.
+        setCustomListsByDrafter((prev) => {
+          const next: CustomAutoListsByDrafter = { ...prev };
+          delete next[drafterId];
+          return next;
+        });
+      }
+    } catch (err) {
+      console.error('Error removing from custom auto-draft list', err);
+      if (err instanceof Error) {
+        throw err;
+      }
+      throw new Error('Failed to update custom auto-draft list.');
+    }
+  };
+
+  const reorderCustomAutoList = async (
+    drafterId: string,
+    orderedIds: string[]
+  ): Promise<void> => {
+    if (!drafterId || !Array.isArray(orderedIds) || !orderedIds.length) return;
+
+    try {
+      const response = await fetch(CUSTOM_LISTS_FUNCTION_PATH, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          action: 'reorder',
+          drafterId,
+          order: orderedIds
+        })
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(
+          `Failed to reorder custom auto-draft list (${response.status}): ${
+            text || 'Unknown error'
+          }`
+        );
+      }
+
+      const data = (await response.json()) as {
+        listsByDrafter?: CustomAutoListsByDrafter;
+        list?: CustomAutoDraftList | null;
+      };
+
+      if (data.listsByDrafter && typeof data.listsByDrafter === 'object') {
+        setCustomListsByDrafter(data.listsByDrafter);
+      } else if (data.list) {
+        setCustomListsByDrafter((prev) => ({
+          ...prev,
+          [data.list!.drafterId]: data.list!
+        }));
+      }
+    } catch (err) {
+      console.error('Error reordering custom auto-draft list', err);
+      if (err instanceof Error) {
+        throw err;
+      }
+      throw new Error('Failed to reorder custom auto-draft list.');
     }
   };
 
@@ -794,6 +1017,7 @@ export const DraftProvider: React.FC<{
       error,
       canRestorePreviousState: history.length > 0,
       checkpoints,
+      customListsByDrafter,
       initDraft,
       sendPick,
       editPick,
@@ -802,9 +1026,23 @@ export const DraftProvider: React.FC<{
       restorePreviousState,
       revalidateCelebrity,
       saveCheckpoint,
-      restoreCheckpoint
+      restoreCheckpoint,
+      addToCustomAutoList,
+      removeFromCustomAutoList,
+      reorderCustomAutoList
     }),
-    [user, status, state, channel, isAdmin, isConnected, error, history.length, checkpoints]
+    [
+      user,
+      status,
+      state,
+      channel,
+      isAdmin,
+      isConnected,
+      error,
+      history.length,
+      checkpoints,
+      customListsByDrafter
+    ]
   );
 
   return <DraftContext.Provider value={value}>{children}</DraftContext.Provider>;

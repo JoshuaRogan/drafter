@@ -57,7 +57,7 @@ export const App: React.FC = () => {
           <div className="panel">
             <div className="panel-header">
               <div>
-                <div className="panel-title">Display Name</div>
+                <div className="panel-title">Who are you tonight?</div>
               </div>
             </div>
             <UserSetup

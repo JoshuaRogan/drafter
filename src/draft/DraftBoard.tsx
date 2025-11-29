@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useDraft, getDefaultCelebrityList, getPreconfiguredDrafters } from './DraftContext';
-import type { Celebrity, DraftState } from './types';
+import type { Celebrity, DraftState, CustomAutoDraftList, CustomAutoCelebrity } from './types';
 import autoCelebritiesRaw from '../../celebrities.json';
 
 const getCurrentDrafter = (state: DraftState | null) => {
@@ -388,6 +388,26 @@ const pickAutoCelebrity = (
   return candidates[candidates.length - 1] ?? null;
 };
 
+const pickFromCustomList = (
+  list: CustomAutoDraftList | null | undefined,
+  draftedNames: Set<string>
+): Celebrity | null => {
+  if (!list || !Array.isArray(list.celebrities) || !list.celebrities.length) {
+    return null;
+  }
+
+  // Always pick the first (topmost) celebrity in the custom list that has not
+  // already been drafted.
+  for (const celeb of list.celebrities) {
+    const name = (celeb.fullName || celeb.name || '').trim();
+    if (!name) continue;
+    if (draftedNames.has(name)) continue;
+    return celeb;
+  }
+
+  return null;
+};
+
 export const DraftBoard: React.FC = () => {
   const {
     user,
@@ -405,7 +425,11 @@ export const DraftBoard: React.FC = () => {
     restorePreviousState,
     checkpoints,
     saveCheckpoint,
-    restoreCheckpoint
+    restoreCheckpoint,
+    customListsByDrafter,
+    addToCustomAutoList,
+    removeFromCustomAutoList,
+    reorderCustomAutoList
   } = useDraft();
 
   const boardContainerRef = useRef<HTMLDivElement | null>(null);
@@ -415,6 +439,7 @@ export const DraftBoard: React.FC = () => {
   const [lastError, setLastError] = useState<string | null>(null);
   const [activeDrafterId, setActiveDrafterId] = useState<string | null>(null);
   const [customCelebrityName, setCustomCelebrityName] = useState('');
+  const [autoListCelebrityName, setAutoListCelebrityName] = useState('');
   const [selectedPick, setSelectedPick] = useState<SelectedPick | null>(null);
   const [selectedPickAnchor, setSelectedPickAnchor] = useState<{ x: number; y: number } | null>(
     null
@@ -434,6 +459,12 @@ export const DraftBoard: React.FC = () => {
   const lastAutoDraftedIndexRef = useRef<number | null>(null);
   const onClockAudioContextRef = useRef<AudioContext | null>(null);
   const wasUserOnClockRef = useRef(false);
+  const [isSavingCustomEntry, setIsSavingCustomEntry] = useState(false);
+  const [customListError, setCustomListError] = useState<string | null>(null);
+  const [localCustomCelebs, setLocalCustomCelebs] = useState<CustomAutoCelebrity[]>([]);
+  const [draggingCustomId, setDraggingCustomId] = useState<string | null>(null);
+  const [autoListPasswordInput, setAutoListPasswordInput] = useState('');
+  const [isCustomListUnlocked, setIsCustomListUnlocked] = useState(false);
 
   const pickCount = state?.picks.length ?? 0;
 
@@ -497,6 +528,26 @@ export const DraftBoard: React.FC = () => {
     }
     return currentDrafter ?? null;
   }, [state, activeDrafterId, currentDrafter]);
+  const myDrafter = useMemo(() => {
+    if (!user?.name || !state || !state.drafters.length) return null;
+    const lower = user.name.trim().toLowerCase();
+    return state.drafters.find((d) => d.name.trim().toLowerCase() === lower) ?? null;
+  }, [user?.name, state]);
+  const myCustomList: CustomAutoDraftList | null = useMemo(() => {
+    if (!myDrafter) return null;
+    return customListsByDrafter[myDrafter.id] ?? null;
+  }, [myDrafter, customListsByDrafter]);
+  const autoDraftSeat = useMemo(() => {
+    if (!state || !state.drafters.length) return null;
+    return activeDrafter ?? currentDrafter ?? null;
+  }, [state, activeDrafter, currentDrafter]);
+  const autoDraftSeatCustomList: CustomAutoDraftList | null = useMemo(() => {
+    if (!autoDraftSeat) return null;
+    return customListsByDrafter[autoDraftSeat.id] ?? null;
+  }, [autoDraftSeat, customListsByDrafter]);
+  const hasCustomEntriesForAutoSeat = !!(
+    autoDraftSeatCustomList && autoDraftSeatCustomList.celebrities.length > 0
+  );
 
   const orderedDrafters = useMemo(() => {
     if (!state) return [];
@@ -512,6 +563,39 @@ export const DraftBoard: React.FC = () => {
     }
     return map;
   }, [state]);
+
+  useEffect(() => {
+    setLocalCustomCelebs(myCustomList?.celebrities ?? []);
+  }, [myCustomList]);
+
+  useEffect(() => {
+    // When the logged-in drafter identity changes, load any persisted unlock
+    // state for that drafter from localStorage.
+    setAutoListPasswordInput('');
+
+    if (!myDrafter) {
+      setIsCustomListUnlocked(false);
+      return;
+    }
+
+    try {
+      if (typeof window === 'undefined' || !window.localStorage) {
+        setIsCustomListUnlocked(false);
+        return;
+      }
+
+      const raw = window.localStorage.getItem('customAutoUnlockedDrafters');
+      if (!raw) {
+        setIsCustomListUnlocked(false);
+        return;
+      }
+
+      const parsed = JSON.parse(raw) as Record<string, boolean>;
+      setIsCustomListUnlocked(!!parsed[myDrafter.id]);
+    } catch {
+      setIsCustomListUnlocked(false);
+    }
+  }, [myDrafter?.id]);
 
   useEffect(() => {
     let intervalId: number | undefined;
@@ -818,6 +902,39 @@ export const DraftBoard: React.FC = () => {
     }
   };
 
+  const handleAddToMyCustomList = async () => {
+    if (!state) {
+      setCustomListError('There is no active draft yet.');
+      setTimeout(() => setCustomListError(null), 2500);
+      return;
+    }
+
+    if (!myDrafter) {
+      setCustomListError('Select a drafter identity to customize an auto-draft list.');
+      setTimeout(() => setCustomListError(null), 3000);
+      return;
+    }
+
+    const name = autoListCelebrityName.trim();
+    if (!name) return;
+
+    try {
+      setIsSavingCustomEntry(true);
+      await addToCustomAutoList(myDrafter.id, myDrafter.name, name);
+      setAutoListCelebrityName('');
+    } catch (err) {
+      console.error(err);
+      setCustomListError(
+        err instanceof Error
+          ? err.message
+          : 'Failed to add to custom auto-draft list. Please try again.'
+      );
+      setTimeout(() => setCustomListError(null), 3000);
+    } finally {
+      setIsSavingCustomEntry(false);
+    }
+  };
+
   const handleAutoDraft = () => {
     if (!state) return;
     if (!currentDrafter) {
@@ -838,6 +955,112 @@ export const DraftBoard: React.FC = () => {
       // handlePick already surfaced a user-facing error.
       return;
     }
+  };
+
+  const handleAutoDraftFromCustom = () => {
+    if (!state) return;
+    if (!currentDrafter) {
+      setLastError('The draft has not been started yet.');
+      setTimeout(() => setLastError(null), 2000);
+      return;
+    }
+
+    if (!autoDraftSeat) {
+      setLastError('No drafter selected for auto-draft.');
+      setTimeout(() => setLastError(null), 2000);
+      return;
+    }
+
+    const candidate = pickFromCustomList(autoDraftSeatCustomList, draftedNames);
+    if (!candidate) {
+      setLastError('No eligible celebrities left in the custom list.');
+      setTimeout(() => setLastError(null), 2500);
+      return;
+    }
+
+    const name = (candidate.fullName || candidate.name || '').trim();
+    if (!name) {
+      setLastError('Custom list entry is missing a name.');
+      setTimeout(() => setLastError(null), 2500);
+      return;
+    }
+
+    const ok = handlePick(name);
+    if (!ok) {
+      // handlePick already surfaced a user-facing error.
+      return;
+    }
+  };
+
+  const expectedPasswordForMyDrafter = useMemo(() => {
+    if (!myDrafter) return null;
+    const configured = getPreconfiguredDrafters().find((d) => d.id === myDrafter.id);
+    return configured?.password ?? null;
+  }, [myDrafter?.id]);
+
+  const handleUnlockCustomList = () => {
+    if (!myDrafter || !expectedPasswordForMyDrafter) return;
+    const input = autoListPasswordInput.trim();
+    if (!input) return;
+
+    if (input === expectedPasswordForMyDrafter) {
+      setIsCustomListUnlocked(true);
+      setAutoListPasswordInput('');
+      setCustomListError(null);
+
+      // Persist unlock state in this browser so the list stays unlocked across
+      // reloads for this drafter.
+      try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          const raw = window.localStorage.getItem('customAutoUnlockedDrafters');
+          const parsed: Record<string, boolean> =
+            raw && typeof raw === 'string' ? JSON.parse(raw) : {};
+          parsed[myDrafter.id] = true;
+          window.localStorage.setItem('customAutoUnlockedDrafters', JSON.stringify(parsed));
+        }
+      } catch {
+        // Ignore storage errors (e.g., privacy mode).
+      }
+      return;
+    }
+
+    setCustomListError('Incorrect code for this drafter.');
+    setTimeout(() => setCustomListError(null), 2500);
+  };
+
+  const handleCustomDragStart = (id: string) => {
+    setDraggingCustomId(id);
+  };
+
+  const handleCustomDragEnd = () => {
+    setDraggingCustomId(null);
+  };
+
+  const handleCustomDropOn = (targetId: string) => (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    if (!draggingCustomId || draggingCustomId === targetId) return;
+
+    setLocalCustomCelebs((prev) => {
+      const sourceIndex = prev.findIndex((c) => c.id === draggingCustomId);
+      const targetIndex = prev.findIndex((c) => c.id === targetId);
+      if (sourceIndex === -1 || targetIndex === -1) return prev;
+
+      const next = [...prev];
+      const [moved] = next.splice(sourceIndex, 1);
+      next.splice(targetIndex, 0, moved);
+
+      if (myDrafter) {
+        const orderedIds = next.map((c) => c.id);
+        void reorderCustomAutoList(myDrafter.id, orderedIds).catch((err) => {
+          // eslint-disable-next-line no-console
+          console.error('Failed to reorder custom list', err);
+        });
+      }
+
+      return next;
+    });
+
+    setDraggingCustomId(null);
   };
 
   const handleAutoDraftRound = () => {
@@ -1331,41 +1554,248 @@ export const DraftBoard: React.FC = () => {
               Picking for:{' '}
               <strong>{activeDrafter?.name ?? currentDrafterName ?? '— (no drafter selected)'}</strong>
             </div>
-            <div className="field-row mt-8">
-              <div className="flex-1">
-                <label>
-                  Custom celebrity
-                  <input
-                    type="text"
-                    placeholder="e.g. Margot Robbie"
-                    value={customCelebrityName}
-                    onChange={(e) => setCustomCelebrityName(e.target.value)}
-                    style={{ width: '100%', marginTop: 4 }}
-                  />
-                </label>
+
+            <div className="mt-8">
+              <div className="panel-subtitle" style={{ marginBottom: 4 }}>
+                One-off custom pick
               </div>
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={handleCustomPick}
-                disabled={!customCelebrityName.trim() || status === 'complete'}
-              >
-                Draft custom
-              </button>
-            </div>
-            <div className="field-row mt-8">
-              <button
-                type="button"
-                className="btn-primary"
-                onClick={handleAutoDraft}
-                disabled={!state || !currentDrafter || status === 'complete'}
-              >
-                Auto-draft from list
-              </button>
-              <div style={{ fontSize: 12, color: '#6b7280' }}>
-                Favors older celebrities but keeps some randomness.
+              <div className="field-row mt-4">
+                <div className="flex-1">
+                  <label>
+                    Custom celebrity
+                    <input
+                      type="text"
+                      placeholder="e.g. Margot Robbie"
+                      value={customCelebrityName}
+                      onChange={(e) => setCustomCelebrityName(e.target.value)}
+                      style={{ width: '100%', marginTop: 4 }}
+                    />
+                  </label>
+                </div>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={handleCustomPick}
+                  disabled={!customCelebrityName.trim() || status === 'complete'}
+                >
+                  Draft custom
+                </button>
               </div>
             </div>
+
+            <div className="mt-12">
+              <div className="panel-subtitle" style={{ marginBottom: 4 }}>
+                Auto-draft for this drafter
+              </div>
+              <div className="field-row mt-4">
+                <button
+                  type="button"
+                  className="btn-primary"
+                  onClick={handleAutoDraftFromCustom}
+                  disabled={
+                    !state ||
+                    !currentDrafter ||
+                    status === 'complete' ||
+                    !hasCustomEntriesForAutoSeat ||
+                    !isCustomListUnlocked
+                  }
+                >
+                  Auto-draft from custom list
+                </button>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={handleAutoDraft}
+                  disabled={!state || !currentDrafter || status === 'complete'}
+                >
+                  Auto-draft from general list
+                </button>
+                <div style={{ fontSize: 12, color: '#6b7280' }}>
+                  General list favors older celebrities but keeps some randomness. Custom lists are
+                  per drafter and validated via the same celebrity lookup.
+                </div>
+              </div>
+            </div>
+
+            {myDrafter && (
+              <div className="mt-12">
+                <div className="panel-subtitle" style={{ marginBottom: 4 }}>
+                  Your custom auto-draft list ({myDrafter.name}){' '}
+                  {localCustomCelebs.length
+                    ? `• ${localCustomCelebs.length} saved`
+                    : '• No names saved yet'}
+                </div>
+                {!isCustomListUnlocked ? (
+                  <>
+                    <div
+                      style={{
+                        fontSize: 11,
+                        color: '#6b7280',
+                        marginTop: 4,
+                        marginBottom: 4
+                      }}
+                    >
+                      Enter your 4-digit code to view and manage this list.
+                    </div>
+                    <div className="field-row mt-4">
+                      <div className="flex-1">
+                        <label>
+                          4-digit code
+                          <input
+                            type="password"
+                            maxLength={4}
+                            pattern="[0-9]*"
+                            inputMode="numeric"
+                            placeholder="••••"
+                            value={autoListPasswordInput}
+                            onChange={(e) => setAutoListPasswordInput(e.target.value)}
+                            style={{ width: '100%', marginTop: 4 }}
+                          />
+                        </label>
+                      </div>
+                      <button
+                        type="button"
+                        className="btn-secondary"
+                        onClick={handleUnlockCustomList}
+                        disabled={!autoListPasswordInput.trim()}
+                      >
+                        Unlock list
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="field-row mt-4">
+                      <div className="flex-1">
+                        <label>
+                          Add to your auto list
+                          <input
+                            type="text"
+                            placeholder="e.g. Betty White"
+                            value={autoListCelebrityName}
+                            onChange={(e) => setAutoListCelebrityName(e.target.value)}
+                            style={{ width: '100%', marginTop: 4 }}
+                          />
+                        </label>
+                      </div>
+                      <button
+                        type="button"
+                        className="btn-secondary"
+                        onClick={handleAddToMyCustomList}
+                        disabled={
+                          !autoListCelebrityName.trim() ||
+                          status === 'complete' ||
+                          isSavingCustomEntry
+                        }
+                      >
+                        {isSavingCustomEntry ? 'Adding…' : 'Add to list'}
+                      </button>
+                    </div>
+
+                    {localCustomCelebs.length ? (
+                      <div className="custom-auto-list">
+                        {localCustomCelebs.map((c) => {
+                      const displayName = (c.fullName || c.name || '').trim();
+                      const dob = c.dateOfBirth;
+                      const attempted = !!c.validationAttempted || !!c.isValidated;
+                      const isValidated = !!c.isValidated;
+                      const isDeceased = !!c.isDeceased;
+                      const hasWikipedia =
+                        !!c.hasWikipediaPage && !!c.wikipediaUrl;
+                      const isDrafted = !!displayName && draftedNames.has(displayName);
+
+                      const titleParts: string[] = [];
+                      if (isValidated) {
+                        titleParts.push('Validated');
+                      }
+                      if (dob) {
+                        titleParts.push(`DOB: ${dob}`);
+                      }
+                      if (hasWikipedia) {
+                        titleParts.push('Wikipedia linked');
+                      }
+                      if (attempted) {
+                        titleParts.push(isDeceased ? 'Reported deceased' : 'Believed alive');
+                      }
+
+                      const title = titleParts.join(' • ');
+
+                      return (
+                        <div
+                          key={c.id}
+                          className={`custom-auto-row${
+                            draggingCustomId === c.id ? ' custom-auto-row--dragging' : ''
+                          }${isDrafted ? ' custom-auto-row--drafted' : ''}`}
+                          draggable
+                          onDragStart={() => handleCustomDragStart(c.id)}
+                          onDragEnd={handleCustomDragEnd}
+                          onDragOver={(e) => e.preventDefault()}
+                          onDrop={handleCustomDropOn(c.id)}
+                        >
+                          <div className="custom-auto-left">
+                            <span className="drag-handle" aria-hidden="true">
+                              ≡
+                            </span>
+                            <div>
+                              <div className="celebrity-main">
+                                <span className="custom-auto-name">{displayName || 'Unnamed'}</span>
+                                {isDeceased && (
+                                  <span
+                                    className="deceased-indicator"
+                                    title="Reported deceased"
+                                  >
+                                    ☠
+                                  </span>
+                                )}
+                                {attempted && (
+                                  <span
+                                    className={`validation-icon ${
+                                      isValidated ? 'valid' : 'invalid'
+                                    }`}
+                                    title={
+                                      title ||
+                                      (isValidated
+                                        ? 'Validated celebrity'
+                                        : 'No clear match found for this name')
+                                    }
+                                  >
+                                    {isValidated ? '✓' : '✕'}
+                                  </span>
+                                )}
+                              </div>
+                              {dob && (
+                                <div className="celebrity-meta">
+                                  DOB: {dob}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <div className="custom-auto-meta">
+                            {isDrafted && (
+                              <span className="custom-auto-drafted-pill">
+                                Drafted
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                        })}
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: '#6b7280'
+                        }}
+                      >
+                        Add validated names above and we&apos;ll auto-draft from them whenever
+                        someone chooses your custom list.
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
             {isAdmin && (
               <div className="field-row mt-8">
                 <button
@@ -1391,6 +1821,7 @@ export const DraftBoard: React.FC = () => {
             {lastError && <div className="error-text">{lastError}</div>}
             {error && <div className="error-text">{error}</div>}
             {checkpointError && <div className="error-text">{checkpointError}</div>}
+            {customListError && <div className="error-text">{customListError}</div>}
             {checkpointMessage && !checkpointError && (
               <div style={{ fontSize: 11, color: '#bbf7d0' }}>{checkpointMessage}</div>
             )}
@@ -1542,5 +1973,6 @@ export const DraftBoard: React.FC = () => {
     </div>
   );
 };
+
 
 
