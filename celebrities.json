@@ -641,7 +641,8 @@
     "dateOfBirth": "1936-12-17",
     "wikipediaUrl": "https://en.wikipedia.org/wiki/Pope_Francis",
     "age": 88,
-    "notes": "Current Pope of the Roman Catholic Church"
+    "notes": "Current Pope of the Roman Catholic Church",
+    "deceased": true
   },
   {
     "fullName": "Malala Yousafzai",
@@ -1005,7 +1006,8 @@
     "dateOfBirth": "1932-08-02",
     "wikipediaUrl": "https://en.wikipedia.org/wiki/Peter_O%27Toole",
     "age": 93,
-    "notes": ""
+    "notes": "",
+    "deceased": true
   },
   {
     "fullName": "Sally Field",
@@ -3035,7 +3037,8 @@
     "dateOfBirth": "1935-07-17",
     "wikipediaUrl": "https://en.wikipedia.org/wiki/Donald_Sutherland",
     "age": 90,
-    "notes": "Canadian actor with a long international film career"
+    "notes": "Canadian actor with a long international film career",
+    "deceased": true
   },
   {
     "fullName": "Patti Smith",
@@ -3651,7 +3654,8 @@
     "dateOfBirth": "1947-02-03",
     "wikipediaUrl": "https://en.wikipedia.org/wiki/Paul_Auster",
     "age": 78,
-    "notes": "American novelist and essayist"
+    "notes": "American novelist and essayist",
+    "deceased": true
   },
   {
     "fullName": "Peter Robert Jackson",

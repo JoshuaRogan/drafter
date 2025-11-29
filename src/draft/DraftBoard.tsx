@@ -28,10 +28,11 @@ interface AutoCelebrity {
   dateOfBirth?: string;
   wikipediaUrl?: string;
   notes?: string;
+  deceased?: boolean;
 }
 
 const AUTO_CELEBRITY_POOL: AutoCelebrity[] = (autoCelebritiesRaw as AutoCelebrity[]).filter(
-  (c) => !!c && typeof c.fullName === 'string' && c.fullName.trim().length > 0
+  (c) => !!c && typeof c.fullName === 'string' && c.fullName.trim().length > 0 && !c.deceased
 );
 
 const AUTO_CELEBRITY_BY_NAME = new Map<string, AutoCelebrity>();
