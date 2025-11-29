@@ -736,9 +736,36 @@ export const DraftBoard: React.FC = () => {
       return;
     }
 
-    const candidate = pickAutoCelebrity(draftedNames);
-    if (!candidate) {
-      setLastError('No eligible celebrities left in the auto-draft list.');
+    // For each pick in the round, prefer the drafter's own custom list and
+    // fall back to the global auto list.
+    const seatForCurrentPick = getCurrentDrafter(state);
+    const seatCustomList =
+      seatForCurrentPick && customListsByDrafter[seatForCurrentPick.id]
+        ? customListsByDrafter[seatForCurrentPick.id]
+        : null;
+
+    const customCandidate = pickFromCustomList(seatCustomList, draftedNames);
+    let nextName: string | null = null;
+
+    if (customCandidate) {
+      nextName = (customCandidate.fullName || customCandidate.name || '').trim();
+    }
+
+    if (!nextName) {
+      const globalCandidate = pickAutoCelebrity(draftedNames);
+      if (!globalCandidate) {
+        setLastError('No eligible celebrities left in the custom or general auto-draft lists.');
+        setTimeout(() => setLastError(null), 2500);
+        setIsAutoDraftingRound(false);
+        setAutoDraftTargetRound(null);
+        lastAutoDraftedIndexRef.current = null;
+        return;
+      }
+      nextName = globalCandidate.fullName.trim();
+    }
+
+    if (!nextName) {
+      setLastError('Auto-draft could not find a valid name for this pick.');
       setTimeout(() => setLastError(null), 2500);
       setIsAutoDraftingRound(false);
       setAutoDraftTargetRound(null);
@@ -747,14 +774,22 @@ export const DraftBoard: React.FC = () => {
     }
 
     lastAutoDraftedIndexRef.current = state.currentPickIndex;
-    const ok = attemptPick(candidate.fullName.trim());
+    const ok = attemptPick(nextName);
     if (!ok) {
       // attemptPick already surfaced a user-facing error; stop to avoid loops.
       setIsAutoDraftingRound(false);
       setAutoDraftTargetRound(null);
       lastAutoDraftedIndexRef.current = null;
     }
-  }, [autoDraftTargetRound, isAutoDraftingRound, state, status, currentDrafter, draftedNames]);
+  }, [
+    autoDraftTargetRound,
+    isAutoDraftingRound,
+    state,
+    status,
+    currentDrafter,
+    draftedNames,
+    customListsByDrafter
+  ]);
 
   // Prevent background scrolling while the confirmation modal is open so the
   // modal/backdrop remain visually fixed in the viewport.
