@@ -641,8 +641,7 @@
     "dateOfBirth": "1936-12-17",
     "wikipediaUrl": "https://en.wikipedia.org/wiki/Pope_Francis",
     "age": 88,
-    "notes": "Current Pope of the Roman Catholic Church",
-    "deceased": true
+    "notes": "Current Pope of the Roman Catholic Church"
   },
   {
     "fullName": "Malala Yousafzai",
@@ -1006,8 +1005,7 @@
     "dateOfBirth": "1932-08-02",
     "wikipediaUrl": "https://en.wikipedia.org/wiki/Peter_O%27Toole",
     "age": 93,
-    "notes": "",
-    "deceased": true
+    "notes": ""
   },
   {
     "fullName": "Sally Field",
@@ -3037,8 +3035,7 @@
     "dateOfBirth": "1935-07-17",
     "wikipediaUrl": "https://en.wikipedia.org/wiki/Donald_Sutherland",
     "age": 90,
-    "notes": "Canadian actor with a long international film career",
-    "deceased": true
+    "notes": "Canadian actor with a long international film career"
   },
   {
     "fullName": "Patti Smith",
@@ -3654,8 +3651,7 @@
     "dateOfBirth": "1947-02-03",
     "wikipediaUrl": "https://en.wikipedia.org/wiki/Paul_Auster",
     "age": 78,
-    "notes": "American novelist and essayist",
-    "deceased": true
+    "notes": "American novelist and essayist"
   },
   {
     "fullName": "Peter Robert Jackson",
@@ -5364,5 +5360,110 @@
     "wikipediaUrl": "https://en.wikipedia.org/wiki/Brenda_Blethyn",
     "age": 79,
     "notes": "English actress"
+  },
+  {
+    "fullName": "Samuel Leroy Jackson",
+    "dateOfBirth": "1948-12-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Samuel_L._Jackson",
+    "age": 76,
+    "notes": "American actor"
+  },
+  {
+    "fullName": "Charles Philip Arthur George",
+    "dateOfBirth": "1948-11-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Charles_III",
+    "age": 77,
+    "notes": "King Charles III of the United Kingdom and other Commonwealth realms"
+  },
+  {
+    "fullName": "Neil Leslie Diamond",
+    "dateOfBirth": "1941-01-24",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Neil_Diamond",
+    "age": 84,
+    "notes": "Singer-songwriter known for hits like 'Sweet Caroline'"
+  },
+  {
+    "fullName": "Ursula Andress",
+    "dateOfBirth": "1936-03-19",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Ursula_Andress",
+    "age": 89,
+    "notes": "Swiss actress, known for early Bond role as Honey Ryder"
+  },
+  {
+    "fullName": "Anish Kapoor",
+    "dateOfBirth": "1954-03-12",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Anish_Kapoor",
+    "age": 71,
+    "notes": "British-Indian sculptor and contemporary artist"
+  },
+  {
+    "fullName": "Mary Jean \"Lily\" Tomlin",
+    "dateOfBirth": "1939-09-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Lily_Tomlin",
+    "age": 86,
+    "notes": "American actress, comedian and writer"
+  },
+  {
+    "fullName": "Richard Tiffany Gere",
+    "dateOfBirth": "1949-08-31",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Richard_Gere",
+    "age": 76,
+    "notes": "American actor and activist"
+  },
+  {
+    "fullName": "George Ivan \"Van\" Morrison",
+    "dateOfBirth": "1945-08-31",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Van_Morrison",
+    "age": 80,
+    "notes": "Northern Irish singer-songwriter and musician"
+  },
+  {
+    "fullName": "Mel Brooks",
+    "dateOfBirth": "1926-06-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Mel_Brooks",
+    "age": 99,
+    "notes": "Comedian, actor, writer and director"
+  },
+  {
+    "fullName": "Rowan Sebastian Atkinson",
+    "dateOfBirth": "1955-01-06",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Rowan_Atkinson",
+    "age": 70,
+    "notes": "English comedian and actor, known for Mr. Bean"
+  },
+  {
+    "fullName": "Barry Gibb",
+    "dateOfBirth": "1946-09-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Barry_Gibb",
+    "age": 79,
+    "notes": "British singer-songwriter, member of the Bee Gees"
+  },
+  {
+    "fullName": "Allan Stewart Konigsberg",
+    "dateOfBirth": "1935-12-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Woody_Allen",
+    "age": 90,
+    "notes": "American filmmaker (known as Woody Allen)"
+  },
+  {
+    "fullName": "Stephen Edwin King",
+    "dateOfBirth": "1947-09-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Stephen_King",
+    "age": 78,
+    "notes": "American author"
+  },
+  {
+    "fullName": "Jeffrey Lynn Goldblum",
+    "dateOfBirth": "1952-10-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jeff_Goldblum",
+    "age": 73,
+    "notes": "American actor"
+  },
+  {
+    "fullName": "Anthony Charles Lynton Blair",
+    "dateOfBirth": "1953-05-06",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Tony_Blair",
+    "age": 72,
+    "notes": "British politician (former Prime Minister)"
   }
 ]

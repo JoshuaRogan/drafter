@@ -441,6 +441,8 @@ export const DraftBoard: React.FC = () => {
   const [activeDrafterId, setActiveDrafterId] = useState<string | null>(null);
   const [customCelebrityName, setCustomCelebrityName] = useState('');
   const [autoListCelebrityName, setAutoListCelebrityName] = useState('');
+  const [bulkAutoListInput, setBulkAutoListInput] = useState('');
+  const [isBulkAddingCustomEntries, setIsBulkAddingCustomEntries] = useState(false);
   const [selectedPick, setSelectedPick] = useState<SelectedPick | null>(null);
   const [selectedPickAnchor, setSelectedPickAnchor] = useState<{ x: number; y: number } | null>(
     null
@@ -464,8 +466,10 @@ export const DraftBoard: React.FC = () => {
   const [customListError, setCustomListError] = useState<string | null>(null);
   const [localCustomCelebs, setLocalCustomCelebs] = useState<CustomAutoCelebrity[]>([]);
   const [draggingCustomId, setDraggingCustomId] = useState<string | null>(null);
+  const [dragOverCustomId, setDragOverCustomId] = useState<string | null>(null);
   const [autoListPasswordInput, setAutoListPasswordInput] = useState('');
   const [isCustomListUnlocked, setIsCustomListUnlocked] = useState(false);
+  const [isClearingCustomList, setIsClearingCustomList] = useState(false);
 
   const pickCount = state?.picks.length ?? 0;
 
@@ -971,6 +975,82 @@ export const DraftBoard: React.FC = () => {
     }
   };
 
+  const handleAddBulkToMyCustomList = async () => {
+    if (!state) {
+      setCustomListError('There is no active draft yet.');
+      setTimeout(() => setCustomListError(null), 2500);
+      return;
+    }
+
+    if (!myDrafter) {
+      setCustomListError('Select a drafter identity to customize an auto-draft list.');
+      setTimeout(() => setCustomListError(null), 3000);
+      return;
+    }
+
+    const lines = bulkAutoListInput
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => !!line);
+
+    if (!lines.length) return;
+
+    try {
+      setIsBulkAddingCustomEntries(true);
+
+      for (const line of lines) {
+        try {
+          // Reuse the same validation + Netlify-backed add helper for each line.
+          await addToCustomAutoList(myDrafter.id, myDrafter.name, line);
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error('Failed to add bulk custom entry', err);
+        }
+      }
+
+      setBulkAutoListInput('');
+    } finally {
+      setIsBulkAddingCustomEntries(false);
+    }
+  };
+
+  const handleRemoveFromMyCustomList = async (celebrityId: string) => {
+    if (!myDrafter) return;
+    if (!celebrityId) return;
+
+    try {
+      await removeFromCustomAutoList(myDrafter.id, celebrityId);
+    } catch (err) {
+      console.error(err);
+      setCustomListError(
+        err instanceof Error
+          ? err.message
+          : 'Failed to remove from custom auto-draft list. Please try again.'
+      );
+      setTimeout(() => setCustomListError(null), 3000);
+    }
+  };
+
+  const handleClearMyCustomList = async () => {
+    if (!myDrafter) return;
+    if (!localCustomCelebs.length) return;
+
+    try {
+      setIsClearingCustomList(true);
+      const ids = localCustomCelebs.map((c) => c.id);
+      for (const id of ids) {
+        try {
+          await removeFromCustomAutoList(myDrafter.id, id);
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error('Failed to remove custom entry while clearing list', err);
+        }
+      }
+    } finally {
+      setIsClearingCustomList(false);
+    }
+  };
+
   const handleAutoDraft = () => {
     if (!state) return;
     if (!currentDrafter) {
@@ -1070,6 +1150,7 @@ export const DraftBoard: React.FC = () => {
 
   const handleCustomDragEnd = () => {
     setDraggingCustomId(null);
+    setDragOverCustomId(null);
   };
 
   const handleCustomDropOn = (targetId: string) => (event: React.DragEvent<HTMLDivElement>) => {
@@ -1097,6 +1178,7 @@ export const DraftBoard: React.FC = () => {
     });
 
     setDraggingCustomId(null);
+    setDragOverCustomId(null);
   };
 
   const handleAutoDraftRound = () => {
@@ -1728,9 +1810,73 @@ export const DraftBoard: React.FC = () => {
                       </button>
                     </div>
 
+                    <div className="field-row mt-4">
+                      <div className="flex-1">
+                        <label>
+                          Bulk add (one name per line)
+                          <textarea
+                            placeholder={'e.g.\\nMargot Robbie\\nBetty White\\nRobert De Niro'}
+                            value={bulkAutoListInput}
+                            onChange={(e) => setBulkAutoListInput(e.target.value)}
+                            rows={4}
+                            style={{
+                              width: '100%',
+                              marginTop: 4,
+                              resize: 'vertical',
+                              borderRadius: 12,
+                              border: '1px solid rgba(148,163,184,0.45)',
+                              background: 'rgba(15,23,42,0.9)',
+                              color: '#e5e7eb',
+                              padding: '8px 10px',
+                              fontSize: 12,
+                              fontFamily: 'inherit'
+                            }}
+                          />
+                        </label>
+                      </div>
+                      <button
+                        type="button"
+                        className="btn-secondary"
+                        onClick={handleAddBulkToMyCustomList}
+                        disabled={
+                          !bulkAutoListInput.trim() ||
+                          status === 'complete' ||
+                          isBulkAddingCustomEntries
+                        }
+                      >
+                        {isBulkAddingCustomEntries ? 'Adding…' : 'Add lines'}
+                      </button>
+                    </div>
+
+                    {isBulkAddingCustomEntries && (
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: '#facc15',
+                          marginTop: 4
+                        }}
+                      >
+                        Adding names to your auto list. Please wait until they all appear below
+                        before using auto-draft.
+                      </div>
+                    )}
+
                     {localCustomCelebs.length ? (
-                      <div className="custom-auto-list">
-                        {localCustomCelebs.map((c) => {
+                      <>
+                        <div style={{ marginTop: 4, textAlign: 'right' }}>
+                          <button
+                            type="button"
+                            className="btn-secondary"
+                            onClick={handleClearMyCustomList}
+                            disabled={isClearingCustomList || isBulkAddingCustomEntries}
+                            style={{ fontSize: 11, padding: '4px 10px' }}
+                          >
+                            {isClearingCustomList ? 'Clearing…' : 'Clear list'}
+                          </button>
+                        </div>
+
+                        <div className="custom-auto-list">
+                          {localCustomCelebs.map((c, index) => {
                       const displayName = (c.fullName || c.name || '').trim();
                       const dob = c.dateOfBirth;
                       const attempted = !!c.validationAttempted || !!c.isValidated;
@@ -1756,67 +1902,86 @@ export const DraftBoard: React.FC = () => {
 
                       const title = titleParts.join(' • ');
 
-                      return (
-                        <div
-                          key={c.id}
-                          className={`custom-auto-row${
-                            draggingCustomId === c.id ? ' custom-auto-row--dragging' : ''
-                          }${isDrafted ? ' custom-auto-row--drafted' : ''}`}
-                          draggable
-                          onDragStart={() => handleCustomDragStart(c.id)}
-                          onDragEnd={handleCustomDragEnd}
-                          onDragOver={(e) => e.preventDefault()}
-                          onDrop={handleCustomDropOn(c.id)}
-                        >
-                          <div className="custom-auto-left">
-                            <span className="drag-handle" aria-hidden="true">
-                              ≡
-                            </span>
-                            <div>
-                              <div className="celebrity-main">
-                                <span className="custom-auto-name">{displayName || 'Unnamed'}</span>
-                                {isDeceased && (
-                                  <span
-                                    className="deceased-indicator"
-                                    title="Reported deceased"
-                                  >
-                                    ☠
+                            return (
+                              <div
+                                key={c.id}
+                                className={`custom-auto-row${
+                                  draggingCustomId === c.id ? ' custom-auto-row--dragging' : ''
+                                }${
+                                  dragOverCustomId === c.id ? ' custom-auto-row--drag-over' : ''
+                                }${isDrafted ? ' custom-auto-row--drafted' : ''}`}
+                                draggable
+                                onDragStart={() => handleCustomDragStart(c.id)}
+                                onDragEnd={handleCustomDragEnd}
+                                onDragOver={(e) => {
+                                  e.preventDefault();
+                                  if (draggingCustomId) {
+                                    setDragOverCustomId(c.id);
+                                  }
+                                }}
+                                onDrop={handleCustomDropOn(c.id)}
+                              >
+                                <div className="custom-auto-left">
+                                  <span className="custom-auto-index">{index + 1}</span>
+                                  <span className="drag-handle" aria-hidden="true">
+                                    ≡
                                   </span>
-                                )}
-                                {attempted && (
-                                  <span
-                                    className={`validation-icon ${
-                                      isValidated ? 'valid' : 'invalid'
-                                    }`}
-                                    title={
-                                      title ||
-                                      (isValidated
-                                        ? 'Validated celebrity'
-                                        : 'No clear match found for this name')
-                                    }
-                                  >
-                                    {isValidated ? '✓' : '✕'}
-                                  </span>
-                                )}
-                              </div>
-                              {dob && (
-                                <div className="celebrity-meta">
-                                  DOB: {dob}
+                                  <div>
+                                    <div className="celebrity-main">
+                                      <span className="custom-auto-name">
+                                        {displayName || 'Unnamed'}
+                                      </span>
+                                      {isDeceased && (
+                                        <span
+                                          className="deceased-indicator"
+                                          title="Reported deceased"
+                                        >
+                                          ☠
+                                        </span>
+                                      )}
+                                      {attempted && (
+                                        <span
+                                          className={`validation-icon ${
+                                            isValidated ? 'valid' : 'invalid'
+                                          }`}
+                                          title={
+                                            title ||
+                                            (isValidated
+                                              ? 'Validated celebrity'
+                                              : 'No clear match found for this name')
+                                          }
+                                        >
+                                          {isValidated ? '✓' : '✕'}
+                                        </span>
+                                      )}
+                                    </div>
+                                    {dob && (
+                                      <div className="celebrity-meta">
+                                        DOB: {dob}
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
-                              )}
-                            </div>
-                          </div>
-                          <div className="custom-auto-meta">
-                            {isDrafted && (
-                              <span className="custom-auto-drafted-pill">
-                                Drafted
-                              </span>
-                            )}
-                          </div>
+                                <div className="custom-auto-meta">
+                                  {isDrafted && (
+                                    <span className="custom-auto-drafted-pill">
+                                      Drafted
+                                    </span>
+                                  )}
+                                  <button
+                                    type="button"
+                                    className="btn-ghost"
+                                    onClick={() => handleRemoveFromMyCustomList(c.id)}
+                                    style={{ fontSize: 11, padding: '2px 6px' }}
+                                  >
+                                    Remove
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
-                      );
-                        })}
-                      </div>
+                      </>
                     ) : (
                       <div
                         style={{
