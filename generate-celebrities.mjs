@@ -27,7 +27,7 @@ import { fileURLToPath } from 'url';
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
 // Config
-const TOTAL_TARGET = 800;
+const TOTAL_TARGET = 1000;
 const BATCH_SIZE = 10; // number of celebs requested per API call (keep this modest to avoid huge responses)
 const MODEL = 'gpt-5-mini';
 const TEMPERATURE = 0;
@@ -215,7 +215,7 @@ async function generateCelebrityBatch(batchSize, existingNames) {
     'You must output STRICT JSON only, no extra commentary.';
 
   const userPrompt = `
-Generate EXACTLY ${batchSize} unique, well-known living public figures (celebrities) from around the world. Focusing on older celebrities.. 
+Generate EXACTLY ${batchSize} unique, well-known living public figures (celebrities) from around the world.  
 
 Requirements for EACH person:
 - They must be alive as of today.

@@ -5507,5 +5507,698 @@
     "wikipediaUrl": "https://en.wikipedia.org/wiki/Lesley_Ann_Warren",
     "age": 79,
     "notes": "American actress and singer"
+  },
+  {
+    "fullName": "Taylor Alison Swift",
+    "dateOfBirth": "1989-12-13",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Taylor_Swift",
+    "age": 35,
+    "notes": "American singer-songwriter"
+  },
+  {
+    "fullName": "Beyoncé Giselle Knowles-Carter",
+    "dateOfBirth": "1981-09-04",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Beyonc%C3%A9",
+    "age": 44,
+    "notes": "American singer, songwriter, and actress"
+  },
+  {
+    "fullName": "Leonardo Wilhelm DiCaprio",
+    "dateOfBirth": "1974-11-11",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Leonardo_DiCaprio",
+    "age": 51,
+    "notes": "American actor and film producer"
+  },
+  {
+    "fullName": "Robyn Rihanna Fenty",
+    "dateOfBirth": "1988-02-20",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Rihanna",
+    "age": 37,
+    "notes": "Barbadian singer, entrepreneur, and actress"
+  },
+  {
+    "fullName": "Adele Laurie Blue Adkins",
+    "dateOfBirth": "1988-05-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Adele",
+    "age": 37,
+    "notes": "English singer-songwriter"
+  },
+  {
+    "fullName": "Emma Charlotte Duerre Watson",
+    "dateOfBirth": "1990-04-15",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Emma_Watson",
+    "age": 35,
+    "notes": "British actress and activist"
+  },
+  {
+    "fullName": "Elon Reeve Musk",
+    "dateOfBirth": "1971-06-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Elon_Musk",
+    "age": 54,
+    "notes": "Businessman and entrepreneur (Tesla, SpaceX)"
+  },
+  {
+    "fullName": "William Henry Gates III",
+    "dateOfBirth": "1955-10-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Bill_Gates",
+    "age": 70,
+    "notes": "American business magnate and philanthropist"
+  },
+  {
+    "fullName": "Novak Djokovic",
+    "dateOfBirth": "1987-05-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Novak_Djokovic",
+    "age": 38,
+    "notes": "Serbian professional tennis player"
+  },
+  {
+    "fullName": "LeBron Raymone James Sr.",
+    "dateOfBirth": "1984-12-30",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/LeBron_James",
+    "age": 40,
+    "notes": "American professional basketball player"
+  },
+  {
+    "fullName": "Ariana Grande-Butera",
+    "dateOfBirth": "1993-06-26",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Ariana_Grande",
+    "age": 32,
+    "notes": "American singer and actress"
+  },
+  {
+    "fullName": "Emily Jean Stone",
+    "dateOfBirth": "1988-11-06",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Emma_Stone",
+    "age": 37,
+    "notes": "American actress (known professionally as Emma Stone)"
+  },
+  {
+    "fullName": "Willard Carroll Smith Jr.",
+    "dateOfBirth": "1968-09-25",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Will_Smith",
+    "age": 57,
+    "notes": "American actor and rapper (Will Smith)"
+  },
+  {
+    "fullName": "Edward Christopher Sheeran",
+    "dateOfBirth": "1991-02-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Ed_Sheeran",
+    "age": 34,
+    "notes": "English singer-songwriter (Ed Sheeran)"
+  },
+  {
+    "fullName": "Justin Pierre James Trudeau",
+    "dateOfBirth": "1971-12-25",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Justin_Trudeau",
+    "age": 53,
+    "notes": "Canadian politician, Prime Minister of Canada"
+  },
+  {
+    "fullName": "Ahmed Salman Rushdie",
+    "dateOfBirth": "1947-06-19",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Salman_Rushdie",
+    "age": 78,
+    "notes": "British-American novelist and essayist (known as Salman Rushdie)"
+  },
+  {
+    "fullName": "Katheryn Elizabeth Hudson",
+    "dateOfBirth": "1984-10-25",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Katy_Perry",
+    "age": 41,
+    "notes": "American singer and songwriter (Katy Perry)"
+  },
+  {
+    "fullName": "Thomas Cruise Mapother IV",
+    "dateOfBirth": "1962-07-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Tom_Cruise",
+    "age": 63,
+    "notes": "American actor and producer"
+  },
+  {
+    "fullName": "Stefani Joanne Angelina Germanotta",
+    "dateOfBirth": "1986-03-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Lady_Gaga",
+    "age": 39,
+    "notes": "American singer, songwriter, and actress (stage name Lady Gaga)"
+  },
+  {
+    "fullName": "William Bradley Pitt",
+    "dateOfBirth": "1963-12-18",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Brad_Pitt",
+    "age": 61,
+    "notes": "American actor and film producer"
+  },
+  {
+    "fullName": "Justin Drew Bieber",
+    "dateOfBirth": "1994-03-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Justin_Bieber",
+    "age": 31,
+    "notes": "Canadian singer and songwriter"
+  },
+  {
+    "fullName": "Marshall Bruce Mathers III",
+    "dateOfBirth": "1972-10-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Eminem",
+    "age": 53,
+    "notes": "American rapper and record producer (stage name Eminem)"
+  },
+  {
+    "fullName": "Aubrey Drake Graham",
+    "dateOfBirth": "1986-10-24",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Drake_(musician)",
+    "age": 39,
+    "notes": "Canadian rapper, singer, and actor (known as Drake)"
+  },
+  {
+    "fullName": "Jennifer Lynn Lopez",
+    "dateOfBirth": "1969-07-24",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jennifer_Lopez",
+    "age": 56,
+    "notes": "American singer, actress, and dancer (often credited as J.Lo)"
+  },
+  {
+    "fullName": "Dwayne Douglas Johnson",
+    "dateOfBirth": "1972-05-02",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Dwayne_Johnson",
+    "age": 53,
+    "notes": "American actor, producer, and former professional wrestler (aka The Rock)"
+  },
+  {
+    "fullName": "Keira Christina Knightley",
+    "dateOfBirth": "1985-03-26",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Keira_Knightley",
+    "age": 40,
+    "notes": "English actress"
+  },
+  {
+    "fullName": "Michelle LaVaughn Robinson Obama",
+    "dateOfBirth": "1964-01-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Michelle_Obama",
+    "age": 61,
+    "notes": "Former First Lady of the United States"
+  },
+  {
+    "fullName": "Cillian Murphy",
+    "dateOfBirth": "1976-05-25",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Cillian_Murphy",
+    "age": 49,
+    "notes": "Irish actor"
+  },
+  {
+    "fullName": "Miley Ray Cyrus",
+    "dateOfBirth": "1992-11-23",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Miley_Cyrus",
+    "age": 33,
+    "notes": "American singer and actress"
+  },
+  {
+    "fullName": "Benedict Timothy Carlton Cumberbatch",
+    "dateOfBirth": "1976-07-19",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Benedict_Cumberbatch",
+    "age": 49,
+    "notes": "English actor"
+  },
+  {
+    "fullName": "Zendaya Maree Stoermer Coleman",
+    "dateOfBirth": "1996-09-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Zendaya",
+    "age": 29,
+    "notes": "American actress and singer"
+  },
+  {
+    "fullName": "Scarlett Ingrid Johansson",
+    "dateOfBirth": "1984-11-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Scarlett_Johansson",
+    "age": 41,
+    "notes": "American actress"
+  },
+  {
+    "fullName": "Matthew Paige Damon",
+    "dateOfBirth": "1970-10-08",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Matt_Damon",
+    "age": 55,
+    "notes": "American actor and screenwriter"
+  },
+  {
+    "fullName": "Billie Eilish Pirate Baird O'Connell",
+    "dateOfBirth": "2001-12-18",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Billie_Eilish",
+    "age": 23,
+    "notes": "American singer-songwriter"
+  },
+  {
+    "fullName": "Selena Marie Gomez",
+    "dateOfBirth": "1992-07-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Selena_Gomez",
+    "age": 33,
+    "notes": "American singer and actress"
+  },
+  {
+    "fullName": "Jeon Jung-kook",
+    "dateOfBirth": "1997-09-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jungkook",
+    "age": 28,
+    "notes": "South Korean singer (member of BTS)"
+  },
+  {
+    "fullName": "John Christopher Depp II",
+    "dateOfBirth": "1963-06-09",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Johnny_Depp",
+    "age": 62,
+    "notes": "American actor"
+  },
+  {
+    "fullName": "Amy Lou Adams",
+    "dateOfBirth": "1974-08-20",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Amy_Adams",
+    "age": 51,
+    "notes": "American actress"
+  },
+  {
+    "fullName": "Cate Blanchett",
+    "dateOfBirth": "1969-05-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Cate_Blanchett",
+    "age": 56,
+    "notes": "Australian actress"
+  },
+  {
+    "fullName": "Sofía Vergara",
+    "dateOfBirth": "1972-07-10",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Sof%C3%ADa_Vergara",
+    "age": 53,
+    "notes": "Colombian-American actress and model"
+  },
+  {
+    "fullName": "Dua Lipa",
+    "dateOfBirth": "1995-08-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Dua_Lipa",
+    "age": 30,
+    "notes": "English-Albanian singer and songwriter"
+  },
+  {
+    "fullName": "Mark Zuckerberg",
+    "dateOfBirth": "1984-05-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Mark_Zuckerberg",
+    "age": 41,
+    "notes": "American technology entrepreneur (Facebook/Meta co-founder)"
+  },
+  {
+    "fullName": "Christina Aguilera",
+    "dateOfBirth": "1980-12-18",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Christina_Aguilera",
+    "age": 44,
+    "notes": "American singer and pop icon"
+  },
+  {
+    "fullName": "Gal Gadot",
+    "dateOfBirth": "1985-04-30",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Gal_Gadot",
+    "age": 40,
+    "notes": "Israeli actress and model"
+  },
+  {
+    "fullName": "Ryan Gosling",
+    "dateOfBirth": "1980-11-12",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Ryan_Gosling",
+    "age": 45,
+    "notes": "Canadian actor and musician"
+  },
+  {
+    "fullName": "Pedro Pascal",
+    "dateOfBirth": "1975-04-02",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Pedro_Pascal",
+    "age": 50,
+    "notes": "Chilean-American actor known for The Mandalorian and The Last of Us"
+  },
+  {
+    "fullName": "Sandra Miju Oh",
+    "dateOfBirth": "1971-07-20",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Sandra_Oh",
+    "age": 54,
+    "notes": "Actress"
+  },
+  {
+    "fullName": "Britney Jean Spears",
+    "dateOfBirth": "1981-12-02",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Britney_Spears",
+    "age": 43,
+    "notes": "Pop singer"
+  },
+  {
+    "fullName": "Chan Kong-sang",
+    "dateOfBirth": "1954-04-07",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jackie_Chan",
+    "age": 71,
+    "notes": "Actor and martial artist (known as Jackie Chan)"
+  },
+  {
+    "fullName": "Julia Fiona Roberts",
+    "dateOfBirth": "1967-10-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Julia_Roberts",
+    "age": 58,
+    "notes": "Actress"
+  },
+  {
+    "fullName": "Hugh Michael Jackman",
+    "dateOfBirth": "1968-10-12",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Hugh_Jackman",
+    "age": 57,
+    "notes": "Actor"
+  },
+  {
+    "fullName": "Rami Said Malek",
+    "dateOfBirth": "1981-05-12",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Rami_Malek",
+    "age": 44,
+    "notes": "Actor"
+  },
+  {
+    "fullName": "Calvin Cordozar Broadus Jr.",
+    "dateOfBirth": "1971-10-20",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Snoop_Dogg",
+    "age": 54,
+    "notes": "Rapper (known as Snoop Dogg)"
+  },
+  {
+    "fullName": "Christopher Hemsworth",
+    "dateOfBirth": "1983-08-11",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Chris_Hemsworth",
+    "age": 42,
+    "notes": "Australian actor"
+  },
+  {
+    "fullName": "Nicole Kidman",
+    "dateOfBirth": "1967-06-20",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Nicole_Kidman",
+    "age": 58,
+    "notes": "Australian-American actress"
+  },
+  {
+    "fullName": "Alexander Boris de Pfeffel Johnson",
+    "dateOfBirth": "1964-06-19",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Boris_Johnson",
+    "age": 61,
+    "notes": "British politician and journalist"
+  },
+  {
+    "fullName": "Thomas William Hiddleston",
+    "dateOfBirth": "1981-02-09",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Tom_Hiddleston",
+    "age": 44,
+    "notes": "English actor"
+  },
+  {
+    "fullName": "Neymar da Silva Santos Júnior",
+    "dateOfBirth": "1992-02-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Neymar",
+    "age": 33,
+    "notes": "Brazilian professional footballer"
+  },
+  {
+    "fullName": "Justin Randall Timberlake",
+    "dateOfBirth": "1981-01-31",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Justin_Timberlake",
+    "age": 44,
+    "notes": "American singer, actor, and former *NSYNC member"
+  },
+  {
+    "fullName": "Kylie Ann Minogue",
+    "dateOfBirth": "1968-05-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Kylie_Minogue",
+    "age": 57,
+    "notes": "Australian singer and actress"
+  },
+  {
+    "fullName": "Pharrell Lanscilo Williams",
+    "dateOfBirth": "1973-04-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Pharrell_Williams",
+    "age": 52,
+    "notes": "American singer, producer, and songwriter"
+  },
+  {
+    "fullName": "Christopher Anthony John Martin",
+    "dateOfBirth": "1977-03-02",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Chris_Martin",
+    "age": 48,
+    "notes": "English musician, lead singer of Coldplay"
+  },
+  {
+    "fullName": "Belcalis Marlenis Almanzar",
+    "dateOfBirth": "1992-10-11",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Cardi_B",
+    "age": 33,
+    "notes": "American rapper and media personality (stage name Cardi B)"
+  },
+  {
+    "fullName": "Cameron Michelle Diaz",
+    "dateOfBirth": "1972-08-30",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Cameron_Diaz",
+    "age": 53,
+    "notes": "American actress and former model"
+  },
+  {
+    "fullName": "Usain Bolt",
+    "dateOfBirth": "1986-08-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Usain_Bolt",
+    "age": 39,
+    "notes": "Retired Olympic sprinter"
+  },
+  {
+    "fullName": "Steven Allan Spielberg",
+    "dateOfBirth": "1946-12-18",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Steven_Spielberg",
+    "age": 78,
+    "notes": "Film director and producer"
+  },
+  {
+    "fullName": "Charlize Theron",
+    "dateOfBirth": "1975-08-07",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Charlize_Theron",
+    "age": 50,
+    "notes": "Actress and producer"
+  },
+  {
+    "fullName": "Zlatan Ibrahimović",
+    "dateOfBirth": "1981-10-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Zlatan_Ibrahimović",
+    "age": 44,
+    "notes": "Professional footballer"
+  },
+  {
+    "fullName": "Margot Elise Robbie",
+    "dateOfBirth": "1990-07-02",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Margot_Robbie",
+    "age": 35,
+    "notes": "Actress and producer"
+  },
+  {
+    "fullName": "Katherine Matilda Swinton",
+    "dateOfBirth": "1960-11-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Tilda_Swinton",
+    "age": 65,
+    "notes": "Actress (known as Tilda Swinton)"
+  },
+  {
+    "fullName": "Stephanie Lynn Nicks",
+    "dateOfBirth": "1948-05-26",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Stevie_Nicks",
+    "age": 77,
+    "notes": "Singer-songwriter (Fleetwood Mac)"
+  },
+  {
+    "fullName": "Quentin Jerome Tarantino",
+    "dateOfBirth": "1963-03-27",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Quentin_Tarantino",
+    "age": 62,
+    "notes": "Film director and screenwriter"
+  },
+  {
+    "fullName": "Michael Fred Phelps II",
+    "dateOfBirth": "1985-06-30",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Michael_Phelps",
+    "age": 40,
+    "notes": "Olympic swimmer"
+  },
+  {
+    "fullName": "Priyanka Chopra Jonas",
+    "dateOfBirth": "1982-07-18",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Priyanka_Chopra",
+    "age": 43,
+    "notes": "Indian actress, singer, and former Miss World"
+  },
+  {
+    "fullName": "Mark Wahlberg",
+    "dateOfBirth": "1971-06-05",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Mark_Wahlberg",
+    "age": 54,
+    "notes": "American actor and producer"
+  },
+  {
+    "fullName": "Emily Blunt",
+    "dateOfBirth": "1983-02-23",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Emily_Blunt",
+    "age": 42,
+    "notes": "British-American actress"
+  },
+  {
+    "fullName": "Sia Kate Isobelle Furler",
+    "dateOfBirth": "1975-12-18",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Sia_(musician)",
+    "age": 49,
+    "notes": "Australian singer-songwriter"
+  },
+  {
+    "fullName": "Jason Momoa",
+    "dateOfBirth": "1979-08-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jason_Momoa",
+    "age": 46,
+    "notes": "American actor"
+  },
+  {
+    "fullName": "Natalie Portman (Natalie Hershlag)",
+    "dateOfBirth": "1981-06-09",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Natalie_Portman",
+    "age": 44,
+    "notes": "Israeli-born American actress"
+  },
+  {
+    "fullName": "Eldrick Tont Woods",
+    "dateOfBirth": "1975-12-30",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Tiger_Woods",
+    "age": 49,
+    "notes": "American professional golfer (known as Tiger Woods)"
+  },
+  {
+    "fullName": "Shawn Corey Carter",
+    "dateOfBirth": "1969-12-04",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jay-Z",
+    "age": 55,
+    "notes": "American rapper and entrepreneur (known as Jay-Z)"
+  },
+  {
+    "fullName": "Saoirse Ronan",
+    "dateOfBirth": "1994-04-12",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Saoirse_Ronan",
+    "age": 31,
+    "notes": "Irish-American actress"
+  },
+  {
+    "fullName": "Sheryl Suzanne Crow",
+    "dateOfBirth": "1962-02-11",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Sheryl_Crow",
+    "age": 63,
+    "notes": "American singer-songwriter"
+  },
+  {
+    "fullName": "Daniel Radcliffe",
+    "dateOfBirth": "1989-07-23",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Daniel_Radcliffe",
+    "age": 36,
+    "notes": "English actor, known for the Harry Potter films"
+  },
+  {
+    "fullName": "Reese Witherspoon",
+    "dateOfBirth": "1976-03-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Reese_Witherspoon",
+    "age": 49,
+    "notes": "American actress and producer"
+  },
+  {
+    "fullName": "Jennifer Lawrence",
+    "dateOfBirth": "1990-08-15",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jennifer_Lawrence",
+    "age": 35,
+    "notes": "American actress"
+  },
+  {
+    "fullName": "Kim Nam-joon",
+    "dateOfBirth": "1994-09-12",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/RM_(musician)",
+    "age": 31,
+    "notes": "South Korean rapper, songwriter and leader of BTS (stage name RM)"
+  },
+  {
+    "fullName": "Chimamanda Ngozi Adichie",
+    "dateOfBirth": "1977-09-15",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Chimamanda_Ngozi_Adichie",
+    "age": 48,
+    "notes": "Nigerian author and public intellectual"
+  },
+  {
+    "fullName": "Denis Villeneuve",
+    "dateOfBirth": "1967-10-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Denis_Villeneuve",
+    "age": 58,
+    "notes": "Canadian film director and screenwriter"
+  },
+  {
+    "fullName": "Victoria Beckham",
+    "dateOfBirth": "1974-04-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Victoria_Beckham",
+    "age": 51,
+    "notes": "English fashion designer and former pop singer"
+  },
+  {
+    "fullName": "Emilia Clarke",
+    "dateOfBirth": "1986-10-23",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Emilia_Clarke",
+    "age": 39,
+    "notes": "English actress"
+  },
+  {
+    "fullName": "Simone Biles",
+    "dateOfBirth": "1997-03-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Simone_Biles",
+    "age": 28,
+    "notes": "American artistic gymnast"
+  },
+  {
+    "fullName": "Kylian Mbappé",
+    "dateOfBirth": "1998-12-20",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Kylian_Mbapp%C3%A9",
+    "age": 26,
+    "notes": "French professional footballer"
+  },
+  {
+    "fullName": "Rishi Sunak",
+    "dateOfBirth": "1980-05-12",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Rishi_Sunak",
+    "age": 45,
+    "notes": "British politician"
+  },
+  {
+    "fullName": "Maggie Gyllenhaal",
+    "dateOfBirth": "1977-11-16",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Maggie_Gyllenhaal",
+    "age": 48,
+    "notes": "American actress and producer"
+  },
+  {
+    "fullName": "Jacinda Kate Laurell Ardern",
+    "dateOfBirth": "1980-07-26",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jacinda_Ardern",
+    "age": 45,
+    "notes": "New Zealand politician and former Prime Minister"
+  },
+  {
+    "fullName": "Timothée Chalamet",
+    "dateOfBirth": "1995-12-27",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Timoth%C3%A9e_Chalamet",
+    "age": 29,
+    "notes": "American actor"
+  },
+  {
+    "fullName": "Pichai Sundararajan",
+    "dateOfBirth": "1972-06-10",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Sundar_Pichai",
+    "age": 53,
+    "notes": "Indian-American business executive (CEO of Alphabet Inc. and Google)"
+  },
+  {
+    "fullName": "Kendrick Lamar Duckworth",
+    "dateOfBirth": "1987-06-17",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Kendrick_Lamar",
+    "age": 38,
+    "notes": "American rapper, songwriter and record producer"
   }
 ]

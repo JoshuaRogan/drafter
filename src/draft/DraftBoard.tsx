@@ -1429,7 +1429,7 @@ export const DraftBoard: React.FC = () => {
                               className="celebrity-name-button"
                               title="Click to view validation details"
                             >
-                              {pick.celebrityName}
+                              <span className="celebrity-name-label">{pick.celebrityName}</span>
                             </button>
                             {isDeceased && (
                               <span
@@ -1439,7 +1439,7 @@ export const DraftBoard: React.FC = () => {
                                 ☠
                               </span>
                             )}
-                            {attempted && (
+                            {attempted ? (
                               <span
                                 className={`validation-icon ${isValidated ? 'valid' : 'invalid'}`}
                                 title={
@@ -1453,6 +1453,15 @@ export const DraftBoard: React.FC = () => {
                                 onClick={handleOpenDetails}
                               >
                                 {isValidated ? '✓' : '✕'}
+                              </span>
+                            ) : (
+                              <span
+                                className="validation-icon pending"
+                                title={
+                                  title || 'Validation has not been checked yet for this name'
+                                }
+                              >
+                                !
                               </span>
                             )}
                           </div>
@@ -2099,14 +2108,82 @@ export const DraftBoard: React.FC = () => {
                         <div key={d.id}>
                           {celebName ? (
                             celeb ? (
-                              <button
-                                type="button"
-                                className="celebrity-name-button round-grid-cell"
-                                onClick={handleOpenDetails}
-                                title="Click to view validation details"
-                              >
-                                {celebName}
-                              </button>
+                              (() => {
+                                const attempted =
+                                  !!celeb.validationAttempted || !!celeb.isValidated;
+                                const isValidated = !!celeb.isValidated;
+                                const isDeceased = !!celeb.isDeceased;
+                                const dob = celeb.dateOfBirth;
+                                const hasWikipedia = !!celeb.hasWikipediaPage;
+
+                                const titleParts: string[] = [];
+                                if (isValidated) {
+                                  titleParts.push('Validated');
+                                }
+                                if (dob) {
+                                  titleParts.push(`DOB: ${dob}`);
+                                }
+                                if (hasWikipedia && celeb.wikipediaUrl) {
+                                  titleParts.push('Wikipedia linked');
+                                }
+                                if (attempted) {
+                                  titleParts.push(
+                                    isDeceased ? 'Reported deceased' : 'Believed alive'
+                                  );
+                                }
+
+                                const title = titleParts.join(' • ');
+
+                                return (
+                                  <button
+                                    type="button"
+                                    className="celebrity-name-button round-grid-cell"
+                                    onClick={handleOpenDetails}
+                                    title="Click to view validation details"
+                                  >
+                                    <div className="celebrity-main">
+                                      <span className="celebrity-name-label">{celebName}</span>
+                                      {isDeceased && (
+                                        <span
+                                          className="deceased-indicator"
+                                          title="Reported deceased"
+                                        >
+                                          ☠
+                                        </span>
+                                      )}
+                                      {attempted ? (
+                                        <span
+                                          className={`validation-icon ${
+                                            isValidated ? 'valid' : 'invalid'
+                                          }`}
+                                          title={
+                                            title ||
+                                            (isValidated
+                                              ? 'Validated celebrity'
+                                              : 'No clear match found for this name')
+                                          }
+                                          role="button"
+                                          tabIndex={0}
+                                          onClick={handleOpenDetails}
+                                        >
+                                          {isValidated ? '✓' : '✕'}
+                                        </span>
+                                      ) : (
+                                        <span
+                                          className="validation-icon pending"
+                                          title={
+                                            title ||
+                                            'Validation has not been checked yet for this name'
+                                          }
+                                        >
+                                          !
+                                        </span>
+                                      )}
+                                    </div>
+                                    {dob && <div className="celebrity-meta">{dob}</div>}
+                                  </button>
+                                );
+                              })()
                             ) : (
                               <span className="round-grid-cell">{celebName}</span>
                             )
