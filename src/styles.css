@@ -476,18 +476,18 @@ button {
 .round-grid-row > div {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 6px 10px;
   border-bottom: 1px solid rgba(31, 41, 55, 0.85);
-  text-align: center;
+  text-align: left;
 }
 
 .round-grid-row:nth-child(odd) {
-  background: rgba(15, 23, 42, 0.94);
+  background: rgba(15, 23, 42, 0.98);
 }
 
 .round-grid-row:nth-child(even) {
-  background: rgba(15, 23, 42, 0.96);
+  background: rgba(30, 64, 175, 0.22);
 }
 
 .round-grid-header > div:first-child,
@@ -500,6 +500,12 @@ button {
 .round-grid-header > div:not(:first-child),
 .round-grid-row > div:not(:first-child) {
   flex: 1 1 0;
+}
+
+.round-grid-cell {
+  display: block;
+  width: 100%;
+  text-align: left;
 }
 
 .round-grid-cell-empty {

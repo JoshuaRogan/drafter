@@ -5465,5 +5465,47 @@
     "wikipediaUrl": "https://en.wikipedia.org/wiki/Tony_Blair",
     "age": 72,
     "notes": "British politician (former Prime Minister)"
+  },
+  {
+    "fullName": "Aung San Suu Kyi",
+    "dateOfBirth": "1945-06-19",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Aung_San_Suu_Kyi",
+    "age": 80,
+    "notes": "Burmese politician and Nobel laureate"
+  },
+  {
+    "fullName": "Grace Slick",
+    "dateOfBirth": "1939-10-30",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Grace_Slick",
+    "age": 86,
+    "notes": "Singer-songwriter (Jefferson Airplane/Starship)"
+  },
+  {
+    "fullName": "Michael Bloomberg",
+    "dateOfBirth": "1942-02-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Michael_Bloomberg",
+    "age": 83,
+    "notes": "American businessman and politician"
+  },
+  {
+    "fullName": "Lynda Carter",
+    "dateOfBirth": "1951-07-24",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Lynda_Carter",
+    "age": 74,
+    "notes": "American actress and singer"
+  },
+  {
+    "fullName": "Diane Ladd",
+    "dateOfBirth": "1935-07-29",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Diane_Ladd",
+    "age": 90,
+    "notes": "American actress and author"
+  },
+  {
+    "fullName": "Lesley Ann Warren",
+    "dateOfBirth": "1946-08-16",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Lesley_Ann_Warren",
+    "age": 79,
+    "notes": "American actress and singer"
   }
 ]
