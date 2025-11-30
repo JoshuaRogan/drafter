@@ -6200,5 +6200,362 @@
     "wikipediaUrl": "https://en.wikipedia.org/wiki/Kendrick_Lamar",
     "age": 38,
     "notes": "American rapper, songwriter and record producer"
+  },
+  {
+    "fullName": "Greta Tintin Eleonora Ernman Thunberg",
+    "dateOfBirth": "2003-01-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Greta_Thunberg",
+    "age": 22,
+    "notes": "Swedish environmental activist"
+  },
+  {
+    "fullName": "Kiefer Sutherland",
+    "dateOfBirth": "1966-12-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Kiefer_Sutherland",
+    "age": 58,
+    "notes": "Canadian actor best known for the TV series '24'"
+  },
+  {
+    "fullName": "Lin-Manuel Miranda",
+    "dateOfBirth": "1980-01-16",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Lin-Manuel_Miranda",
+    "age": 45,
+    "notes": "American composer, lyricist and actor (Hamilton)"
+  },
+  {
+    "fullName": "Sacha Noam Baron Cohen",
+    "dateOfBirth": "1971-10-13",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Sacha_Baron_Cohen",
+    "age": 54,
+    "notes": "British comedian and actor known for characters like Borat"
+  },
+  {
+    "fullName": "Harry Edward Styles",
+    "dateOfBirth": "1994-02-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Harry_Styles",
+    "age": 31,
+    "notes": "English singer, songwriter and actor"
+  },
+  {
+    "fullName": "Taika David Waititi",
+    "dateOfBirth": "1975-08-16",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Taika_Waititi",
+    "age": 50,
+    "notes": "New Zealand filmmaker, actor and comedian"
+  },
+  {
+    "fullName": "Jennie Kim",
+    "dateOfBirth": "1996-01-16",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jennie_(singer)",
+    "age": 29,
+    "notes": "South Korean singer, member of BLACKPINK"
+  },
+  {
+    "fullName": "Catherine Elizabeth Middleton",
+    "dateOfBirth": "1982-01-09",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Catherine,_Princess_of_Wales",
+    "age": 43,
+    "notes": "Catherine, Princess of Wales (member of the British royal family)"
+  },
+  {
+    "fullName": "Adam Richard Sandler",
+    "dateOfBirth": "1966-09-09",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Adam_Sandler",
+    "age": 59,
+    "notes": "American actor and comedian"
+  },
+  {
+    "fullName": "Serena Jameka Williams",
+    "dateOfBirth": "1981-09-26",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Serena_Williams",
+    "age": 44,
+    "notes": "American professional tennis player"
+  },
+  {
+    "fullName": "Kamala Devi Harris",
+    "dateOfBirth": "1964-10-20",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Kamala_Harris",
+    "age": 61,
+    "notes": "Vice President of the United States"
+  },
+  {
+    "fullName": "Salma Hayek Jiménez",
+    "dateOfBirth": "1966-09-02",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Salma_Hayek",
+    "age": 59,
+    "notes": "Mexican and naturalized American actress and producer"
+  },
+  {
+    "fullName": "Daniel Wroughton Craig",
+    "dateOfBirth": "1968-03-02",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Daniel_Craig",
+    "age": 57,
+    "notes": "English actor"
+  },
+  {
+    "fullName": "Adam Douglas Driver",
+    "dateOfBirth": "1983-11-19",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Adam_Driver",
+    "age": 42,
+    "notes": "American actor"
+  },
+  {
+    "fullName": "Christopher Robert Evans",
+    "dateOfBirth": "1981-06-13",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Chris_Evans_(actor)",
+    "age": 44,
+    "notes": "American actor"
+  },
+  {
+    "fullName": "Naomi Osaka",
+    "dateOfBirth": "1997-10-16",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Naomi_Osaka",
+    "age": 28,
+    "notes": "Professional tennis player"
+  },
+  {
+    "fullName": "Camila Cabello",
+    "dateOfBirth": "1997-03-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Camila_Cabello",
+    "age": 28,
+    "notes": "Singer-songwriter and former Fifth Harmony member"
+  },
+  {
+    "fullName": "Naomi Campbell",
+    "dateOfBirth": "1970-05-22",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Naomi_Campbell",
+    "age": 55,
+    "notes": "English supermodel and actress"
+  },
+  {
+    "fullName": "Chris Martin",
+    "dateOfBirth": "1977-03-02",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Chris_Martin",
+    "age": 48,
+    "notes": "English singer-songwriter, lead vocalist of Coldplay"
+  },
+  {
+    "fullName": "Usher Raymond IV",
+    "dateOfBirth": "1978-10-14",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Usher_(musician)",
+    "age": 47,
+    "notes": "R&B singer and performer"
+  },
+  {
+    "fullName": "Mark Richard Hamill",
+    "dateOfBirth": "1951-09-25",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Mark_Hamill",
+    "age": 74,
+    "notes": "Actor and voice actor"
+  },
+  {
+    "fullName": "Lana Del Rey",
+    "dateOfBirth": "1985-06-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Lana_Del_Rey",
+    "age": 40,
+    "notes": "Singer-songwriter"
+  },
+  {
+    "fullName": "Nicolas Kim Coppola",
+    "dateOfBirth": "1964-01-07",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Nicolas_Cage",
+    "age": 61,
+    "notes": "American actor (known professionally as Nicolas Cage)"
+  },
+  {
+    "fullName": "José Antonio Domínguez Banderas",
+    "dateOfBirth": "1960-08-10",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Antonio_Banderas",
+    "age": 65,
+    "notes": "Spanish actor and director (known as Antonio Banderas)"
+  },
+  {
+    "fullName": "Sandra Oh",
+    "dateOfBirth": "1971-07-20",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Sandra_Oh",
+    "age": 54,
+    "notes": "Canadian actress"
+  },
+  {
+    "fullName": "Anya Taylor-Joy",
+    "dateOfBirth": "1996-04-16",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Anya_Taylor-Joy",
+    "age": 29,
+    "notes": "American-born Argentine-British actress"
+  },
+  {
+    "fullName": "Björk Guðmundsdóttir",
+    "dateOfBirth": "1965-11-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Björk",
+    "age": 60,
+    "notes": "Icelandic singer-songwriter and producer"
+  },
+  {
+    "fullName": "Matthew David McConaughey",
+    "dateOfBirth": "1969-11-04",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Matthew_McConaughey",
+    "age": 56,
+    "notes": "American actor"
+  },
+  {
+    "fullName": "Adam Noah Levine",
+    "dateOfBirth": "1979-03-18",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Adam_Levine",
+    "age": 46,
+    "notes": "American singer-songwriter, lead vocalist of Maroon 5"
+  },
+  {
+    "fullName": "Felix Arvid Ulf Kjellberg",
+    "dateOfBirth": "1989-10-24",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/PewDiePie",
+    "age": 36,
+    "notes": "Swedish YouTuber known online as PewDiePie"
+  },
+  {
+    "fullName": "Recep Tayyip Erdoğan",
+    "dateOfBirth": "1954-02-26",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Recep_Tayyip_Erdo%C4%9Fan",
+    "age": 71,
+    "notes": "President of Turkey"
+  },
+  {
+    "fullName": "Maggie Ruth Gyllenhaal",
+    "dateOfBirth": "1977-11-16",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Maggie_Gyllenhaal",
+    "age": 48,
+    "notes": "American actress and filmmaker"
+  },
+  {
+    "fullName": "Sharon Vonne Stone",
+    "dateOfBirth": "1958-03-10",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Sharon_Stone",
+    "age": 67,
+    "notes": "American actress and producer"
+  },
+  {
+    "fullName": "Malcolm Timothy Gladwell",
+    "dateOfBirth": "1963-09-03",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Malcolm_Gladwell",
+    "age": 62,
+    "notes": "Canadian journalist, author, and public intellectual"
+  },
+  {
+    "fullName": "Denzel Washington",
+    "dateOfBirth": "1954-12-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Denzel_Washington",
+    "age": 70,
+    "notes": "American actor and filmmaker"
+  },
+  {
+    "fullName": "Anne Hathaway",
+    "dateOfBirth": "1982-11-12",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Anne_Hathaway_(actress)",
+    "age": 43,
+    "notes": "American actress"
+  },
+  {
+    "fullName": "Javier Ángel Encinas Bardem",
+    "dateOfBirth": "1969-03-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Javier_Bardem",
+    "age": 56,
+    "notes": "Spanish actor"
+  },
+  {
+    "fullName": "Rachel Hannah Weisz",
+    "dateOfBirth": "1970-03-07",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Rachel_Weisz",
+    "age": 55,
+    "notes": "British-American actress"
+  },
+  {
+    "fullName": "John Roger Stephens",
+    "dateOfBirth": "1978-12-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/John_Legend",
+    "age": 46,
+    "notes": "American singer, songwriter and musician (stage name: John Legend)"
+  },
+  {
+    "fullName": "Michelle Yeoh Choo-Kheng",
+    "dateOfBirth": "1962-08-06",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Michelle_Yeoh",
+    "age": 63,
+    "notes": "Malaysian actress"
+  },
+  {
+    "fullName": "Hans Florian Zimmer",
+    "dateOfBirth": "1957-09-12",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Hans_Zimmer",
+    "age": 68,
+    "notes": "German film score composer"
+  },
+  {
+    "fullName": "William, Prince of Wales",
+    "dateOfBirth": "1982-06-21",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/William,_Prince_of_Wales",
+    "age": 43,
+    "notes": "Heir apparent to the British throne"
+  },
+  {
+    "fullName": "Uma Thurman",
+    "dateOfBirth": "1970-04-29",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Uma_Thurman",
+    "age": 55,
+    "notes": "American actress and model"
+  },
+  {
+    "fullName": "Jack Ma",
+    "dateOfBirth": "1964-09-10",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jack_Ma",
+    "age": 61,
+    "notes": "Chinese entrepreneur and co-founder of Alibaba Group"
+  },
+  {
+    "fullName": "Penélope Cruz",
+    "dateOfBirth": "1974-04-28",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Pen%C3%A9lope_Cruz",
+    "age": 51,
+    "notes": "Spanish actress"
+  },
+  {
+    "fullName": "Marion Cotillard",
+    "dateOfBirth": "1975-09-30",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Marion_Cotillard",
+    "age": 50,
+    "notes": "French actress"
+  },
+  {
+    "fullName": "Tom Holland",
+    "dateOfBirth": "1996-06-01",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Tom_Holland",
+    "age": 29,
+    "notes": "English actor"
+  },
+  {
+    "fullName": "Jake Gyllenhaal",
+    "dateOfBirth": "1980-12-19",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jake_Gyllenhaal",
+    "age": 44,
+    "notes": "American actor"
+  },
+  {
+    "fullName": "Zac Efron",
+    "dateOfBirth": "1987-10-18",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Zac_Efron",
+    "age": 38,
+    "notes": "American actor and singer"
+  },
+  {
+    "fullName": "Vladimir Putin",
+    "dateOfBirth": "1952-10-07",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Vladimir_Putin",
+    "age": 73,
+    "notes": "Russian politician, President of Russia"
+  },
+  {
+    "fullName": "Hugh Grant",
+    "dateOfBirth": "1960-09-09",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Hugh_Grant",
+    "age": 65,
+    "notes": "English actor known for romantic comedy roles"
   }
 ]
