@@ -1035,6 +1035,11 @@ export const DraftBoard: React.FC = () => {
     if (!myDrafter) return;
     if (!localCustomCelebs.length) return;
 
+    const confirmed = window.confirm(
+      'Clear your entire custom auto-draft list? This will remove all saved names and cannot be undone.'
+    );
+    if (!confirmed) return;
+
     try {
       setIsClearingCustomList(true);
       const ids = localCustomCelebs.map((c) => c.id);
