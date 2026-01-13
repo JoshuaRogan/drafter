@@ -76,28 +76,10 @@ async function saveDraftState(state) {
 
 const PRECONFIGURED_DRAFTERS = [
   {
-    id: 'drafter-josh',
-    name: 'Josh',
-    order: 6,
-    password: '1111'
-  },
-  {
-    id: 'drafter-jim',
-    name: 'Jim',
-    order: 5,
-    password: '2222'
-  },
-  {
-    id: 'drafter-kyle',
-    name: 'Kyle',
-    order: 7,
-    password: '3333'
-  },
-  {
-    id: 'drafter-pj',
-    name: 'Pj',
-    order: 4,
-    password: '4444'
+    id: 'drafter-cory',
+    name: 'Cory',
+    order: 1,
+    password: '6666'
   },
   {
     id: 'drafter-zaccheo',
@@ -106,16 +88,34 @@ const PRECONFIGURED_DRAFTERS = [
     password: '5555'
   },
   {
-    id: 'drafter-cory',
-    name: 'Cory',
-    order: 1,
-    password: '6666'
-  },
-  {
     id: 'drafter-pat',
     name: 'Pat',
     order: 3,
     password: '7777'
+  },
+  {
+    id: 'drafter-pj',
+    name: 'Pj',
+    order: 4,
+    password: '4444'
+  },
+  {
+    id: 'drafter-jim',
+    name: 'Jim',
+    order: 5,
+    password: '2222'
+  },
+  {
+    id: 'drafter-josh',
+    name: 'Josh',
+    order: 6,
+    password: '1111'
+  },
+  {
+    id: 'drafter-kyle',
+    name: 'Kyle',
+    order: 7,
+    password: '3333'
   }
 ];
 
