@@ -78,19 +78,19 @@ const PRECONFIGURED_DRAFTERS = [
   {
     id: 'drafter-josh',
     name: 'Josh',
-    order: 1,
+    order: 6,
     password: '1111'
   },
   {
     id: 'drafter-jim',
     name: 'Jim',
-    order: 2,
+    order: 5,
     password: '2222'
   },
   {
     id: 'drafter-kyle',
     name: 'Kyle',
-    order: 3,
+    order: 7,
     password: '3333'
   },
   {
@@ -102,19 +102,19 @@ const PRECONFIGURED_DRAFTERS = [
   {
     id: 'drafter-zaccheo',
     name: 'Zaccheo',
-    order: 5,
+    order: 2,
     password: '5555'
   },
   {
     id: 'drafter-cory',
     name: 'Cory',
-    order: 6,
+    order: 1,
     password: '6666'
   },
   {
     id: 'drafter-pat',
     name: 'Pat',
-    order: 7,
+    order: 3,
     password: '7777'
   }
 ];
