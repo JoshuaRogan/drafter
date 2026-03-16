@@ -349,15 +349,17 @@ const ProxyPickConfirmationModal: React.FC<ProxyPickConfirmationModalProps> = ({
   );
 };
 
+const normalizeDraftName = (name: string): string => (name || '').trim().toLowerCase();
+
 const pickAutoCelebrity = (
-  draftedNames: Set<string>
+  draftedNameKeys: Set<string>
 ): AutoCelebrity | null => {
   const candidates: AutoCelebrity[] = [];
 
   for (const celeb of AUTO_CELEBRITY_POOL) {
     const name = celeb.fullName.trim();
     if (!name) continue;
-    if (draftedNames.has(name)) continue;
+    if (draftedNameKeys.has(normalizeDraftName(name))) continue;
 
     candidates.push(celeb);
   }
@@ -391,7 +393,7 @@ const pickAutoCelebrity = (
 
 const pickFromCustomList = (
   list: CustomAutoDraftList | null | undefined,
-  draftedNames: Set<string>
+  draftedNameKeys: Set<string>
 ): Celebrity | null => {
   if (!list || !Array.isArray(list.celebrities) || !list.celebrities.length) {
     return null;
@@ -402,7 +404,7 @@ const pickFromCustomList = (
   for (const celeb of list.celebrities) {
     const name = (celeb.fullName || celeb.name || '').trim();
     if (!name) continue;
-    if (draftedNames.has(name)) continue;
+    if (draftedNameKeys.has(normalizeDraftName(name))) continue;
     return celeb;
   }
 
@@ -481,9 +483,9 @@ export const DraftBoard: React.FC = () => {
     !!currentDrafter?.name &&
     user.name.trim().toLowerCase() === currentDrafter.name.trim().toLowerCase();
 
-  const draftedNames = useMemo(() => {
+  const draftedNameKeys = useMemo(() => {
     if (!state) return new Set<string>();
-    return new Set(state.picks.map((p) => p.celebrityName));
+    return new Set(state.picks.map((p) => normalizeDraftName(p.celebrityName)).filter(Boolean));
   }, [state]);
 
   const celebritiesByName = useMemo(() => {
@@ -749,7 +751,7 @@ export const DraftBoard: React.FC = () => {
         ? customListsByDrafter[seatForCurrentPick.id]
         : null;
 
-    const customCandidate = pickFromCustomList(seatCustomList, draftedNames);
+    const customCandidate = pickFromCustomList(seatCustomList, draftedNameKeys);
     let nextName: string | null = null;
 
     if (customCandidate) {
@@ -757,7 +759,7 @@ export const DraftBoard: React.FC = () => {
     }
 
     if (!nextName) {
-      const globalCandidate = pickAutoCelebrity(draftedNames);
+      const globalCandidate = pickAutoCelebrity(draftedNameKeys);
       if (!globalCandidate) {
         setLastError('No eligible celebrities left in the custom or general auto-draft lists.');
         setTimeout(() => setLastError(null), 2500);
@@ -792,7 +794,7 @@ export const DraftBoard: React.FC = () => {
     state,
     status,
     currentDrafter,
-    draftedNames,
+    draftedNameKeys,
     customListsByDrafter
   ]);
 
@@ -889,7 +891,7 @@ export const DraftBoard: React.FC = () => {
       return false;
     }
 
-    if (draftedNames.has(name)) {
+    if (draftedNameKeys.has(normalizeDraftName(name))) {
       setLastError('That celebrity has already been drafted.');
       setTimeout(() => setLastError(null), 2000);
       return false;
@@ -1064,7 +1066,7 @@ export const DraftBoard: React.FC = () => {
       return;
     }
 
-    const candidate = pickAutoCelebrity(draftedNames);
+    const candidate = pickAutoCelebrity(draftedNameKeys);
     if (!candidate) {
       setLastError('No eligible celebrities left in the auto-draft list.');
       setTimeout(() => setLastError(null), 2500);
@@ -1092,7 +1094,7 @@ export const DraftBoard: React.FC = () => {
       return;
     }
 
-    const candidate = pickFromCustomList(autoDraftSeatCustomList, draftedNames);
+    const candidate = pickFromCustomList(autoDraftSeatCustomList, draftedNameKeys);
     if (!candidate) {
       setLastError('No eligible celebrities left in the custom list.');
       setTimeout(() => setLastError(null), 2500);
@@ -1898,7 +1900,8 @@ export const DraftBoard: React.FC = () => {
                       const isDeceased = !!c.isDeceased;
                       const hasWikipedia =
                         !!c.hasWikipediaPage && !!c.wikipediaUrl;
-                      const isDrafted = !!displayName && draftedNames.has(displayName);
+                      const isDrafted =
+                        !!displayName && draftedNameKeys.has(normalizeDraftName(displayName));
 
                       const titleParts: string[] = [];
                       if (isValidated) {

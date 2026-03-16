@@ -929,6 +929,66 @@ button {
   border: 1px solid rgba(248, 113, 113, 0.8);
 }
 
+/* MLB Draft picks grid: # | Rd | Drafter | Player | Slot | Team */
+.grid--mlb-picks .grid-header,
+.grid--mlb-picks .grid-row {
+  grid-template-columns: 32px 36px 0.6fr 1.4fr 48px 48px;
+}
+
+.player-name-label {
+  font-size: 12px;
+  color: #e5e7eb;
+}
+
+.position-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 4px;
+  text-align: center;
+  background: rgba(55, 65, 81, 0.7);
+  color: #d1d5db;
+}
+
+.position-badge[data-pos="C"]  { background: rgba(234,179,8,0.18); color: #fde047; }
+.position-badge[data-pos="1B"] { background: rgba(239,68,68,0.15); color: #fca5a5; }
+.position-badge[data-pos="2B"] { background: rgba(59,130,246,0.18); color: #93c5fd; }
+.position-badge[data-pos="3B"] { background: rgba(168,85,247,0.18); color: #c4b5fd; }
+.position-badge[data-pos="SS"] { background: rgba(236,72,153,0.18); color: #f9a8d4; }
+.position-badge[data-pos="OF"] { background: rgba(34,197,94,0.18); color: #86efac; }
+.position-badge[data-pos="P"]  { background: rgba(249,115,22,0.18); color: #fdba74; }
+.position-badge[data-pos="DH"] { background: rgba(20,184,166,0.18); color: #5eead4; }
+.position-badge[data-pos="MGR"] { background: rgba(148,163,184,0.18); color: #cbd5e1; }
+.position-badge[data-pos="UTIL"] { background: rgba(107,114,128,0.18); color: #9ca3af; }
+.position-badge[data-pos="XHIT"] { background: rgba(251,191,36,0.18); color: #fbbf24; }
+
+/* On the clock bar for MLB (reuse celebrity onclock styles via class) */
+.onclock-bar {
+  margin-top: 4px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(34, 197, 94, 0.5);
+  background: radial-gradient(circle at top left, rgba(22, 163, 74, 0.35), rgba(15, 23, 42, 0.9));
+  text-align: center;
+}
+
+.onclock-bar--self {
+  border-color: rgba(250, 204, 21, 0.95);
+  background: radial-gradient(circle at top left, rgba(250, 204, 21, 0.4), rgba(15, 23, 42, 0.98));
+  box-shadow:
+    0 0 0 1px rgba(250, 204, 21, 0.9),
+    0 0 32px rgba(250, 204, 21, 0.6);
+}
+
+.onclock-prefix {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #bbf7d0;
+  margin-right: 6px;
+}
+
 @media (max-width: 640px) {
   .app-shell {
     padding: 16px 10px;
