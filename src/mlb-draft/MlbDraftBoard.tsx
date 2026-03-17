@@ -56,6 +56,23 @@ function positionCategory(abbr: string): string {
   return 'UTIL';
 }
 
+const MlbProfileLink: React.FC<{ playerId: string; style?: React.CSSProperties }> = ({ playerId, style }) => (
+  <a
+    href={`https://www.mlb.com/player/${playerId}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    onClick={(e) => e.stopPropagation()}
+    style={{ flexShrink: 0, color: '#6b7280', lineHeight: 1, padding: '0 2px', ...style }}
+    title="MLB profile"
+  >
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 6.5v3a.5.5 0 0 1-.5.5h-6a.5.5 0 0 1-.5-.5v-6A.5.5 0 0 1 2.5 3H5.5" />
+      <path d="M7 2h3v3" />
+      <path d="M5 7L10 2" />
+    </svg>
+  </a>
+);
+
 interface PendingPick {
   drafterId: string;
   drafterName: string;
@@ -93,6 +110,9 @@ export const MlbDraftBoard: React.FC = () => {
   const [pendingPick, setPendingPick] = useState<PendingPick | null>(null);
   const [confirmAction, setConfirmAction] = useState<{ label: string; onConfirm: () => void } | null>(null);
   const [customPlayerName, setCustomPlayerName] = useState('');
+  const [editingPick, setEditingPick] = useState<MlbPick | null>(null);
+  const [editPlayerName, setEditPlayerName] = useState('');
+  const [editRosterSlot, setEditRosterSlot] = useState('');
   const [checkpointName, setCheckpointName] = useState('');
   const [isSavingCheckpoint, setIsSavingCheckpoint] = useState(false);
   const [isRestoringCheckpoint, setIsRestoringCheckpoint] = useState(false);
@@ -128,6 +148,14 @@ export const MlbDraftBoard: React.FC = () => {
     }
     return set;
   }, [state?.picks]);
+
+  // Player name → MLB ID lookup (for profile links on picks/rosters)
+  const playerIdByName = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const p of allPlayers) map.set(p.name.toLowerCase(), p.id);
+    for (const m of allManagers) map.set(m.name.toLowerCase(), m.id);
+    return map;
+  }, [allPlayers, allManagers]);
 
   // All available players (players + managers combined), excluding drafted
   const availablePool = useMemo(() => {
@@ -365,6 +393,40 @@ export const MlbDraftBoard: React.FC = () => {
 
   return (
     <>
+      <div style={{
+        background: 'rgba(15,23,42,0.8)',
+        border: '1px solid rgba(148,163,184,0.25)',
+        borderRadius: 10,
+        padding: '12px 16px',
+        fontSize: 12,
+        lineHeight: 1.6,
+        color: '#9ca3af',
+        marginBottom: 12,
+      }}>
+        <div style={{ fontWeight: 700, fontSize: 13, color: '#e5e7eb', marginBottom: 6 }}>Scoring Rules</div>
+        <table style={{ borderCollapse: 'collapse', width: '100%', maxWidth: 420 }}>
+          <tbody>
+            <tr><td style={{ paddingRight: 12 }}>Home Run</td><td style={{ fontWeight: 600, color: '#e5e7eb' }}>1 pt</td></tr>
+            <tr><td style={{ paddingRight: 12 }}>Home Run 450+ ft</td><td style={{ fontWeight: 600, color: '#e5e7eb' }}>+1 pt bonus</td></tr>
+            <tr><td style={{ paddingRight: 12 }}>Hit By Pitch</td><td style={{ fontWeight: 600, color: '#e5e7eb' }}>0.5 pts</td></tr>
+            <tr><td style={{ paddingRight: 12 }}>Manager Ejection</td><td style={{ fontWeight: 600, color: '#e5e7eb' }}>5 pts</td></tr>
+            <tr><td style={{ paddingRight: 12 }}>PED Suspension</td><td style={{ fontWeight: 600, color: '#e5e7eb' }}>20 pts</td></tr>
+          </tbody>
+        </table>
+        <div style={{ marginTop: 8, borderTop: '1px solid rgba(148,163,184,0.15)', paddingTop: 8 }}>
+          <div style={{ fontWeight: 600, color: '#e5e7eb', marginBottom: 2 }}>Tiebreaker</div>
+          <div>Your pitcher is used only as a tiebreaker — most strikeouts wins. Pitchers do not earn points otherwise.</div>
+        </div>
+        <div style={{ marginTop: 8, borderTop: '1px solid rgba(148,163,184,0.15)', paddingTop: 8 }}>
+          <div style={{ fontWeight: 600, color: '#e5e7eb', marginBottom: 2 }}>Add/Drop</div>
+          <div>Each team gets 1 free add/drop at any point during the year. Additional add/drops are available if your player suffers a season-ending injury (must be approved by league vote).</div>
+        </div>
+        <div style={{ marginTop: 8, borderTop: '1px solid rgba(148,163,184,0.15)', paddingTop: 8 }}>
+          <div style={{ fontWeight: 600, color: '#e5e7eb', marginBottom: 2 }}>Draft Order</div>
+          <div>Draft order is determined by reverse standings from the previous year. New members are added to the bottom.</div>
+        </div>
+      </div>
+
       {displayError && (
         <div className="mt-8" style={{ color: '#f87171', fontSize: 13, fontWeight: 500, padding: '8px 12px', background: 'rgba(239,68,68,0.1)', borderRadius: 8, border: '1px solid rgba(239,68,68,0.3)' }}>
           {displayError}
@@ -386,6 +448,113 @@ export const MlbDraftBoard: React.FC = () => {
           </div>
         </div>
       )}
+
+      {editingPick && (() => {
+        const pick = editingPick;
+        // Look up full player data for the current and replacement player
+        const currentPlayer = availablePool.find((p) => p.name.toLowerCase() === pick.playerName.toLowerCase());
+        const replacementPlayer = editPlayerName.trim().toLowerCase() !== pick.playerName.toLowerCase()
+          ? availablePool.find((p) => p.name.toLowerCase() === editPlayerName.trim().toLowerCase())
+          : null;
+
+        // Determine which player's categories to use for slot validity
+        const effectivePlayer = replacementPlayer || currentPlayer;
+        const effectiveCats = effectivePlayer?.positionCategories || effectivePlayer ? [effectivePlayer?.positionCategory || ''] : [];
+
+        // Filled slots for this drafter, excluding the current pick's slot
+        const filled = filledSlotsByDrafter.get(pick.drafterId) || new Set<string>();
+
+        const playerNameChanged = editPlayerName.trim().toLowerCase() !== pick.playerName.toLowerCase();
+        const slotChanged = editRosterSlot !== (pick.rosterSlot || '');
+        const hasChanges = (playerNameChanged && editPlayerName.trim()) || slotChanged;
+
+        return (
+          <div style={{
+            position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+            background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999
+          }}>
+            <div className="panel" style={{ maxWidth: 480, width: '90%' }}>
+              <div className="panel-title" style={{ marginBottom: 12 }}>
+                Edit Pick #{pick.overallNumber} — {pick.drafterName}
+              </div>
+
+              {/* Player name */}
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Player</div>
+                <input
+                  type="text"
+                  value={editPlayerName}
+                  onChange={(e) => setEditPlayerName(e.target.value)}
+                  style={{ width: '100%' }}
+                  placeholder="Player name"
+                />
+              </div>
+
+              {/* Roster slot */}
+              <div style={{ marginBottom: 16 }}>
+                <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Roster Slot</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {ROSTER_SLOTS.map((slot) => {
+                    const isCurrent = editRosterSlot === slot.id;
+                    const takenByOther = filled.has(slot.id) && slot.id !== pick.rosterSlot;
+                    const isValid = effectiveCats.length > 0 && (
+                      slot.positionCategory === 'XHIT'
+                        ? effectiveCats.some((c: string) => HITTER_CATEGORIES.has(c))
+                        : effectiveCats.includes(slot.positionCategory)
+                    );
+                    return (
+                      <button
+                        key={slot.id}
+                        className={isCurrent ? 'btn-primary' : 'btn-secondary'}
+                        style={{
+                          fontSize: 11,
+                          padding: '4px 10px',
+                          opacity: takenByOther ? 0.3 : isValid || isCurrent ? 1 : 0.6,
+                        }}
+                        disabled={takenByOther}
+                        onClick={() => setEditRosterSlot(slot.id)}
+                        title={takenByOther ? 'Already filled' : isValid ? 'Valid position' : 'Needs league approval'}
+                      >
+                        {slot.id}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button
+                  className="btn-primary"
+                  disabled={!hasChanges}
+                  onClick={() => {
+                    const newName = playerNameChanged ? editPlayerName.trim() : undefined;
+                    const newSlot = slotChanged ? editRosterSlot : undefined;
+
+                    // Compute validity for the slot
+                    let slotValid: boolean | undefined;
+                    if (newSlot !== undefined) {
+                      const slotDef = ROSTER_SLOTS.find((s) => s.id === newSlot);
+                      if (slotDef && effectiveCats.length > 0) {
+                        slotValid = slotDef.positionCategory === 'XHIT'
+                          ? effectiveCats.some((c: string) => HITTER_CATEGORIES.has(c))
+                          : effectiveCats.includes(slotDef.positionCategory);
+                      } else {
+                        slotValid = false;
+                      }
+                    }
+
+                    editPick(pick.id, newName, newSlot, slotValid);
+                    setEditingPick(null);
+                  }}
+                >
+                  Save
+                </button>
+                <button className="btn-secondary" onClick={() => setEditingPick(null)}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {pendingPick && (() => {
         const playerCats = pendingPick.player?.positionCategories || [pendingPick.player?.positionCategory || ''];
@@ -536,8 +705,11 @@ export const MlbDraftBoard: React.FC = () => {
                     <div>{pick.overallNumber}</div>
                     <div>{pick.round}</div>
                     <div><span className="badge">{pick.drafterName}</span></div>
-                    <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                       <span className="player-name-label">{pick.playerName}</span>
+                      {playerIdByName.get(pick.playerName.toLowerCase()) && (
+                        <MlbProfileLink playerId={playerIdByName.get(pick.playerName.toLowerCase())!} />
+                      )}
                     </div>
                     <div style={{ fontSize: 11, fontWeight: 500 }}>
                       {pick.rosterSlot || '—'}
@@ -545,7 +717,22 @@ export const MlbDraftBoard: React.FC = () => {
                         <span style={{ color: '#f59e0b', marginLeft: 2 }} title="Needs league approval">&#9888;</span>
                       )}
                     </div>
-                    <div style={{ fontSize: 11, color: '#9ca3af' }}>{pick.teamAbbr || ''}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#9ca3af' }}>
+                      {pick.teamAbbr || ''}
+                      {isAdmin && (
+                        <button
+                          className="btn-secondary"
+                          style={{ fontSize: 10, padding: '1px 6px', marginLeft: 'auto' }}
+                          onClick={() => {
+                            setEditingPick(pick);
+                            setEditPlayerName(pick.playerName);
+                            setEditRosterSlot(pick.rosterSlot || '');
+                          }}
+                        >
+                          Edit
+                        </button>
+                      )}
+                    </div>
                   </div>
               ))}
               {!state?.picks.length && (
@@ -591,12 +778,15 @@ export const MlbDraftBoard: React.FC = () => {
                       return (
                         <div key={slot.id} style={{ display: 'flex', gap: 4, padding: '1px 0', color: pick ? '#e5e7eb' : '#4b5563' }}>
                           <span style={{ width: 36, flexShrink: 0, color: '#6b7280', fontWeight: 500, fontSize: 11 }}>{slot.id}</span>
-                          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 2 }}>
                             {pick ? (
                               <>
                                 {pick.playerName}
-                                {!pick.rosterSlotValid && <span style={{ color: '#f59e0b', fontSize: 10, marginLeft: 4 }} title="Needs league approval">&#9888;</span>}
-                                <span style={{ color: '#6b7280', marginLeft: 4 }}>({allPos.join('/')})</span>
+                                {playerIdByName.get(pick.playerName.toLowerCase()) && (
+                                  <MlbProfileLink playerId={playerIdByName.get(pick.playerName.toLowerCase())!} style={{ fontSize: 10 }} />
+                                )}
+                                {!pick.rosterSlotValid && <span style={{ color: '#f59e0b', fontSize: 10, marginLeft: 2 }} title="Needs league approval">&#9888;</span>}
+                                <span style={{ color: '#6b7280', marginLeft: 2 }}>({allPos.join('/')})</span>
                               </>
                             ) : '—'}
                           </span>
@@ -817,6 +1007,7 @@ export const MlbDraftBoard: React.FC = () => {
                     <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {player.name}
                     </span>
+                    <MlbProfileLink playerId={player.id} />
                     <span style={{ fontSize: 11, color: '#6b7280', flexShrink: 0 }}>
                       {player.teamAbbr}
                     </span>

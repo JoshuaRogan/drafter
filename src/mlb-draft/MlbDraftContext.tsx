@@ -34,7 +34,7 @@ interface MlbDraftContextValue {
   allManagers: MlbPlayer[];
   initDraft(): void;
   sendPick(drafterId: string, playerName: string, rosterSlot: string, rosterSlotValid: boolean): void;
-  editPick(pickId: string, newPlayerName: string): void;
+  editPick(pickId: string, newPlayerName?: string, newRosterSlot?: string, newRosterSlotValid?: boolean): void;
   resetDraft(): void;
   undoLastPick(): void;
   restorePreviousState(): void;
@@ -359,19 +359,19 @@ export const MlbDraftProvider: React.FC<{
     })();
   };
 
-  const editPick = (pickId: string, newPlayerName: string) => {
+  const editPick = (pickId: string, newPlayerName?: string, newRosterSlot?: string, newRosterSlotValid?: boolean) => {
     if (!channel || !state) return;
     if (state.status === 'not-started') return;
 
-    const trimmedName = newPlayerName.trim();
-    if (!trimmedName) return;
+    const trimmedName = newPlayerName?.trim() || '';
+
+    const body: Record<string, unknown> = { action: 'editPick', pickId };
+    if (trimmedName) body.newPlayerName = trimmedName;
+    if (newRosterSlot !== undefined) body.newRosterSlot = newRosterSlot;
+    if (newRosterSlotValid !== undefined) body.newRosterSlotValid = newRosterSlotValid;
 
     void (async () => {
-      const { state: nextState, error: actionError } = await postDraftAction({
-        action: 'editPick',
-        pickId,
-        newPlayerName: trimmedName
-      });
+      const { state: nextState, error: actionError } = await postDraftAction(body);
 
       if (actionError || !nextState) {
         setError(actionError || 'Failed to edit pick.');

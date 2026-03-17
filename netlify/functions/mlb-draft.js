@@ -253,17 +253,40 @@ function applyEditPick(state, payload) {
 
   const pickId = typeof payload.pickId === 'string' ? payload.pickId : '';
   const newPlayerName = typeof payload.newPlayerName === 'string' ? payload.newPlayerName.trim() : '';
+  const newRosterSlot = typeof payload.newRosterSlot === 'string' ? payload.newRosterSlot : null;
+  const newRosterSlotValid = typeof payload.newRosterSlotValid === 'boolean' ? payload.newRosterSlotValid : null;
 
-  if (!pickId || !newPlayerName) return { error: 'Both pickId and newPlayerName are required.' };
+  if (!pickId) return { error: 'pickId is required.' };
 
   const pickIndex = state.picks.findIndex((p) => p.id === pickId);
   if (pickIndex === -1) return { error: 'Pick not found.' };
 
   const existingPick = state.picks[pickIndex];
-  const oldName = existingPick.playerName;
 
-  if (oldName.toLowerCase() === newPlayerName.toLowerCase()) return { state };
+  // Slot-only edit (no player change)
+  if (!newPlayerName || newPlayerName.toLowerCase() === existingPick.playerName.toLowerCase()) {
+    if (newRosterSlot === null) return { state }; // nothing to change
 
+    // Validate the new slot isn't already taken by same drafter (except this pick)
+    const slotTaken = state.picks.some(
+      (p, idx) => idx !== pickIndex && p.drafterId === existingPick.drafterId && p.rosterSlot === newRosterSlot
+    );
+    if (slotTaken) return { error: `Roster slot "${newRosterSlot}" is already filled by this drafter.` };
+
+    const slotDef = ROSTER_SLOT_DEFS.find((s) => s.id === newRosterSlot);
+    if (!slotDef) return { error: `Invalid roster slot "${newRosterSlot}".` };
+
+    const playerCategories = existingPick.positionCategories || [existingPick.positionCategory || ''];
+    const slotValid = newRosterSlotValid !== null ? newRosterSlotValid : isSlotValidForPlayer(slotDef, playerCategories);
+
+    const updatedPicks = state.picks.map((p, idx) =>
+      idx === pickIndex ? { ...p, rosterSlot: newRosterSlot, rosterSlotValid: slotValid } : p
+    );
+    const now = new Date().toISOString();
+    return { state: { ...state, picks: updatedPicks, updatedAt: now } };
+  }
+
+  // Player replacement
   const duplicate = state.picks.some(
     (p, idx) => idx !== pickIndex && p.playerName.toLowerCase() === newPlayerName.toLowerCase()
   );
@@ -273,11 +296,21 @@ function applyEditPick(state, payload) {
     (p) => p.name.toLowerCase() === newPlayerName.toLowerCase()
   );
 
+  const oldName = existingPick.playerName;
+
+  // If a new slot was provided, use it; otherwise keep the existing slot
+  const finalSlot = newRosterSlot !== null ? newRosterSlot : existingPick.rosterSlot;
+  const slotDef = ROSTER_SLOT_DEFS.find((s) => s.id === finalSlot);
+  const playerCategories = poolPlayer?.positionCategories || [poolPlayer?.positionCategory || ''];
+  const slotValid = newRosterSlotValid !== null ? newRosterSlotValid : (slotDef ? isSlotValidForPlayer(slotDef, playerCategories) : false);
+
   const updatedPicks = state.picks.map((p, idx) =>
     idx === pickIndex
       ? {
           ...p,
           playerName: newPlayerName,
+          rosterSlot: finalSlot,
+          rosterSlotValid: slotValid,
           position: poolPlayer?.position || '',
           positions: poolPlayer?.positions || [poolPlayer?.position || ''],
           positionCategory: poolPlayer?.positionCategory || '',
