@@ -56,6 +56,10 @@ function positionCategory(abbr: string): string {
   return 'UTIL';
 }
 
+/** Strip accents/diacritics, collapse dashes/hyphens, and lowercase for search matching. */
+const normalize = (s: string): string =>
+  s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[-\u2010-\u2015]/g, '').toLowerCase();
+
 const MlbProfileLink: React.FC<{ playerId: string; style?: React.CSSProperties }> = ({ playerId, style }) => (
   <a
     href={`https://www.mlb.com/player/${playerId}`}
@@ -199,12 +203,12 @@ export const MlbDraftBoard: React.FC = () => {
     }
 
     if (searchQuery.trim()) {
-      const q = searchQuery.trim().toLowerCase();
+      const q = normalize(searchQuery.trim());
       pool = pool.filter(
         (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.team.toLowerCase().includes(q) ||
-          p.teamAbbr.toLowerCase().includes(q)
+          normalize(p.name).includes(q) ||
+          normalize(p.team).includes(q) ||
+          normalize(p.teamAbbr).includes(q)
       );
     }
 
