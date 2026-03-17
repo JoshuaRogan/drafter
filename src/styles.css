@@ -1029,4 +1029,236 @@ button {
   }
 }
 
+/* ─── MLB Orange Theme ─── */
+
+.mlb-theme {
+  position: relative;
+  z-index: 1;
+}
+
+body:has(.mlb-theme) {
+  background: radial-gradient(circle at top left, #1c0a00, #0a0300);
+}
+
+.mlb-theme .card {
+  background: rgba(30, 15, 5, 0.96);
+  border-color: rgba(251, 146, 60, 0.3);
+  box-shadow: 0 24px 80px rgba(30, 10, 0, 0.85);
+  position: relative;
+}
+
+.mlb-theme .card > :not(.mlb-bg) {
+  position: relative;
+  z-index: 1;
+}
+
+.dinger-mascot {
+  position: absolute;
+  bottom: calc(100% - 18px);
+  right: -12px;
+  width: 240px;
+  z-index: 10;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.6));
+}
+
+@media (min-width: 1100px) {
+  .dinger-mascot {
+    width: 360px;
+    bottom: calc(100% - 26px);
+    right: -16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .dinger-mascot {
+    width: 160px;
+    bottom: calc(100% - 12px);
+    right: -5px;
+  }
+}
+
+.mlb-theme .pill.leader {
+  background: rgba(251, 146, 60, 0.16) !important;
+  color: #fdba74 !important;
+}
+
+.mlb-theme .panel {
+  background: radial-gradient(circle at top left, rgba(30, 15, 5, 1), rgba(15, 8, 2, 1));
+  border-color: rgba(251, 146, 60, 0.3);
+}
+
+.mlb-theme .btn-primary {
+  background: linear-gradient(to right, #f97316, #fb923c);
+  color: #1c0800;
+}
+
+.mlb-theme .btn-secondary {
+  background: rgba(30, 15, 5, 0.9);
+  border-color: rgba(251, 146, 60, 0.5);
+  color: #fed7aa;
+}
+
+.mlb-theme .chip.selected {
+  border-color: #f97316;
+  background: rgba(249, 115, 22, 0.12);
+}
+
+.mlb-theme .badge.me {
+  background: rgba(249, 115, 22, 0.15);
+  border-color: rgba(251, 146, 60, 0.7);
+  color: #fed7aa;
+}
+
+.mlb-theme .badge.me.leader {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.3), rgba(234, 88, 12, 0.38));
+  border-color: rgba(249, 115, 22, 0.95);
+  color: #fff7ed;
+  box-shadow:
+    0 0 0 1px rgba(249, 115, 22, 0.9),
+    0 0 20px rgba(249, 115, 22, 0.5);
+}
+
+.mlb-theme .badge.leader {
+  background: rgba(234, 88, 12, 0.18);
+  border-color: rgba(249, 115, 22, 0.7);
+  color: #fdba74;
+}
+
+.mlb-theme .dot {
+  background: #f97316;
+}
+
+.mlb-theme .status-badge.turn {
+  background: rgba(249, 115, 22, 0.2);
+  color: #fed7aa;
+}
+
+.mlb-theme .status-badge.turn.turn-self {
+  background: linear-gradient(to right, rgba(249, 115, 22, 0.4), rgba(234, 88, 12, 0.32));
+  color: #fff7ed;
+  box-shadow:
+    0 0 0 1px rgba(249, 115, 22, 0.9),
+    0 0 18px rgba(249, 115, 22, 0.6);
+}
+
+.mlb-theme .status-badge.done {
+  background: rgba(249, 115, 22, 0.2);
+  color: #fdba74;
+}
+
+.mlb-theme .onclock-bar {
+  border-color: rgba(249, 115, 22, 0.5);
+  background: radial-gradient(circle at top left, rgba(234, 88, 12, 0.35), rgba(30, 15, 5, 0.9));
+}
+
+.mlb-theme .onclock-bar--self {
+  border-color: rgba(250, 204, 21, 0.95);
+  background: radial-gradient(circle at top left, rgba(250, 204, 21, 0.4), rgba(30, 15, 5, 0.98));
+  box-shadow:
+    0 0 0 1px rgba(250, 204, 21, 0.9),
+    0 0 32px rgba(250, 204, 21, 0.5);
+}
+
+.mlb-theme .onclock-prefix {
+  color: #fed7aa;
+}
+
+.mlb-theme .onclock-label {
+  color: #fed7aa;
+}
+
+.mlb-theme .onclock-name {
+  color: #fff7ed;
+}
+
+.mlb-theme .onclock-timer {
+  color: #fdba74;
+}
+
+.mlb-theme .onclock-separator {
+  color: #fdba74;
+}
+
+.mlb-theme .grid-header {
+  background: rgba(30, 15, 5, 0.98);
+}
+
+.mlb-theme .grid-row:nth-child(even) {
+  background: rgba(30, 15, 5, 0.96);
+}
+
+.mlb-theme .grid-row:nth-child(odd) {
+  background: rgba(30, 15, 5, 0.92);
+}
+
+.mlb-theme .round-grid-row:nth-child(odd) {
+  background: rgba(30, 15, 5, 0.98);
+}
+
+.mlb-theme .round-grid-row:nth-child(even) {
+  background: rgba(234, 88, 12, 0.12);
+}
+
+.mlb-theme .round-grid-header {
+  background: rgba(30, 15, 5, 0.98);
+}
+
+.mlb-theme .draft-notification-banner {
+  border-color: rgba(249, 115, 22, 0.85);
+  background: radial-gradient(circle at top left, rgba(249, 115, 22, 0.22), rgba(30, 15, 5, 0.98));
+}
+
+.mlb-theme .draft-notification-label {
+  color: #fb923c;
+}
+
+.mlb-theme .draft-notification-drafter {
+  color: #fb923c;
+}
+
+.mlb-theme .modal {
+  background: rgba(30, 15, 5, 0.98);
+  border-color: rgba(251, 146, 60, 0.4);
+}
+
+.mlb-theme .modal-backdrop {
+  background: rgba(30, 10, 0, 0.85);
+}
+
+.mlb-theme input[type='text'],
+.mlb-theme input[type='number'],
+.mlb-theme select {
+  background: rgba(30, 15, 5, 0.9);
+  border-color: rgba(251, 146, 60, 0.4);
+}
+
+.mlb-theme .chip-list {
+  background: rgba(30, 15, 5, 0.85);
+  border-color: rgba(251, 146, 60, 0.25);
+}
+
+.mlb-theme .chip {
+  background: rgba(30, 15, 5, 0.96);
+  border-color: rgba(251, 146, 60, 0.3);
+}
+
+.mlb-theme .grid {
+  border-color: rgba(251, 146, 60, 0.25);
+}
+
+.mlb-theme .round-grid {
+  border-color: rgba(251, 146, 60, 0.25);
+}
+
+.mlb-theme .onclock-banner {
+  border-color: rgba(249, 115, 22, 0.5);
+  background: radial-gradient(circle at top left, rgba(234, 88, 12, 0.35), rgba(30, 15, 5, 0.9));
+}
+
+.mlb-theme .onclock-banner.onclock-banner--self {
+  border-color: rgba(250, 204, 21, 0.95);
+  background: radial-gradient(circle at top left, rgba(250, 204, 21, 0.4), rgba(30, 15, 5, 0.98));
+}
+
 

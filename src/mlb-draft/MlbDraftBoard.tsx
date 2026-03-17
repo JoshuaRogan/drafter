@@ -393,15 +393,20 @@ export const MlbDraftBoard: React.FC = () => {
 
   return (
     <>
+      <div style={{ position: 'relative', marginBottom: 12 }}>
+        <img
+          src="/dinger.png"
+          alt="Dinger mascot"
+          className="dinger-mascot"
+        />
       <div style={{
-        background: 'rgba(15,23,42,0.8)',
-        border: '1px solid rgba(148,163,184,0.25)',
+        background: 'rgba(30,15,5,0.8)',
+        border: '1px solid rgba(251,146,60,0.25)',
         borderRadius: 10,
         padding: '12px 16px',
         fontSize: 12,
         lineHeight: 1.6,
         color: '#9ca3af',
-        marginBottom: 12,
       }}>
         <div style={{ fontWeight: 700, fontSize: 13, color: '#e5e7eb', marginBottom: 6 }}>Scoring Rules</div>
         <table style={{ borderCollapse: 'collapse', width: '100%', maxWidth: 420 }}>
@@ -413,18 +418,19 @@ export const MlbDraftBoard: React.FC = () => {
             <tr><td style={{ paddingRight: 12 }}>PED Suspension</td><td style={{ fontWeight: 600, color: '#e5e7eb' }}>20 pts</td></tr>
           </tbody>
         </table>
-        <div style={{ marginTop: 8, borderTop: '1px solid rgba(148,163,184,0.15)', paddingTop: 8 }}>
+        <div style={{ marginTop: 8, borderTop: '1px solid rgba(251,146,60,0.15)', paddingTop: 8 }}>
           <div style={{ fontWeight: 600, color: '#e5e7eb', marginBottom: 2 }}>Tiebreaker</div>
           <div>Your pitcher is used only as a tiebreaker — most strikeouts wins. Pitchers do not earn points otherwise.</div>
         </div>
-        <div style={{ marginTop: 8, borderTop: '1px solid rgba(148,163,184,0.15)', paddingTop: 8 }}>
+        <div style={{ marginTop: 8, borderTop: '1px solid rgba(251,146,60,0.15)', paddingTop: 8 }}>
           <div style={{ fontWeight: 600, color: '#e5e7eb', marginBottom: 2 }}>Add/Drop</div>
           <div>Each team gets 1 free add/drop at any point during the year. Additional add/drops are available if your player suffers a season-ending injury (must be approved by league vote).</div>
         </div>
-        <div style={{ marginTop: 8, borderTop: '1px solid rgba(148,163,184,0.15)', paddingTop: 8 }}>
+        <div style={{ marginTop: 8, borderTop: '1px solid rgba(251,146,60,0.15)', paddingTop: 8 }}>
           <div style={{ fontWeight: 600, color: '#e5e7eb', marginBottom: 2 }}>Draft Order</div>
           <div>Draft order is determined by reverse standings from the previous year. New members are added to the bottom.</div>
         </div>
+      </div>
       </div>
 
       {displayError && (
@@ -676,7 +682,7 @@ export const MlbDraftBoard: React.FC = () => {
             </div>
             <div className="status-row">
               <div className="status-badge">
-                <span className="dot" style={{ background: isConnected ? '#22c55e' : '#ef4444' }} />
+                <span className="dot" style={{ background: isConnected ? '#f97316' : '#ef4444' }} />
                 {isConnected ? 'Live' : 'Offline'}
               </div>
               {status === 'complete' && <div className="status-badge done">Draft complete</div>}
@@ -759,8 +765,8 @@ export const MlbDraftBoard: React.FC = () => {
                   <div
                     key={d.id}
                     style={{
-                      background: 'rgba(15,23,42,0.6)',
-                      border: `1px solid ${isCurrent ? 'rgba(59,130,246,0.6)' : 'rgba(148,163,184,0.2)'}`,
+                      background: 'rgba(30,15,5,0.6)',
+                      border: `1px solid ${isCurrent ? 'rgba(249,115,22,0.6)' : 'rgba(251,146,60,0.2)'}`,
                       borderRadius: 10,
                       padding: '8px 10px',
                       fontSize: 12,
@@ -768,8 +774,8 @@ export const MlbDraftBoard: React.FC = () => {
                     }}
                     onClick={() => setActiveDrafterId(d.id)}
                   >
-                    <div style={{ fontWeight: 600, marginBottom: 4, color: isMe ? '#93c5fd' : '#e5e7eb' }}>
-                      {d.name} {isMe && '(you)'} {isCurrent && <span style={{ color: '#22c55e' }}>&#9679;</span>}
+                    <div style={{ fontWeight: 600, marginBottom: 4, color: isMe ? '#fdba74' : '#e5e7eb' }}>
+                      {d.name} {isMe && '(you)'} {isCurrent && <span style={{ color: '#f97316' }}>&#9679;</span>}
                       <span style={{ float: 'right', color: '#6b7280' }}>{pickCount}/{state?.config.totalRounds || 11}</span>
                     </div>
                     {ROSTER_SLOTS.map((slot) => {
@@ -855,7 +861,7 @@ export const MlbDraftBoard: React.FC = () => {
                 {checkpoints.length > 0 && (
                   <div className="mt-8">
                     {checkpoints.map((cp) => (
-                      <div key={cp.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, padding: '4px 0', borderBottom: '1px solid rgba(148,163,184,0.1)' }}>
+                      <div key={cp.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, padding: '4px 0', borderBottom: '1px solid rgba(251,146,60,0.1)' }}>
                         <span>{cp.name || 'Untitled'}</span>
                         <button className="btn-secondary" style={{ fontSize: 11, padding: '2px 8px' }} onClick={() => handleRestoreCheckpoint(cp.id)} disabled={isRestoringCheckpoint}>
                           Restore
@@ -961,7 +967,7 @@ export const MlbDraftBoard: React.FC = () => {
             />
 
             {/* Player list */}
-            <div style={{ maxHeight: 500, overflow: 'auto', border: '1px solid rgba(148,163,184,0.2)', borderRadius: 8 }}>
+            <div style={{ maxHeight: 500, overflow: 'auto', border: '1px solid rgba(251,146,60,0.2)', borderRadius: 8 }}>
               {filteredPool.length === 0 && (
                 <div style={{ padding: 12, fontSize: 12, color: '#6b7280', textAlign: 'center' }}>
                   No players match your filters.
@@ -978,14 +984,14 @@ export const MlbDraftBoard: React.FC = () => {
                       alignItems: 'center',
                       gap: 6,
                       padding: '6px 10px',
-                      borderBottom: '1px solid rgba(148,163,184,0.08)',
+                      borderBottom: '1px solid rgba(251,146,60,0.08)',
                       cursor: status === 'in-progress' ? 'pointer' : 'default',
                       fontSize: 13,
                       transition: 'background 0.15s',
                     }}
                     onMouseEnter={(e) => {
                       if (status === 'in-progress') {
-                        (e.currentTarget as HTMLElement).style.background = 'rgba(59,130,246,0.12)';
+                        (e.currentTarget as HTMLElement).style.background = 'rgba(249,115,22,0.12)';
                       }
                     }}
                     onMouseLeave={(e) => {

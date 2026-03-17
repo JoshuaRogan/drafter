@@ -5,6 +5,7 @@ import { UserSetup } from './draft/UserSetup';
 import { MlbDraftProvider } from './mlb-draft/MlbDraftContext';
 import { MlbDraftBoard } from './mlb-draft/MlbDraftBoard';
 import { MlbUserSetup } from './mlb-draft/MlbUserSetup';
+import { MlbBackground } from './mlb-draft/MlbBackground';
 
 type DraftMode = 'celebrity' | 'mlb';
 
@@ -52,11 +53,12 @@ export const App: React.FC = () => {
 
   if (draftMode === 'mlb') {
     return (
-      <div className="app-shell">
-        <div className="card">
+      <div className="app-shell mlb-theme">
+        <div className="card" style={{ overflow: 'visible' }}>
+          <MlbBackground />
           <div className="card-header">
             <div>
-              <div className="pill leader" style={{ background: 'rgba(220,38,38,0.16)', color: '#fca5a5' }}>
+              <div className="pill leader" style={{ background: 'rgba(249,115,22,0.18)', color: '#fdba74' }}>
                 <span>MLB Draft Pool</span>
               </div>
               <div className="title">MLB Live Draft Room</div>
