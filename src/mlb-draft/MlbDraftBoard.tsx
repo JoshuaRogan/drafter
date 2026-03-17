@@ -381,6 +381,28 @@ export const MlbDraftBoard: React.FC = () => {
     }
   };
 
+  const handleExportJson = () => {
+    if (!state?.picks.length) return;
+    const data = state.picks.map((p) => ({
+      pick: p.overallNumber,
+      round: p.round,
+      drafter: p.drafterName,
+      player: p.playerName,
+      rosterSlot: p.rosterSlot,
+      position: p.position,
+      positions: p.positions,
+      team: p.teamAbbr,
+      rosterSlotValid: p.rosterSlotValid,
+    }));
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mlb-draft-picks-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const handleRestoreCheckpoint = async (id: string) => {
     try {
       setIsRestoringCheckpoint(true);
@@ -836,6 +858,9 @@ export const MlbDraftBoard: React.FC = () => {
                       Restore prev
                     </button>
                     <button className="btn-danger" onClick={handleReset}>Reset</button>
+                    <button className="btn-secondary" onClick={handleExportJson} disabled={!state.picks.length}>
+                      Export JSON
+                    </button>
                   </>
                 )}
               </div>

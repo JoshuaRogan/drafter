@@ -7,4 +7,5 @@
   to = "/index.html"
   status = 200
 
-
+[dev]
+  ignore = ["node_modules", ".next", "dist", "build"]
