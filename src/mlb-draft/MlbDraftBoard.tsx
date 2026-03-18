@@ -441,6 +441,7 @@ export const MlbDraftBoard: React.FC = () => {
             <tr><td style={{ paddingRight: 12 }}>Home Run 450+ ft</td><td style={{ fontWeight: 600, color: '#e5e7eb' }}>+1 pt bonus</td></tr>
             <tr><td style={{ paddingRight: 12 }}>Hit By Pitch</td><td style={{ fontWeight: 600, color: '#e5e7eb' }}>0.5 pts</td></tr>
             <tr><td style={{ paddingRight: 12 }}>Manager Ejection</td><td style={{ fontWeight: 600, color: '#e5e7eb' }}>5 pts</td></tr>
+            <tr><td style={{ paddingRight: 12 }}>Home Run Derby Winner</td><td style={{ fontWeight: 600, color: '#e5e7eb' }}>5 pts</td></tr>
             <tr><td style={{ paddingRight: 12 }}>PED Suspension</td><td style={{ fontWeight: 600, color: '#e5e7eb' }}>20 pts</td></tr>
           </tbody>
         </table>
