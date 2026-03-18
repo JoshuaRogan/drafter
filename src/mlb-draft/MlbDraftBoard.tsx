@@ -892,7 +892,7 @@ export const MlbDraftBoard: React.FC = () => {
                     {checkpoints.map((cp) => (
                       <div key={cp.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, padding: '4px 0', borderBottom: '1px solid rgba(251,146,60,0.1)' }}>
                         <span>{cp.name || 'Untitled'}</span>
-                        <button className="btn-secondary" style={{ fontSize: 11, padding: '2px 8px' }} onClick={() => handleRestoreCheckpoint(cp.id)} disabled={isRestoringCheckpoint}>
+                        <button className="btn-secondary" style={{ fontSize: 11, padding: '2px 8px' }} onClick={() => setConfirmAction({ label: `Restore checkpoint "${cp.name || 'Untitled'}"? This will overwrite the current draft state.`, onConfirm: () => { setConfirmAction(null); handleRestoreCheckpoint(cp.id); } })} disabled={isRestoringCheckpoint}>
                           Restore
                         </button>
                       </div>
